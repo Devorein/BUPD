@@ -1,10 +1,16 @@
+import dotenv from "dotenv";
 import express from "express";
 import mysql from "mysql";
+import path from "path";
+
+dotenv.config({
+  path: path.join(__dirname, ".env") 
+});
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
+  host: process.env.DATABASE_HOST,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
   database: 'test'
 });
 
