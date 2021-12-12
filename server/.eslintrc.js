@@ -19,6 +19,7 @@ module.exports = {
 		'import/prefer-default-export': 'off',
 		'no-else-return': 'off',
 		'one-var': 'off',
-    "no-console": "off"
+    "no-console": "off",
+    "import/extensions": "off"
 	},
 };

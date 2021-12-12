@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mysql from "mysql";
 import path from "path";
+import RootRouter from "./routes";
 
 dotenv.config({
   path: path.join(__dirname, ".env") 
@@ -15,8 +16,11 @@ const connection = mysql.createConnection({
 });
 
 const app = express();
+app.use(express.json());
 
-const PORT = 3000;
+app.use('/v1', RootRouter);
+
+const PORT = process.env.SERVER_PORT;
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
