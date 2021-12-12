@@ -1,7 +1,8 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
-import { RegisterPolicePayload } from '../types';
-import { query, validatePassword } from '../utils';
+import { PoliceModel } from '../models';
+import { ApiResponse, IPolice, RegisterPolicePayload } from '../types';
+import { validatePassword } from '../utils';
 
 export default {
 	login: (_: Request, res: Response) => {
@@ -12,7 +13,10 @@ export default {
 			},
 		});
 	},
-	register: async (req: Request<any, any, RegisterPolicePayload>, res: Response) => {
+	register: async (
+		req: Request<any, any, RegisterPolicePayload>,
+		res: Response<ApiResponse<IPolice>>
+	) => {
 		if (!req.body.nid) {
 			res.json({
 				status: 'error',
@@ -37,13 +41,20 @@ export default {
 		// TODO: create jsonwebtoken
 		// TODO: store hashed password
 		try {
-			const hashedPassword = await argon2.hash(req.body.password);
-			await query(`
-        INSERT INTO police(nid, name, password) VALUES(${req.body.nid}, "${req.body.name}", "${hashedPassword}");
-      `);
+			const hashedPassword = await argon2.hash(req.body.password, {
+				hashLength: 100,
+				timeCost: 5,
+				salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
+			});
+
+			const police = await PoliceModel.create({
+				...req.body,
+				password: hashedPassword,
+			});
+
 			res.json({
 				status: 'success',
-				data: null,
+				data: police,
 			});
 		} catch (err) {
 			res.json({
