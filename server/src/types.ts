@@ -1,3 +1,5 @@
+import { JwtPayload } from 'jsonwebtoken';
+
 export interface LoginPayload {
 	email: string;
 	password: string;
@@ -33,3 +35,10 @@ export type ErrorApiResponse = {
 };
 
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
+
+declare module 'express' {
+	// eslint-disable-next-line
+	interface Request {
+		jwt_payload?: Record<string, any> | null | string | JwtPayload;
+	}
+}
