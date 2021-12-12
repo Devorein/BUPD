@@ -1,3 +1,4 @@
+import AdminModel from './admin';
 import PoliceModel from './police';
 
-export { PoliceModel };
+export { AdminModel, PoliceModel };

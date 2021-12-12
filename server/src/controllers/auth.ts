@@ -1,13 +1,13 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
-import { PoliceModel } from '../models';
-import { ApiResponse, IPolice, LoginPayload, RegisterPolicePayload } from '../types';
+import { AdminModel, PoliceModel } from '../models';
+import { ApiResponse, IAdmin, IPolice, LoginPayload, RegisterPolicePayload } from '../types';
 import { signToken, validateEmail, validatePassword } from '../utils';
 
 export default {
 	login: async (
 		req: Request<any, any, LoginPayload>,
-		res: Response<ApiResponse<IPolice & { token: string }>>
+		res: Response<ApiResponse<(IPolice | IAdmin) & { token: string }>>
 	) => {
 		if (!req.body.password) {
 			res.json({
@@ -22,33 +22,66 @@ export default {
 		}
 
 		const payload = req.body;
-		const queryResponse = await PoliceModel.findByEmail(payload.email);
-		if (!queryResponse) {
-			res.json({
-				status: 'error',
-				message: 'No police exists',
-			});
-		} else {
-			const isCorrectPassword = await argon2.verify(queryResponse.password, payload.password);
-			if (!isCorrectPassword) {
+		if (payload.as === 'police') {
+			const queryResponse = await PoliceModel.findByEmail(payload.email);
+			if (!queryResponse) {
 				res.json({
 					status: 'error',
-					message: 'Incorrect password',
+					message: 'No police exists with that email',
 				});
 			} else {
-				const jwtToken = signToken({
-					type: 'police',
-					nid: queryResponse.nid,
-					email: queryResponse.email,
-				});
-
+				const isCorrectPassword = await argon2.verify(queryResponse.password, payload.password);
+				if (!isCorrectPassword) {
+					res.json({
+						status: 'error',
+						message: 'Incorrect password',
+					});
+				} else {
+					const jwtToken = signToken({
+						type: 'police',
+						nid: queryResponse.nid,
+						email: queryResponse.email,
+					});
+					res.json({
+						status: 'success',
+						data: {
+							email: queryResponse.email,
+							name: queryResponse.name,
+							nid: queryResponse.nid,
+							token: jwtToken,
+						},
+					});
+				}
+			}
+		} else if (payload.as === 'admin') {
+			const queryResponse = await AdminModel.findByEmail(payload.email);
+			if (!queryResponse) {
 				res.json({
-					status: 'success',
-					data: {
-						...queryResponse,
-						token: jwtToken,
-					},
+					status: 'error',
+					message: 'No admin exists with that email',
 				});
+			} else {
+				const isCorrectPassword = await argon2.verify(queryResponse.password, payload.password);
+				if (!isCorrectPassword) {
+					res.json({
+						status: 'error',
+						message: 'Incorrect password',
+					});
+				} else {
+					const jwtToken = signToken({
+						type: 'admin',
+						email: queryResponse.email,
+						id: queryResponse.id,
+					});
+					res.json({
+						status: 'success',
+						data: {
+							email: queryResponse.email,
+							id: queryResponse.id,
+							token: jwtToken,
+						},
+					});
+				}
 			}
 		}
 	},

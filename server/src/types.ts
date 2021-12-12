@@ -1,6 +1,12 @@
 export interface LoginPayload {
 	email: string;
 	password: string;
+	as: 'admin' | 'police';
+}
+
+export interface IAdmin {
+	email: string;
+	id: number;
 }
 
 export interface RegisterPolicePayload {
