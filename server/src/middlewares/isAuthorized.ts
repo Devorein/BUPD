@@ -9,7 +9,7 @@ export default function isAuthorized(roles: string[]) {
 				message: 'Not authorized',
 			});
 		} else {
-			if (!roles.includes(req.jwt_payload.role)) {
+			if (!roles.includes(req.jwt_payload.role) || !req.jwt_payload.role) {
 				res.json({
 					status: 'error',
 					message: 'Not authorized',

@@ -55,7 +55,7 @@ export default {
 						});
 					} else {
 						const jwtToken = signToken({
-							type: 'police',
+							role: 'police',
 							nid: queryResponse.nid,
 							email: queryResponse.email,
 						});
