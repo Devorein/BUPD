@@ -1,5 +1,5 @@
 export interface LoginPayload {
-	nid: number;
+	email: string;
 	password: string;
 }
 

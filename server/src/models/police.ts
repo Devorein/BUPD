@@ -13,6 +13,22 @@ const PoliceModel = {
 		};
 		return police;
 	},
+
+	async findByEmail(email: string) {
+		const queryResponse = (await query(`
+      SELECT * FROM police where email = "${email}";
+    `)) as Array<IPolice & { password: string }>;
+		if (queryResponse.length === 0) {
+			return null;
+		} else {
+			return {
+				email: queryResponse[0].email,
+				name: queryResponse[0].name,
+				nid: queryResponse[0].nid,
+				password: queryResponse[0].password,
+			};
+		}
+	},
 };
 
 export default PoliceModel;
