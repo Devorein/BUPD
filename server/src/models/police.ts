@@ -47,7 +47,7 @@ const PoliceModel = {
 			await query(`
         UPDATE police SET ${updateTuples
 					.map((updateTuple) => updateTuple.join('='))
-					.join(',')} where nid = ${nid} & email = "${email}";
+					.join(',')} where nid = ${nid} and email = "${email}";
       `);
 			return payload as IPolice;
 		} else {

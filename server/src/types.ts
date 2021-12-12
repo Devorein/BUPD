@@ -3,7 +3,6 @@ export interface LoginPayload {
 	password: string;
 	as: 'admin' | 'police';
 }
-
 export interface IAdmin {
 	email: string;
 	id: number;
@@ -27,6 +26,8 @@ export interface IPolice {
 	nid: number;
 	name: string;
 }
+
+export type UpdatePoliceResponse = IPolice & { token: string };
 
 export type SuccessApiResponse<Data> = {
 	status: 'success';

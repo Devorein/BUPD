@@ -1,12 +1,14 @@
-import express from "express";
-import AuthRouter from "./auth";
+import express from 'express';
+import AuthRouter from './auth';
+import PoliceRouter from './police';
 
 const RootRouter = express.Router();
 
-RootRouter.get('/ping', (_, res)=> {
-  res.status(200).json("Pong")
-})
+RootRouter.get('/ping', (_, res) => {
+	res.status(200).json('Pong');
+});
 
-RootRouter.use('/auth', AuthRouter)
+RootRouter.use('/auth', AuthRouter);
+RootRouter.use('/police', PoliceRouter);
 
 export default RootRouter;
