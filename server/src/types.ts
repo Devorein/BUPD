@@ -16,6 +16,12 @@ export interface RegisterPolicePayload {
 	password: string;
 }
 
+export interface UpdatePolicePayload {
+	email: string;
+	nid: number;
+	name: string;
+}
+
 export interface IPolice {
 	email: string;
 	nid: number;
