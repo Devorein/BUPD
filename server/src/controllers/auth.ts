@@ -1,7 +1,15 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
 import { AdminModel, PoliceModel } from '../models';
-import { ApiResponse, IAdmin, IPolice, LoginPayload, RegisterPolicePayload } from '../types';
+import {
+	AdminJwtPayload,
+	ApiResponse,
+	IAdmin,
+	IPolice,
+	LoginPayload,
+	PoliceJwtPayload,
+	RegisterPolicePayload,
+} from '../types';
 import { signToken, validateEmail, validatePassword } from '../utils';
 
 export default {
@@ -78,10 +86,10 @@ export default {
 						});
 					} else {
 						const jwtToken = signToken({
-							type: 'admin',
+							role: 'admin',
 							email: queryResponse.email,
 							id: queryResponse.id,
-						});
+						} as AdminJwtPayload);
 						res.json({
 							status: 'success',
 							data: {
@@ -138,10 +146,10 @@ export default {
 				});
 
 				const jwtToken = signToken({
-					type: 'police',
+					role: 'police',
 					nid: req.body.nid,
 					email: req.body.email,
-				});
+				} as PoliceJwtPayload);
 
 				const police = await PoliceModel.create({
 					...req.body,

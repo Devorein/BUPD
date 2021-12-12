@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { ErrorApiResponse } from '../types';
+import { ErrorApiResponse, JwtPayload } from '../types';
 
 export default function isAuthenticated(
 	req: Request,
@@ -28,7 +28,7 @@ export default function isAuthenticated(
 			});
 		} else {
 			try {
-				const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+				const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 				req.jwt_payload = decoded;
 				next();
 			} catch (_) {

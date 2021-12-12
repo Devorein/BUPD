@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
 	env: {
@@ -19,7 +19,8 @@ module.exports = {
 		'import/prefer-default-export': 'off',
 		'no-else-return': 'off',
 		'one-var': 'off',
-    "no-console": "off",
-    "import/extensions": "off"
+		'no-console': 'off',
+		'import/extensions': 'off',
+		'no-lonely-if': 'off',
 	},
 };

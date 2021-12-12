@@ -1,5 +1,3 @@
-import { JwtPayload } from 'jsonwebtoken';
-
 export interface LoginPayload {
 	email: string;
 	password: string;
@@ -35,10 +33,19 @@ export type ErrorApiResponse = {
 };
 
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
+export interface AdminJwtPayload extends IAdmin {
+	role: 'admin';
+}
+
+export interface PoliceJwtPayload extends IPolice {
+	role: 'police';
+}
+
+export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
 
 declare module 'express' {
 	// eslint-disable-next-line
 	interface Request {
-		jwt_payload?: Record<string, any> | null | string | JwtPayload;
+		jwt_payload?: PoliceJwtPayload | AdminJwtPayload;
 	}
 }
