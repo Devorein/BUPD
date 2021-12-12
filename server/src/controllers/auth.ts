@@ -19,6 +19,16 @@ export default {
 				status: 'error',
 				message: 'Email is required',
 			});
+		} else if (!req.body.as) {
+			res.json({
+				status: 'error',
+				message: 'As field is required',
+			});
+		} else if (req.body.as !== 'admin' && req.body.as !== 'police') {
+			res.json({
+				status: 'error',
+				message: 'You can only login as admin or police',
+			});
 		} else {
 			const payload = req.body;
 			if (payload.as === 'police') {
