@@ -1,5 +1,6 @@
 import connection from './connect';
 import query from './query';
-import validatePassword from './validatePassword';
 
-export { connection, query, validatePassword };
+export * from './jwt';
+export * from './validate';
+export { connection, query };

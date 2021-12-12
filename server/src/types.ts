@@ -1,10 +1,17 @@
+export interface LoginPayload {
+	nid: number;
+	password: string;
+}
+
 export interface RegisterPolicePayload {
+	email: string;
 	nid: number;
 	name: string;
 	password: string;
 }
 
 export interface IPolice {
+	email: string;
 	nid: number;
 	name: string;
 }

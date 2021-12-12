@@ -4,9 +4,10 @@ import { query } from '../utils';
 const PoliceModel = {
 	async create(payload: RegisterPolicePayload) {
 		await query(`
-      INSERT INTO police(nid, name, password) VALUES(${payload.nid}, "${payload.name}", "${payload.password}");
+      INSERT INTO police(nid, name, password, email) VALUES(${payload.nid}, "${payload.name}", "${payload.password}", "${payload.email}");
     `);
 		const police: IPolice = {
+			email: payload.email,
 			name: payload.name,
 			nid: payload.nid,
 		};

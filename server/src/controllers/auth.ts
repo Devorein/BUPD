@@ -1,9 +1,8 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import { PoliceModel } from '../models';
 import { ApiResponse, IPolice, RegisterPolicePayload } from '../types';
-import { validatePassword } from '../utils';
+import { signToken, validateEmail, validatePassword } from '../utils';
 
 export default {
 	login: (_: Request, res: Response) => {
@@ -23,6 +22,11 @@ export default {
 				status: 'error',
 				message: 'NID is required',
 			});
+		} else if (!req.body.email) {
+			res.json({
+				status: 'error',
+				message: 'Email is required',
+			});
 		} else if (!req.body.name) {
 			res.json({
 				status: 'error',
@@ -38,6 +42,11 @@ export default {
 				status: 'error',
 				message: 'Weak password',
 			});
+		} else if (!validateEmail(req.body.email)) {
+			res.json({
+				status: 'error',
+				message: 'Invalid email',
+			});
 		}
 		try {
 			const hashedPassword = await argon2.hash(req.body.password, {
@@ -46,16 +55,11 @@ export default {
 				salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
 			});
 
-			const jwtToken = jwt.sign(
-				{
-					type: 'police',
-					nid: req.body.nid,
-				},
-				process.env.JWT_SECRET!,
-				{
-					expiresIn: '1d',
-				}
-			);
+			const jwtToken = signToken({
+				type: 'police',
+				nid: req.body.nid,
+				email: req.body.email,
+			});
 
 			const police = await PoliceModel.create({
 				...req.body,
