@@ -75,9 +75,10 @@ export default {
 			});
 		} catch (err) {
 			if (err.code === 'ER_DUP_ENTRY') {
+				const isDuplicateEmail = err.sqlMessage.includes('email');
 				res.json({
 					status: 'error',
-					message: 'Duplicate NID found',
+					message: `A police already exists with this ${isDuplicateEmail ? 'email' : 'NID'}`,
 				});
 			} else {
 				res.json({
