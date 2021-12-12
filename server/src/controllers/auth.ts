@@ -1,5 +1,6 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { PoliceModel } from '../models';
 import { ApiResponse, IPolice, RegisterPolicePayload } from '../types';
 import { validatePassword } from '../utils';
@@ -15,7 +16,7 @@ export default {
 	},
 	register: async (
 		req: Request<any, any, RegisterPolicePayload>,
-		res: Response<ApiResponse<IPolice>>
+		res: Response<ApiResponse<IPolice & { token: string }>>
 	) => {
 		if (!req.body.nid) {
 			res.json({
@@ -38,14 +39,23 @@ export default {
 				message: 'Weak password',
 			});
 		}
-		// TODO: create jsonwebtoken
-		// TODO: store hashed password
 		try {
 			const hashedPassword = await argon2.hash(req.body.password, {
 				hashLength: 100,
 				timeCost: 5,
 				salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
 			});
+
+			const jwtToken = jwt.sign(
+				{
+					type: 'police',
+					nid: req.body.nid,
+				},
+				process.env.JWT_SECRET!,
+				{
+					expiresIn: '1d',
+				}
+			);
 
 			const police = await PoliceModel.create({
 				...req.body,
@@ -54,13 +64,23 @@ export default {
 
 			res.json({
 				status: 'success',
-				data: police,
+				data: {
+					...police,
+					token: jwtToken,
+				},
 			});
 		} catch (err) {
-			res.json({
-				status: 'error',
-				message: err.message,
-			});
+			if (err.code === 'ER_DUP_ENTRY') {
+				res.json({
+					status: 'error',
+					message: 'Duplicate NID found',
+				});
+			} else {
+				res.json({
+					status: 'error',
+					message: err.message,
+				});
+			}
 		}
 	},
 };
