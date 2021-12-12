@@ -1,3 +1,4 @@
+import argon2 from 'argon2';
 import { Request, Response } from 'express';
 import { RegisterPolicePayload } from '../types';
 import { query, validatePassword } from '../utils';
@@ -36,8 +37,9 @@ export default {
 		// TODO: create jsonwebtoken
 		// TODO: store hashed password
 		try {
+			const hashedPassword = await argon2.hash(req.body.password);
 			await query(`
-        INSERT INTO police(nid, name) VALUES(${req.body.nid}, "${req.body.name}");
+        INSERT INTO police(nid, name, password) VALUES(${req.body.nid}, "${req.body.name}", "${hashedPassword}");
       `);
 			res.json({
 				status: 'success',
