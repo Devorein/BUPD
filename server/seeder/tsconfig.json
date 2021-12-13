@@ -30,7 +30,12 @@
     "types": [
       "node",
       "jest"
-    ]
+    ],
+    "paths": {
+      "@backend": [
+        "../src/shared.types.ts"
+      ]
+    }
   },
   "exclude": [
     "node_modules"
