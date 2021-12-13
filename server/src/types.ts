@@ -50,7 +50,8 @@ export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 export interface AdminJwtPayload extends Exclude<IAdmin, 'password'> {
 	type: 'admin';
 }
-export interface PoliceJwtPayload extends Exclude<IPolice, 'password' | 'address'> {
+export interface PoliceJwtPayload
+	extends Exclude<IPolice, 'password' | 'address' | 'designation' | 'name' | 'phone'> {
 	type: 'police';
 }
 

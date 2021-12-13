@@ -55,9 +55,14 @@ export default {
 									police,
 									['password']
 								);
-								const policeJwtToken: PoliceJwtPayload = {
+								const policeJwtToken = {
+									...removeFields<IPolice, PoliceJwtPayload>(passwordRemovedPolice, [
+										'address',
+										'designation',
+										'name',
+										'phone',
+									]),
 									type: 'police',
-									...passwordRemovedPolice,
 								};
 								const jwtToken = signToken(policeJwtToken);
 								res.json({
