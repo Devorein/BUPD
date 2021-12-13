@@ -8,11 +8,17 @@ import {
 	IPolice,
 	LoginPayload,
 	LoginResponse,
-	PoliceJwtPayload,
 	RegisterPolicePayload,
 	RegisterPoliceResponse,
 } from '../types';
-import { checkForFields, removeFields, signToken, validateEmail, validatePassword } from '../utils';
+import {
+	checkForFields,
+	generatePoliceJwtToken,
+	removeFields,
+	signToken,
+	validateEmail,
+	validatePassword,
+} from '../utils';
 
 export default {
 	login: async (
@@ -55,21 +61,11 @@ export default {
 									police,
 									['password']
 								);
-								const policeJwtToken = {
-									...removeFields<IPolice, PoliceJwtPayload>(passwordRemovedPolice, [
-										'address',
-										'designation',
-										'name',
-										'phone',
-									]),
-									type: 'police',
-								};
-								const jwtToken = signToken(policeJwtToken);
 								res.json({
 									status: 'success',
 									data: {
 										...passwordRemovedPolice,
-										token: jwtToken,
+										token: generatePoliceJwtToken(police),
 									},
 								});
 							}

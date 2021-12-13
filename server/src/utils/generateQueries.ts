@@ -21,8 +21,26 @@ export function generateInsertQuery(payload: Record<string, any>, table: string)
 	return `INSERT INTO ${table}(${fields.join(',')}) VALUES(${values.join(',')});`;
 }
 
-export function generateSelectQuery(payload: Record<string, any>, table: string) {
-	return `SELECT * FROM ${table} where ${Object.entries(payload)
+export function generateWhereClause(payload: Record<string, any>) {
+	return `where ${Object.entries(payload)
 		.map(([field, value]) => `${field}=${mysql.escape(value)}`)
-		.join('and')};`;
+		.join(' and ')};`;
+}
+
+export function generateSetClause(payload: Record<string, any>) {
+	return `SET ${Object.entries(payload)
+		.map(([key, value]) => `${key === 'rank' ? '`rank`' : key}=${mysql.escape(value)}`)
+		.join(',')}`;
+}
+
+export function generateSelectQuery(payload: Record<string, any>, table: string) {
+	return `SELECT * FROM ${table} ${generateWhereClause(payload)}`;
+}
+
+export function generateUpdateQuery(
+	filterQuery: Record<string, any>,
+	payload: Record<string, any>,
+	table: string
+) {
+	return `UPDATE ${table} ${generateSetClause(payload)} ${generateWhereClause(filterQuery)}`;
 }

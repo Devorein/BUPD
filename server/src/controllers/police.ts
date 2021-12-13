@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { PoliceModel } from '../models';
 import { ApiResponse, PoliceJwtPayload, UpdatePolicePayload, UpdatePoliceResponse } from '../types';
-import { signToken } from '../utils';
+import { generatePoliceJwtToken, removeFields } from '../utils';
 
 const PoliceController = {
 	async update(
@@ -10,35 +10,37 @@ const PoliceController = {
 	) {
 		try {
 			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
-			const policeData = await PoliceModel.findByEmail(jwtPayload.email);
+			const payload = req.body;
+			const police = await PoliceModel.find({ email: jwtPayload.email });
 			const updatedPoliceData = await PoliceModel.update(
-				jwtPayload.nid,
-				jwtPayload.email,
-				req.body
+				{
+					nid: jwtPayload.nid,
+					email: jwtPayload.email,
+				},
+				payload
 			);
-			if (!updatedPoliceData || !policeData) {
+			if (!updatedPoliceData || !police) {
 				res.json({
 					status: 'error',
 					message: "Police doesn't exist",
 				});
 			} else {
-				const jwtToken = signToken({
-					role: 'police',
-					nid: updatedPoliceData.nid,
-					email: updatedPoliceData.email,
-				});
-
 				res.json({
 					status: 'success',
 					data: {
-						email: updatedPoliceData.email ?? policeData.email,
-						name: updatedPoliceData.name ?? policeData.name,
-						nid: updatedPoliceData.nid ?? policeData.nid,
-						token: jwtToken,
+						...removeFields(
+							{
+								...police,
+								...payload,
+							},
+							['password']
+						),
+						token: generatePoliceJwtToken(police),
 					},
 				});
 			}
-		} catch (_) {
+		} catch (err) {
+			console.log(err.message);
 			res.json({
 				status: 'error',
 				message: "Couldn't update your profile",

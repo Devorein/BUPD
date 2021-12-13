@@ -1,5 +1,11 @@
 import { IPolice, RegisterPolicePayload, UpdatePolicePayload } from '../types';
-import { generateInsertQuery, generateSelectQuery, normalizePolice, query } from '../utils';
+import {
+	generateInsertQuery,
+	generateSelectQuery,
+	generateUpdateQuery,
+	normalizePolice,
+	query,
+} from '../utils';
 
 const PoliceModel = {
 	async create(payload: RegisterPolicePayload) {
@@ -19,27 +25,12 @@ const PoliceModel = {
 		}
 	},
 
-	async update(nid: number, email: string, payload: UpdatePolicePayload) {
-		const updateTuples: Array<[keyof UpdatePolicePayload, any]> = [];
-		if (payload.email) {
-			updateTuples.push(['email', `"${payload.email}"`]);
-		}
-
-		if (payload.name) {
-			updateTuples.push(['name', `"${payload.name}"`]);
-		}
-
-		if (payload.nid) {
-			updateTuples.push(['nid', payload.nid]);
-		}
-		if (updateTuples.length !== 0) {
-			await query(`
-        UPDATE police SET ${updateTuples
-					.map((updateTuple) => updateTuple.join('='))
-					.join(',')} where nid = ${nid} and email = "${email}";
-      `);
+	async update(filterQuery: Partial<IPolice>, payload: UpdatePolicePayload) {
+		// Making sure that we are updating at least one field
+		if (Object.keys(payload).length !== 0) {
+			await query(generateUpdateQuery(filterQuery, payload, 'police'));
 			// return the payload if the update operation was successful
-			return payload as IPolice;
+			return payload as Partial<IPolice>;
 		} else {
 			return null;
 		}
