@@ -16,23 +16,22 @@ export interface IPolice {
 	rank: string;
 }
 
-export interface LoginPayload {
-	email: string;
-	password: string;
-	as: 'admin' | 'police';
-}
-
 // Api Endpoint type definitions
 export interface RegisterPolicePayload extends IPolice {}
-export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {
-	token: string;
-}
+export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {}
 // You shouldn't be able to update police password using this endpoint
 // there should be a separate endpoint for that as you need to provide your current password if you want to update it
 export interface UpdatePolicePayload extends Exclude<IPolice, 'password'> {}
 export interface UpdatePoliceResponse extends Exclude<IPolice, 'password'> {
 	token: string;
 }
+
+export interface LoginPayload {
+	email: string;
+	password: string;
+	as: 'admin' | 'police';
+}
+export type LoginResponse = (IPolice | IAdmin) & { token: string };
 
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
@@ -49,10 +48,10 @@ export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 
 // Removing confidential information from jwt payload
 export interface AdminJwtPayload extends Exclude<IAdmin, 'password'> {
-	role: 'admin';
+	type: 'admin';
 }
 export interface PoliceJwtPayload extends Exclude<IPolice, 'password' | 'address'> {
-	role: 'police';
+	type: 'police';
 }
 
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
