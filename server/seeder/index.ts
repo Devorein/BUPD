@@ -106,7 +106,7 @@ connection.connect(async (err) => {
 								const police: IPolice = {
 									address: `${faker.address.streetAddress()}, ${faker.address.cityName()}`,
 									designation: `${faker.address.cityName()} Police Station`,
-									email: faker.internet.email(),
+									email: faker.internet.email().toLowerCase(),
 									name: `${faker.name.firstName()} ${faker.name.lastName()}`,
 									nid: faker.datatype.number({
 										max: 20000,
@@ -116,7 +116,7 @@ connection.connect(async (err) => {
 										faker.datatype.number({ max: 50, min: 20 }) +
 										faker.internet.password() +
 										faker.datatype.number({ max: 50, min: 20 }),
-									phone: `+880${faker.phone.phoneNumber().replace('-', '')}`,
+									phone: `+880${faker.datatype.number({ min: 10000000, max: 99999999 })}`,
 									rank: faker.random.arrayElement(policeRanks),
 								};
 								polices.push(police);

@@ -16,6 +16,28 @@ export interface IPolice {
 	rank: string;
 }
 
+export type TCaseFileStatus = 'solved' | 'open' | 'closed';
+export interface ICaseFile {
+	crime_categories: string[];
+	weapons: string[];
+	crime_time: number;
+	case_time: number;
+	status: TCaseFileStatus;
+	location: string;
+	case_number: number;
+	police_nid: number;
+}
+
+export interface IWeapon {
+	name: string;
+	case_id: number;
+}
+
+export interface ICrimeCategories {
+	name: string;
+	case_id: number;
+}
+
 // Api Endpoint type definitions
 export interface RegisterPolicePayload extends IPolice {}
 export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {}
@@ -34,6 +56,11 @@ export interface LoginPayload {
 	as: 'admin' | 'police';
 }
 export type LoginResponse = (IPolice | IAdmin) & { token: string };
+
+export interface CreateCasePayload
+	extends Omit<ICaseFile, 'status' | 'case_number' | 'police_nid' | 'status' | 'case_time'> {}
+
+export interface CreateCaseResponse extends ICaseFile {}
 
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
