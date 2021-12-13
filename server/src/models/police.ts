@@ -1,5 +1,5 @@
 import { IPolice, RegisterPolicePayload, UpdatePolicePayload } from '../types';
-import { query } from '../utils';
+import { normalizePolice, query } from '../utils';
 
 const PoliceModel = {
 	async create(payload: RegisterPolicePayload) {
@@ -21,12 +21,7 @@ const PoliceModel = {
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
-			return {
-				email: queryResponse[0].email,
-				name: queryResponse[0].name,
-				nid: queryResponse[0].nid,
-				password: queryResponse[0].password,
-			};
+			return normalizePolice(queryResponse[0]);
 		}
 	},
 
@@ -49,6 +44,7 @@ const PoliceModel = {
 					.map((updateTuple) => updateTuple.join('='))
 					.join(',')} where nid = ${nid} and email = "${email}";
       `);
+			// return the payload if the update operation was successful
 			return payload as IPolice;
 		} else {
 			return null;

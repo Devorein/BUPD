@@ -1,4 +1,5 @@
 import { IAdmin } from '../types';
+import { normalizeAdmin } from '../utils';
 import query from '../utils/query';
 
 const AdminModel = {
@@ -9,11 +10,7 @@ const AdminModel = {
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
-			return {
-				email: queryResponse[0].email,
-				id: queryResponse[0].id,
-				password: queryResponse[0].password,
-			};
+			return normalizeAdmin(queryResponse[0]);
 		}
 	},
 };
