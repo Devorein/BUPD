@@ -28,17 +28,18 @@ export default {
 		req: Request<any, any, LoginPayload>,
 		res: Response<ApiResponse<LoginResponse>>
 	) => {
-		const payload = req.body;
-		const nonExistentFields = checkForFields(payload, ['as', 'email', 'password']);
-		if (nonExistentFields.length !== 0) {
-			res.json({
-				status: 'error',
-				message: `${nonExistentFields[0]} is required`,
-			});
-		} else {
-			// Wrapping everything in try/catch block
-			// As an error might be thrown when using argon2 or jwt
-			try {
+		try {
+			const payload = req.body;
+			const nonExistentFields = checkForFields(payload, ['as', 'email', 'password']);
+			if (nonExistentFields.length !== 0) {
+				res.json({
+					status: 'error',
+					message: `${nonExistentFields[0]} is required`,
+				});
+			} else {
+				// Wrapping everything in try/catch block
+				// As an error might be thrown when using argon2 or jwt
+
 				if (req.body.as !== 'admin' && req.body.as !== 'police') {
 					res.json({
 						status: 'error',
@@ -110,45 +111,45 @@ export default {
 						}
 					}
 				}
-			} catch (_) {
-				res.json({
-					status: 'error',
-					message: 'Something went wrong. Please try again.',
-				});
 			}
+		} catch (_) {
+			res.json({
+				status: 'error',
+				message: 'Something went wrong. Please try again.',
+			});
 		}
 	},
 	register: async (
 		req: Request<any, any, RegisterPolicePayload>,
 		res: Response<ApiResponse<RegisterPoliceResponse>>
 	) => {
-		const payload = req.body;
-		const nonExistentFields = checkForFields(payload, [
-			'nid',
-			'address',
-			'designation',
-			'name',
-			'password',
-			'phone',
-			'rank',
-		]);
-		if (nonExistentFields.length !== 0) {
-			res.json({
-				status: 'error',
-				message: `${nonExistentFields[0]} is required`,
-			});
-		} else if (!validatePassword(payload.password)) {
-			res.json({
-				status: 'error',
-				message: 'Weak password',
-			});
-		} else if (!validateEmail(payload.email)) {
-			res.json({
-				status: 'error',
-				message: 'Invalid email',
-			});
-		} else {
-			try {
+		try {
+			const payload = req.body;
+			const nonExistentFields = checkForFields(payload, [
+				'nid',
+				'address',
+				'designation',
+				'name',
+				'password',
+				'phone',
+				'rank',
+			]);
+			if (nonExistentFields.length !== 0) {
+				res.json({
+					status: 'error',
+					message: `${nonExistentFields[0]} is required`,
+				});
+			} else if (!validatePassword(payload.password)) {
+				res.json({
+					status: 'error',
+					message: 'Weak password',
+				});
+			} else if (!validateEmail(payload.email)) {
+				res.json({
+					status: 'error',
+					message: 'Invalid email',
+				});
+			} else {
 				const hashedPassword = await argon2.hash(payload.password, {
 					hashLength: 100,
 					timeCost: 5,
@@ -165,23 +166,23 @@ export default {
 					// We should not return password to the client
 					data: removeFields(payload, ['password']),
 				});
-			} catch (err) {
-				// This error is thrown when unique constraint is violated
-				// Since we are adding this constraint to both email and nid
-				// We should detect which field is violating this constraint
-				// and send appropriate response error message
-				if (err.code === 'ER_DUP_ENTRY') {
-					const isDuplicateEmail = err.sqlMessage.includes('email');
-					res.json({
-						status: 'error',
-						message: `A police already exists with this ${isDuplicateEmail ? 'email' : 'NID'}`,
-					});
-				} else {
-					res.json({
-						status: 'error',
-						message: 'Something went wrong. Please try again',
-					});
-				}
+			}
+		} catch (err) {
+			// This error is thrown when unique constraint is violated
+			// Since we are adding this constraint to both email and nid
+			// We should detect which field is violating this constraint
+			// and send appropriate response error message
+			if (err.code === 'ER_DUP_ENTRY') {
+				const isDuplicateEmail = err.sqlMessage.includes('email');
+				res.json({
+					status: 'error',
+					message: `A police already exists with this ${isDuplicateEmail ? 'email' : 'NID'}`,
+				});
+			} else {
+				res.json({
+					status: 'error',
+					message: 'Something went wrong. Please try again',
+				});
 			}
 		}
 	},
@@ -189,54 +190,61 @@ export default {
 		req: Request<any, any, RegisterPolicePayload>,
 		res: Response<ApiResponse<CurrentUserResponse>>
 	) {
-		const jwtPayload = req.jwt_payload!;
-		if (jwtPayload.type === 'admin') {
-			const findResponse = await AdminModel.find({
-				email: jwtPayload.email,
-			});
-			if (!findResponse) {
+		try {
+			const jwtPayload = req.jwt_payload!;
+			if (jwtPayload.type === 'admin') {
+				const findResponse = await AdminModel.find({
+					email: jwtPayload.email,
+				});
+				if (!findResponse) {
+					res.json({
+						status: 'error',
+						message: "Admin doesn't exist",
+					});
+				} else {
+					const [admin] = findResponse;
+					res.json({
+						status: 'success',
+						data: {
+							...removeFields<IAdmin, Exclude<IAdmin, 'password'>>(normalizeAdmin(admin), [
+								'password',
+							]),
+							type: 'admin',
+						},
+					});
+				}
+			} else if (jwtPayload.type === 'police') {
+				const findResponse = await PoliceModel.find({
+					email: jwtPayload.email,
+					nid: jwtPayload.nid,
+				});
+				if (!findResponse) {
+					res.json({
+						status: 'error',
+						message: "Police doesn't exist",
+					});
+				} else {
+					const [police] = findResponse;
+					res.json({
+						status: 'success',
+						data: {
+							...removeFields<IPolice, Exclude<IPolice, 'password'>>(normalizePolice(police), [
+								'password',
+							]),
+							type: 'police',
+						},
+					});
+				}
+			} else {
 				res.json({
 					status: 'error',
-					message: "Admin doesn't exist",
-				});
-			} else {
-				const [admin] = findResponse;
-				res.json({
-					status: 'success',
-					data: {
-						...removeFields<IAdmin, Exclude<IAdmin, 'password'>>(normalizeAdmin(admin), [
-							'password',
-						]),
-						type: 'admin',
-					},
+					message: 'Invalid token used',
 				});
 			}
-		} else if (jwtPayload.type === 'police') {
-			const findResponse = await PoliceModel.find({
-				email: jwtPayload.email,
-				nid: jwtPayload.nid,
-			});
-			if (!findResponse) {
-				res.json({
-					status: 'error',
-					message: "Police doesn't exist",
-				});
-			} else {
-				const [police] = findResponse;
-				res.json({
-					status: 'success',
-					data: {
-						...removeFields<IPolice, Exclude<IPolice, 'password'>>(normalizePolice(police), [
-							'password',
-						]),
-						type: 'police',
-					},
-				});
-			}
-		} else {
+		} catch (_) {
 			res.json({
 				status: 'error',
-				message: 'Invalid token used',
+				message: 'Something went wrong. Please try again.',
 			});
 		}
 	},
