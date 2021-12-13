@@ -1,34 +1,39 @@
+// Entity type definitions
+export interface IAdmin {
+	email: string;
+	id: number;
+	password: string;
+}
+
+export interface IPolice {
+	email: string;
+	phone: string;
+	address: string;
+	designation: string;
+	nid: number;
+	name: string;
+	password: string;
+}
+
 export interface LoginPayload {
 	email: string;
 	password: string;
 	as: 'admin' | 'police';
 }
-export interface IAdmin {
-	email: string;
-	id: number;
+
+// Api Endpoint type definitions
+export interface RegisterPolicePayload extends IPolice {}
+export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {
+	token: string;
+}
+// You shouldn't be able to update police password using this endpoint
+// there should be a separate endpoint for that as you need to provide your current password if you want to update it
+export interface UpdatePolicePayload extends Exclude<IPolice, 'password'> {}
+export interface UpdatePoliceResponse extends Exclude<IPolice, 'password'> {
+	token: string;
 }
 
-export interface RegisterPolicePayload {
-	email: string;
-	nid: number;
-	name: string;
-	password: string;
-}
-
-export interface UpdatePolicePayload {
-	email: string;
-	nid: number;
-	name: string;
-}
-
-export interface IPolice {
-	email: string;
-	nid: number;
-	name: string;
-}
-
-export type UpdatePoliceResponse = IPolice & { token: string };
-
+// All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
 	status: 'success';
 	data: Data;
@@ -40,16 +45,18 @@ export type ErrorApiResponse = {
 };
 
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
-export interface AdminJwtPayload extends IAdmin {
+
+// Removing confidential information from jwt payload
+export interface AdminJwtPayload extends Exclude<IAdmin, 'password'> {
 	role: 'admin';
 }
-
-export interface PoliceJwtPayload extends IPolice {
+export interface PoliceJwtPayload extends Exclude<IPolice, 'password' | 'address'> {
 	role: 'police';
 }
 
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
 
+// Augmenting express type definitions to contain parsed jwt_payload in req object
 declare module 'express' {
 	// eslint-disable-next-line
 	interface Request {
