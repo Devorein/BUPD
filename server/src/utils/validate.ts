@@ -25,3 +25,7 @@ export function validatePassword(password: string) {
 	}
 	return true;
 }
+
+export function checkForFields<Data>(data: Data, fields: (keyof Data)[]) {
+	return fields.filter((field) => !data[field]);
+}

@@ -13,6 +13,7 @@ export interface IPolice {
 	nid: number;
 	name: string;
 	password: string;
+	rank: string;
 }
 
 export interface LoginPayload {

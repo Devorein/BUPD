@@ -10,7 +10,7 @@ import {
 	PoliceJwtPayload,
 	RegisterPolicePayload,
 } from '../types';
-import { signToken, validateEmail, validatePassword } from '../utils';
+import { checkForFields, removeFields, signToken, validateEmail, validatePassword } from '../utils';
 
 export default {
 	login: async (
@@ -107,39 +107,34 @@ export default {
 		req: Request<any, any, RegisterPolicePayload>,
 		res: Response<ApiResponse<IPolice & { token: string }>>
 	) => {
-		if (!req.body.nid) {
+		const payload = req.body;
+		const nonExistentFields = checkForFields(payload, [
+			'nid',
+			'address',
+			'designation',
+			'name',
+			'password',
+			'phone',
+			'rank',
+		]);
+		if (nonExistentFields.length !== 0) {
 			res.json({
 				status: 'error',
-				message: 'NID is required',
+				message: `${nonExistentFields[0]} is required`,
 			});
-		} else if (!req.body.email) {
-			res.json({
-				status: 'error',
-				message: 'Email is required',
-			});
-		} else if (!req.body.name) {
-			res.json({
-				status: 'error',
-				message: 'Name is required',
-			});
-		} else if (!req.body.password) {
-			res.json({
-				status: 'error',
-				message: 'Password is required',
-			});
-		} else if (!validatePassword(req.body.password)) {
+		} else if (!validatePassword(payload.password)) {
 			res.json({
 				status: 'error',
 				message: 'Weak password',
 			});
-		} else if (!validateEmail(req.body.email)) {
+		} else if (!validateEmail(payload.email)) {
 			res.json({
 				status: 'error',
 				message: 'Invalid email',
 			});
 		} else {
 			try {
-				const hashedPassword = await argon2.hash(req.body.password, {
+				const hashedPassword = await argon2.hash(payload.password, {
 					hashLength: 100,
 					timeCost: 5,
 					salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
@@ -147,23 +142,28 @@ export default {
 
 				const jwtToken = signToken({
 					role: 'police',
-					nid: req.body.nid,
-					email: req.body.email,
+					nid: payload.nid,
+					email: payload.email,
 				} as PoliceJwtPayload);
 
-				const police = await PoliceModel.create({
-					...req.body,
+				await PoliceModel.create({
+					...payload,
 					password: hashedPassword,
 				});
 
 				res.json({
 					status: 'success',
 					data: {
-						...police,
+						// We should not return password to the client
+						...removeFields(payload, ['password']),
 						token: jwtToken,
 					},
 				});
 			} catch (err) {
+				// This error is thrown when unique constraint is violated
+				// Since we are adding this constraint to both email and nid
+				// We should detect which field is violating this constraint
+				// and send appropriate response error message
 				if (err.code === 'ER_DUP_ENTRY') {
 					const isDuplicateEmail = err.sqlMessage.includes('email');
 					res.json({
@@ -171,9 +171,11 @@ export default {
 						message: `A police already exists with this ${isDuplicateEmail ? 'email' : 'NID'}`,
 					});
 				} else {
+					console.log(err);
+
 					res.json({
 						status: 'error',
-						message: err.message,
+						message: 'Something went wrong. Please try again',
 					});
 				}
 			}

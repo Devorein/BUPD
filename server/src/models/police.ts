@@ -3,15 +3,25 @@ import { normalizePolice, query } from '../utils';
 
 const PoliceModel = {
 	async create(payload: RegisterPolicePayload) {
-		await query(`
-      INSERT INTO police(nid, name, password, email) VALUES(${payload.nid}, "${payload.name}", "${payload.password}", "${payload.email}");
-    `);
-		const police: IPolice = {
-			email: payload.email,
-			name: payload.name,
-			nid: payload.nid,
-		};
-		return police;
+		// Storing all the fields and their corresponding values in array
+		// So that we can concat them for later
+		const entries = Object.entries(payload);
+		const fields: string[] = [],
+			values: (string | number)[] = [];
+		entries.forEach(([field, value]) => {
+			fields.push(field === 'rank' ? `\`${field}\`` : field);
+			values.push(value);
+		});
+		// Passing the values array as the 2nd argument to auto escape them
+		// To prevent SQL injection
+		await query(
+			`
+      INSERT INTO police(${fields.join(',')}) VALUES(${entries.map(() => '?').join(',')});
+    `,
+			values
+		);
+		// If the insert was successful, the newly added record will be the same as the payload
+		return payload;
 	},
 
 	async findByEmail(email: string) {
