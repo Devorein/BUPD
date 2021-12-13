@@ -21,7 +21,7 @@ const PoliceModel = {
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
-			return normalizePolice(queryResponse[0]);
+			return queryResponse.map(normalizePolice);
 		}
 	},
 

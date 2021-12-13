@@ -43,13 +43,14 @@ export default {
 					});
 				} else {
 					if (payload.as === 'police') {
-						const police = await PoliceModel.find({ email: payload.email });
-						if (!police) {
+						const findResponse = await PoliceModel.find({ email: payload.email });
+						if (!findResponse) {
 							res.json({
 								status: 'error',
 								message: 'No police exists with that email',
 							});
 						} else {
+							const [police] = findResponse;
 							const isCorrectPassword = await argon2.verify(police.password, payload.password);
 							if (!isCorrectPassword) {
 								res.json({
@@ -71,13 +72,14 @@ export default {
 							}
 						}
 					} else if (payload.as === 'admin') {
-						const admin = await AdminModel.find({ email: payload.email });
-						if (!admin) {
+						const findResponse = await AdminModel.find({ email: payload.email });
+						if (!findResponse) {
 							res.json({
 								status: 'error',
 								message: 'No admin exists with that email',
 							});
 						} else {
+							const [admin] = findResponse;
 							const isCorrectPassword = await argon2.verify(admin.password, payload.password);
 							if (!isCorrectPassword) {
 								res.json({

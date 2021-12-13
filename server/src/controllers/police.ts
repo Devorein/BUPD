@@ -11,7 +11,7 @@ const PoliceController = {
 		try {
 			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
 			const payload = req.body;
-			const police = await PoliceModel.find({ email: jwtPayload.email });
+			const findResponse = await PoliceModel.find({ email: jwtPayload.email });
 			const updatedPoliceData = await PoliceModel.update(
 				{
 					nid: jwtPayload.nid,
@@ -19,12 +19,13 @@ const PoliceController = {
 				},
 				payload
 			);
-			if (!updatedPoliceData || !police) {
+			if (!updatedPoliceData || !findResponse) {
 				res.json({
 					status: 'error',
 					message: "Police doesn't exist",
 				});
 			} else {
+				const [police] = findResponse;
 				res.json({
 					status: 'success',
 					data: {
@@ -40,7 +41,6 @@ const PoliceController = {
 				});
 			}
 		} catch (err) {
-			console.log(err.message);
 			res.json({
 				status: 'error',
 				message: "Couldn't update your profile",

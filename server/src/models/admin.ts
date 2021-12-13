@@ -10,7 +10,7 @@ const AdminModel = {
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
-			return normalizeAdmin(queryResponse[0]);
+			return queryResponse.map(normalizeAdmin);
 		}
 	},
 };
