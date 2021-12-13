@@ -6,7 +6,7 @@
  */
 export default function removeFields<
 	Data extends Record<string, any>,
-	TransformedData extends Record<string, any>
+	TransformedData extends Record<string, any> = Data
 >(data: Data, excludedFields: (keyof Data)[]) {
 	const newData: Record<string, any> = {};
 	const fields = Object.keys(data);

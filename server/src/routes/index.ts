@@ -1,6 +1,6 @@
 import express from 'express';
 import AuthRouter from './auth';
-import CaseRouter from './case';
+import CaseFileRouter from './caseFile';
 import PoliceRouter from './police';
 
 const RootRouter = express.Router();
@@ -11,6 +11,6 @@ RootRouter.get('/ping', (_, res) => {
 
 RootRouter.use('/auth', AuthRouter);
 RootRouter.use('/police', PoliceRouter);
-RootRouter.use('/case', CaseRouter);
+RootRouter.use('/caseFile', CaseFileRouter);
 
 export default RootRouter;

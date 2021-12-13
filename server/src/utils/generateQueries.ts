@@ -6,7 +6,10 @@ import mysql from 'mysql';
  * @param table The table to insert data to
  * @returns A sql statement
  */
-export function generateInsertQuery(payload: Record<string, any>, table: string) {
+export function generateInsertQuery<Payload extends Record<string, any>>(
+	payload: Payload,
+	table: string
+) {
 	// Storing all the fields and their corresponding values in array
 	// So that we can join them later
 	const entries = Object.entries(payload);

@@ -17,25 +17,47 @@ export interface IPolice {
 }
 
 export type TCaseFileStatus = 'solved' | 'open' | 'closed';
-export interface ICaseFile {
-	crime_categories: string[];
-	weapons: string[];
-	crime_time: number;
-	case_time: number;
-	status: TCaseFileStatus;
-	location: string;
+export interface ICriminal {
+	id: number;
+	name: string;
+	photo: string;
+}
+
+export interface IVictim {
+	victim_name: string;
 	case_number: number;
-	police_nid: number;
+}
+
+export interface ICaseFileCriminal {
+	case_number: number;
+	criminal_id: number;
 }
 
 export interface IWeapon {
 	name: string;
-	case_id: number;
+	case_number: number;
 }
 
-export interface ICrimeCategories {
+export interface ICrimeCategory {
 	name: string;
-	case_id: number;
+	case_number: number;
+}
+export interface ICaseFile {
+	crime_time: string;
+	case_time: string;
+	status: TCaseFileStatus;
+	location: string;
+	case_number: number;
+}
+
+export interface ICaseFilePopulated extends Omit<ICaseFile, 'case_time' | 'crime_time'> {
+	case_time: string;
+	crime_time: string;
+	weapons: IWeapon[];
+	crime_categories: ICrimeCategory[];
+	victims: IVictim[];
+	criminals: ICriminal[];
+	police: IPolice;
 }
 
 // Api Endpoint type definitions
@@ -57,10 +79,16 @@ export interface LoginPayload {
 }
 export type LoginResponse = (IPolice | IAdmin) & { token: string };
 
-export interface CreateCasePayload
-	extends Omit<ICaseFile, 'status' | 'case_number' | 'police_nid' | 'status' | 'case_time'> {}
+export interface CreateCasePayload {
+	crime_categories: string[];
+	weapons: string[];
+	crime_time: number;
+	location: string;
+	criminals: ({ name: string; photo: string } | { id: number })[];
+	victims: string[];
+}
 
-export interface CreateCaseResponse extends ICaseFile {}
+export interface CreateCaseResponse extends ICaseFilePopulated {}
 
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
