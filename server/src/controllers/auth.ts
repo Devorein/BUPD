@@ -171,8 +171,6 @@ export default {
 						message: `A police already exists with this ${isDuplicateEmail ? 'email' : 'NID'}`,
 					});
 				} else {
-					console.log(err);
-
 					res.json({
 						status: 'error',
 						message: 'Something went wrong. Please try again',
