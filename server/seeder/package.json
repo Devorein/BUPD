@@ -1,0 +1,23 @@
+{
+  "name": "seeder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build:watch": "tsc -w",
+    "start": "node ./dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^10.0.0",
+    "faker": "^5.5.3",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "@types/faker": "^5.5.9",
+    "@types/mysql": "^2.15.19"
+  }
+}

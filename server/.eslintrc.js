@@ -9,7 +9,10 @@ module.exports = {
 	parser: '@typescript-eslint/parser',
 	ignorePatterns: ['dist', 'tests', 'examples', 'experiment'],
 	parserOptions: {
-		project: path.join(__dirname, './tsconfig.json'),
+		project: [
+			path.join(__dirname, './tsconfig.json'),
+			path.join(__dirname, './seeder/tsconfig.json'),
+		],
 		ecmaVersion: 12,
 		sourceType: 'module',
 	},
