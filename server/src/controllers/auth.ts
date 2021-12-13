@@ -4,6 +4,7 @@ import { AdminModel, PoliceModel } from '../models';
 import {
 	AdminJwtPayload,
 	ApiResponse,
+	CurrentUserResponse,
 	IAdmin,
 	IPolice,
 	LoginPayload,
@@ -14,6 +15,8 @@ import {
 import {
 	checkForFields,
 	generatePoliceJwtToken,
+	normalizeAdmin,
+	normalizePolice,
 	removeFields,
 	signToken,
 	validateEmail,
@@ -180,6 +183,61 @@ export default {
 					});
 				}
 			}
+		}
+	},
+	async currentUser(
+		req: Request<any, any, RegisterPolicePayload>,
+		res: Response<ApiResponse<CurrentUserResponse>>
+	) {
+		const jwtPayload = req.jwt_payload!;
+		if (jwtPayload.type === 'admin') {
+			const findResponse = await AdminModel.find({
+				email: jwtPayload.email,
+			});
+			if (!findResponse) {
+				res.json({
+					status: 'error',
+					message: "Admin doesn't exist",
+				});
+			} else {
+				const [admin] = findResponse;
+				res.json({
+					status: 'success',
+					data: {
+						...removeFields<IAdmin, Exclude<IAdmin, 'password'>>(normalizeAdmin(admin), [
+							'password',
+						]),
+						type: 'admin',
+					},
+				});
+			}
+		} else if (jwtPayload.type === 'police') {
+			const findResponse = await PoliceModel.find({
+				email: jwtPayload.email,
+				nid: jwtPayload.nid,
+			});
+			if (!findResponse) {
+				res.json({
+					status: 'error',
+					message: "Police doesn't exist",
+				});
+			} else {
+				const [police] = findResponse;
+				res.json({
+					status: 'success',
+					data: {
+						...removeFields<IPolice, Exclude<IPolice, 'password'>>(normalizePolice(police), [
+							'password',
+						]),
+						type: 'police',
+					},
+				});
+			}
+		} else {
+			res.json({
+				status: 'error',
+				message: 'Invalid token used',
+			});
 		}
 	},
 };
