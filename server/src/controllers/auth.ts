@@ -37,7 +37,7 @@ export default {
 					});
 				} else {
 					if (payload.as === 'police') {
-						const police = await PoliceModel.findByEmail(payload.email);
+						const police = await PoliceModel.find({ email: payload.email });
 						if (!police) {
 							res.json({
 								status: 'error',
@@ -75,7 +75,7 @@ export default {
 							}
 						}
 					} else if (payload.as === 'admin') {
-						const admin = await AdminModel.findByEmail(payload.email);
+						const admin = await AdminModel.find({ email: payload.email });
 						if (!admin) {
 							res.json({
 								status: 'error',

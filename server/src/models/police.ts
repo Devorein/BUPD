@@ -1,5 +1,5 @@
 import { IPolice, RegisterPolicePayload, UpdatePolicePayload } from '../types';
-import { generateInsertQuery, normalizePolice, query } from '../utils';
+import { generateInsertQuery, generateSelectQuery, normalizePolice, query } from '../utils';
 
 const PoliceModel = {
 	async create(payload: RegisterPolicePayload) {
@@ -8,10 +8,10 @@ const PoliceModel = {
 		return payload;
 	},
 
-	async findByEmail(email: string) {
-		const queryResponse = (await query(`
-      SELECT * FROM police where email = "${email}";
-    `)) as Array<IPolice & { password: string }>;
+	async find(filterQuery: Partial<IPolice>) {
+		const queryResponse = (await query(generateSelectQuery(filterQuery, 'police'))) as Array<
+			IPolice & { password: string }
+		>;
 		if (queryResponse.length === 0) {
 			return null;
 		} else {

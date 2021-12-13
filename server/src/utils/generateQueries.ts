@@ -20,3 +20,9 @@ export function generateInsertQuery(payload: Record<string, any>, table: string)
 
 	return `INSERT INTO ${table}(${fields.join(',')}) VALUES(${values.join(',')});`;
 }
+
+export function generateSelectQuery(payload: Record<string, any>, table: string) {
+	return `SELECT * FROM ${table} where ${Object.entries(payload)
+		.map(([field, value]) => `${field}=${mysql.escape(value)}`)
+		.join('and')};`;
+}

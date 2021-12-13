@@ -1,12 +1,12 @@
 import { IAdmin } from '../types';
-import { normalizeAdmin } from '../utils';
+import { generateSelectQuery, normalizeAdmin } from '../utils';
 import query from '../utils/query';
 
 const AdminModel = {
-	async findByEmail(email: string) {
-		const queryResponse = (await query(`
-      SELECT * FROM admin where email = "${email}";
-    `)) as Array<IAdmin & { password: string }>;
+	async find(filterQuery: Partial<IAdmin>) {
+		const queryResponse = (await query(generateSelectQuery(filterQuery, 'admin'))) as Array<
+			IAdmin & { password: string }
+		>;
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
