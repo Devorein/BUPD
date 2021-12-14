@@ -1,5 +1,5 @@
 import { IAdmin } from '../types';
-import { generateSelectQuery, normalizeAdmin } from '../utils';
+import { generateSelectQuery, transformAdminData } from '../utils';
 import query from '../utils/query';
 
 const AdminModel = {
@@ -10,7 +10,7 @@ const AdminModel = {
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
-			return queryResponse.map(normalizeAdmin);
+			return queryResponse.map(transformAdminData);
 		}
 	},
 };

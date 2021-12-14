@@ -15,10 +15,10 @@ import {
 import {
 	checkForFields,
 	generatePoliceJwtToken,
-	normalizeAdmin,
-	normalizePolice,
 	removeFields,
 	signToken,
+	transformAdminData,
+	transformPoliceData,
 	validateEmail,
 	validatePassword,
 } from '../utils';
@@ -206,7 +206,7 @@ export default {
 					res.json({
 						status: 'success',
 						data: {
-							...removeFields<IAdmin, Exclude<IAdmin, 'password'>>(normalizeAdmin(admin), [
+							...removeFields<IAdmin, Exclude<IAdmin, 'password'>>(transformAdminData(admin), [
 								'password',
 							]),
 							type: 'admin',
@@ -228,7 +228,7 @@ export default {
 					res.json({
 						status: 'success',
 						data: {
-							...removeFields<IPolice, Exclude<IPolice, 'password'>>(normalizePolice(police), [
+							...removeFields<IPolice, Exclude<IPolice, 'password'>>(transformPoliceData(police), [
 								'password',
 							]),
 							type: 'police',

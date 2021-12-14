@@ -1,5 +1,5 @@
 import { CreateCasePayload, ICaseFile } from '../shared.types';
-import { generateInsertQuery, normalizeCaseFile, query, removeFields } from '../utils';
+import { generateInsertQuery, query, removeFields, transformCaseFileData } from '../utils';
 
 const CaseFileModel = {
 	async create(payload: CreateCasePayload & { police_nid: number }): Promise<ICaseFile | null> {
@@ -23,7 +23,10 @@ const CaseFileModel = {
 			if (!insertQueryResponse) {
 				throw new Error("Couldn't insert case file");
 			} else {
-				return normalizeCaseFile({ ...caseFilePayload, case_number: insertQueryResponse.insertId });
+				return transformCaseFileData({
+					...caseFilePayload,
+					case_number: insertQueryResponse.insertId,
+				});
 			}
 		} catch (_) {
 			throw new Error("Couldn't create case file");

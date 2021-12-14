@@ -1,6 +1,6 @@
 import { IAdmin, ICaseFile, ICrimeCategory, ICriminal, IPolice, IVictim, IWeapon } from '../types';
 
-export function normalizePolice(
+export function transformPoliceData(
 	police: IPolice & { password: string }
 ): IPolice & { password: string } {
 	return {
@@ -15,7 +15,7 @@ export function normalizePolice(
 	};
 }
 
-export function normalizeAdmin(admin: IAdmin & { password: string }) {
+export function transformAdminData(admin: IAdmin & { password: string }) {
 	return {
 		email: admin.email,
 		id: admin.id,
@@ -23,14 +23,14 @@ export function normalizeAdmin(admin: IAdmin & { password: string }) {
 	};
 }
 
-export function normalizeCrimeCategory(crimeCategory: ICrimeCategory): ICrimeCategory {
+export function transformCrimeCategoryData(crimeCategory: ICrimeCategory): ICrimeCategory {
 	return {
 		case_number: crimeCategory.case_number,
 		name: crimeCategory.name,
 	};
 }
 
-export function normalizeCriminal(criminal: ICriminal): ICriminal {
+export function transformCriminalData(criminal: ICriminal): ICriminal {
 	return {
 		name: criminal.name,
 		id: criminal.id,
@@ -38,21 +38,21 @@ export function normalizeCriminal(criminal: ICriminal): ICriminal {
 	};
 }
 
-export function normalizeVictim(victim: IVictim): IVictim {
+export function transformVictimData(victim: IVictim): IVictim {
 	return {
 		case_number: victim.case_number,
 		victim_name: victim.victim_name,
 	};
 }
 
-export function normalizeWeapon(weapon: IWeapon): IWeapon {
+export function transformWeaponData(weapon: IWeapon): IWeapon {
 	return {
 		case_number: weapon.case_number,
 		name: weapon.name,
 	};
 }
 
-export function normalizeCaseFile(caseFile: ICaseFile): ICaseFile {
+export function transformCaseFileData(caseFile: ICaseFile): ICaseFile {
 	return {
 		case_number: caseFile.case_number,
 		case_time: caseFile.case_time,

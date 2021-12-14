@@ -13,7 +13,7 @@ import {
 	IWeapon,
 	PoliceJwtPayload,
 } from '../shared.types';
-import { checkForFields, normalizeCriminal } from '../utils';
+import { checkForFields, transformCriminalData } from '../utils';
 
 const CaseFileController = {
 	async create(
@@ -69,7 +69,7 @@ const CaseFileController = {
 										if (!criminalData) {
 											reject(Error("Criminal doesn't exist"));
 										} else {
-											resolve(normalizeCriminal(criminalData[0]));
+											resolve(transformCriminalData(criminalData[0]));
 										}
 									})
 									.catch((err) => {

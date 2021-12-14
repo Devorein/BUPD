@@ -1,5 +1,5 @@
 import { ICriminal } from '../shared.types';
-import { generateInsertQuery, generateSelectQuery, normalizeCriminal, query } from '../utils';
+import { generateInsertQuery, generateSelectQuery, query, transformCriminalData } from '../utils';
 
 const CriminalController = {
 	async create(payload: { name: string; photo: string }): Promise<ICriminal> {
@@ -12,7 +12,7 @@ const CriminalController = {
 				'criminal'
 			)
 		)) as { insertId: number };
-		return normalizeCriminal({
+		return transformCriminalData({
 			...payload,
 			id: insertQueryResponse.insertId,
 		});
@@ -24,7 +24,7 @@ const CriminalController = {
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
-			return queryResponse.map(normalizeCriminal);
+			return queryResponse.map(transformCriminalData);
 		}
 	},
 };

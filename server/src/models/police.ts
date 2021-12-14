@@ -3,8 +3,8 @@ import {
 	generateInsertQuery,
 	generateSelectQuery,
 	generateUpdateQuery,
-	normalizePolice,
 	query,
+	transformPoliceData,
 } from '../utils';
 
 const PoliceModel = {
@@ -21,7 +21,7 @@ const PoliceModel = {
 		if (queryResponse.length === 0) {
 			return null;
 		} else {
-			return queryResponse.map(normalizePolice);
+			return queryResponse.map(transformPoliceData);
 		}
 	},
 
