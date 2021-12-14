@@ -1,5 +1,6 @@
 import { ICriminal } from '../shared.types';
-import { generateInsertQuery, generateSelectQuery, query, transformCriminalData } from '../utils';
+import { generateInsertQuery, query, transformCriminalData } from '../utils';
+import { find } from './utils';
 
 const CriminalController = {
 	async create(payload: { name: string; photo: string }): Promise<ICriminal> {
@@ -17,15 +18,8 @@ const CriminalController = {
 			id: insertQueryResponse.insertId,
 		});
 	},
-	async find(filterQuery: Partial<ICriminal>) {
-		const queryResponse = (await query(
-			generateSelectQuery(filterQuery, 'criminal')
-		)) as Array<ICriminal>;
-		if (queryResponse.length === 0) {
-			return null;
-		} else {
-			return queryResponse.map(transformCriminalData);
-		}
+	find(filterQuery: Partial<ICriminal>) {
+		return find<ICriminal>(filterQuery, 'criminal');
 	},
 };
 

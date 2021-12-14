@@ -191,16 +191,15 @@ export default {
 		try {
 			const jwtPayload = req.jwt_payload!;
 			if (jwtPayload.type === 'admin') {
-				const findResponse = await AdminModel.find({
+				const [admin] = await AdminModel.find({
 					email: jwtPayload.email,
 				});
-				if (!findResponse) {
+				if (!admin) {
 					res.json({
 						status: 'error',
 						message: "Admin doesn't exist",
 					});
 				} else {
-					const [admin] = findResponse;
 					res.json({
 						status: 'success',
 						data: {
@@ -212,17 +211,16 @@ export default {
 					});
 				}
 			} else if (jwtPayload.type === 'police') {
-				const findResponse = await PoliceModel.find({
+				const [police] = await PoliceModel.find({
 					email: jwtPayload.email,
 					nid: jwtPayload.nid,
 				});
-				if (!findResponse) {
+				if (!police) {
 					res.json({
 						status: 'error',
 						message: "Police doesn't exist",
 					});
 				} else {
-					const [police] = findResponse;
 					res.json({
 						status: 'success',
 						data: {

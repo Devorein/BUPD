@@ -1,6 +1,6 @@
 import { generateSelectQuery, query } from '../../utils';
 
-export default async function find<FilterQuery, Row>(
+export default async function find<FilterQuery, Row = FilterQuery>(
 	filterQuery: Partial<FilterQuery>,
 	table: string
 ) {
