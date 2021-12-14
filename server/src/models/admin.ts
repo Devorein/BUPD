@@ -1,17 +1,9 @@
 import { IAdmin } from '../types';
-import { generateSelectQuery, transformAdminData } from '../utils';
-import query from '../utils/query';
+import { find } from './utils';
 
 const AdminModel = {
-	async find(filterQuery: Partial<IAdmin>) {
-		const queryResponse = (await query(generateSelectQuery(filterQuery, 'admin'))) as Array<
-			IAdmin & { password: string }
-		>;
-		if (queryResponse.length === 0) {
-			return null;
-		} else {
-			return queryResponse.map(transformAdminData);
-		}
+	find(filterQuery: Partial<IAdmin>) {
+		return find<IAdmin, IAdmin & { password: string }>(filterQuery, 'admin');
 	},
 };
 

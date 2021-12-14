@@ -1,11 +1,6 @@
 import { IPolice, RegisterPolicePayload, UpdatePolicePayload } from '../types';
-import {
-	generateInsertQuery,
-	generateSelectQuery,
-	generateUpdateQuery,
-	query,
-	transformPoliceData,
-} from '../utils';
+import { generateInsertQuery, generateUpdateQuery, query } from '../utils';
+import { find } from './utils';
 
 const PoliceModel = {
 	async create(payload: RegisterPolicePayload) {
@@ -14,15 +9,8 @@ const PoliceModel = {
 		return payload;
 	},
 
-	async find(filterQuery: Partial<IPolice>) {
-		const queryResponse = (await query(generateSelectQuery(filterQuery, 'police'))) as Array<
-			IPolice & { password: string }
-		>;
-		if (queryResponse.length === 0) {
-			return null;
-		} else {
-			return queryResponse.map(transformPoliceData);
-		}
+	find(filterQuery: Partial<IPolice>) {
+		return find<IPolice, IPolice & { password: string }>(filterQuery, 'police');
 	},
 
 	async update(filterQuery: Partial<IPolice>, payload: UpdatePolicePayload) {
