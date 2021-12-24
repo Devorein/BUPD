@@ -26,6 +26,7 @@ export function generateInsertQuery<Payload extends Record<string, any>>(
 }
 
 export function generateWhereClause(payload: WhereClauseQuery) {
+	const clauses: string[] = [];
 	let filterClause = '',
 		sortClause = '',
 		limitClause = '';
@@ -40,16 +41,19 @@ export function generateWhereClause(payload: WhereClauseQuery) {
 				.join(' AND ');
 			filterClause = whereClause !== '' ? `WHERE ${whereClause}` : '';
 		}
+		clauses.push(filterClause);
 	}
 	if (payload.sort) {
 		const [attribute, order] = payload.sort;
 		sortClause = `ORDER BY ${attribute} ${order === -1 ? 'DESC' : 'ASC'}`;
+		clauses.push(sortClause);
 	}
 
 	if (payload.limit) {
 		limitClause = `LIMIT ${payload.limit}`;
+		clauses.push(limitClause);
 	}
-	return `${filterClause} ${sortClause} ${limitClause};`;
+	return `${clauses.join(' ')};`;
 }
 
 export function generateSetClause(payload: Record<string, any>) {
