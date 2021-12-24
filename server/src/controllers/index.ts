@@ -1,5 +1,5 @@
 import AuthController from './auth';
-import CaseFileController from './caseFile';
+import CasefileController from './caseFile';
 import PoliceController from './police';
 
-export { CaseFileController, AuthController, PoliceController };
+export { CasefileController, AuthController, PoliceController };

@@ -1,11 +1,11 @@
-import { CreateCasePayload, ICaseFile } from '../shared.types';
-import { generateInsertQuery, query, removeFields, transformCaseFileData } from '../utils';
+import { CreateCasePayload, ICasefile } from '../shared.types';
+import { generateInsertQuery, query, removeFields, transformCasefileData } from '../utils';
 
-const CaseFileModel = {
-	async create(payload: CreateCasePayload & { police_nid: number }): Promise<ICaseFile | null> {
+const CasefileModel = {
+	async create(payload: CreateCasePayload & { police_nid: number }): Promise<ICasefile | null> {
 		try {
-			const caseFilePayload: ICaseFile = {
-				...removeFields<CreateCasePayload, ICaseFile>(payload, [
+			const caseFilePayload: ICasefile = {
+				...removeFields<CreateCasePayload, ICasefile>(payload, [
 					'crime_categories',
 					'criminals',
 					'weapons',
@@ -23,7 +23,7 @@ const CaseFileModel = {
 			if (!insertQueryResponse) {
 				throw new Error("Couldn't insert case file");
 			} else {
-				return transformCaseFileData({
+				return transformCasefileData({
 					...caseFilePayload,
 					case_number: insertQueryResponse.insertId,
 				});
@@ -34,4 +34,4 @@ const CaseFileModel = {
 	},
 };
 
-export default CaseFileModel;
+export default CasefileModel;

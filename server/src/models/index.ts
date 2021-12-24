@@ -1,7 +1,7 @@
-import AdminModel from './admin';
-import CaseFileModel from './caseFile';
-import CrimeCategoryModel from './crimeCategory';
-import CriminalModel from './criminal';
-import PoliceModel from './police';
+import AdminModel from './Admin';
+import CasefileModel from './Casefile';
+import CrimeCategoryModel from './CrimeCategory';
+import CriminalModel from './Criminal';
+import PoliceModel from './Police';
 
-export { CriminalModel, CrimeCategoryModel, CaseFileModel, AdminModel, PoliceModel };
+export { CriminalModel, CrimeCategoryModel, CasefileModel, AdminModel, PoliceModel };

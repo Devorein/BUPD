@@ -16,7 +16,7 @@ export interface IPolice {
 	rank: string;
 }
 
-export type TCaseFileStatus = 'solved' | 'open' | 'closed';
+export type TCasefileStatus = 'solved' | 'open' | 'closed';
 export interface ICriminal {
 	id: number;
 	name: string;
@@ -28,7 +28,7 @@ export interface IVictim {
 	case_number: number;
 }
 
-export interface ICaseFileCriminal {
+export interface ICasefileCriminal {
 	case_number: number;
 	criminal_id: number;
 }
@@ -42,15 +42,15 @@ export interface ICrimeCategory {
 	name: string;
 	case_number: number;
 }
-export interface ICaseFile {
+export interface ICasefile {
 	crime_time: string;
 	case_time: string;
-	status: TCaseFileStatus;
+	status: TCasefileStatus;
 	location: string;
 	case_number: number;
 }
 
-export interface ICaseFilePopulated extends Omit<ICaseFile, 'case_time' | 'crime_time'> {
+export interface ICasefilePopulated extends Omit<ICasefile, 'case_time' | 'crime_time'> {
 	case_time: string;
 	crime_time: string;
 	weapons: IWeapon[];
@@ -88,7 +88,7 @@ export interface CreateCasePayload {
 	victims: string[];
 }
 
-export interface CreateCaseResponse extends ICaseFilePopulated {}
+export interface CreateCaseResponse extends ICasefilePopulated {}
 
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {

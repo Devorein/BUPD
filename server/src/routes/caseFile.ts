@@ -1,9 +1,9 @@
 import express from 'express';
-import { CaseFileController } from '../controllers';
+import { CasefileController } from '../controllers';
 import { isAuthenticated, isAuthorized } from '../middlewares';
 
-const CaseFileRouter = express.Router();
+const CasefileRouter = express.Router();
 
-CaseFileRouter.post('/', isAuthenticated, isAuthorized(['police']), CaseFileController.create);
+CasefileRouter.post('/', isAuthenticated, isAuthorized(['police']), CasefileController.create);
 
-export default CaseFileRouter;
+export default CasefileRouter;

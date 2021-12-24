@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { CaseFileModel, CrimeCategoryModel, CriminalModel } from '../models';
-import CaseFileCriminalModel from '../models/caseFileCriminal';
-import VictimController from '../models/victim';
-import WeaponModel from '../models/weapon';
+import { CasefileModel, CrimeCategoryModel, CriminalModel } from '../models';
+import CasefileCriminalModel from '../models/CasefileCriminal';
+import WeaponModel from '../models/CrimeWeapon';
+import VictimController from '../models/Victim';
 import {
 	ApiResponse,
 	CreateCasePayload,
@@ -15,7 +15,7 @@ import {
 } from '../shared.types';
 import { checkForFields, transformCriminalData } from '../utils';
 
-const CaseFileController = {
+const CasefileController = {
 	async create(
 		req: Request<any, any, CreateCasePayload>,
 		res: Response<ApiResponse<CreateCaseResponse>>
@@ -35,12 +35,12 @@ const CaseFileController = {
 				});
 			} else {
 				const jwtPayload = req.jwt_payload as PoliceJwtPayload;
-				const createdCaseFile = await CaseFileModel.create({
+				const createdCasefile = await CasefileModel.create({
 					...payload,
 					police_nid: jwtPayload.nid,
 				});
 
-				if (!createdCaseFile) {
+				if (!createdCasefile) {
 					res.json({
 						status: 'error',
 						message: "Couldn't create case file. Please try again.",
@@ -84,7 +84,7 @@ const CaseFileController = {
 					const weaponInsertQueryPromises: Promise<IWeapon>[] = payload.weapons.map((weapon) =>
 						WeaponModel.create({
 							name: weapon,
-							case_number: createdCaseFile.case_number,
+							case_number: createdCasefile.case_number,
 						})
 					);
 
@@ -92,14 +92,14 @@ const CaseFileController = {
 						payload.crime_categories.map((weapon) =>
 							CrimeCategoryModel.create({
 								name: weapon,
-								case_number: createdCaseFile.case_number,
+								case_number: createdCasefile.case_number,
 							})
 						);
 
 					const victimInsertQueryPromises: Promise<IVictim>[] = payload.victims.map((victim) =>
 						VictimController.create({
 							victim_name: victim,
-							case_number: createdCaseFile.case_number,
+							case_number: createdCasefile.case_number,
 						})
 					);
 
@@ -120,9 +120,9 @@ const CaseFileController = {
 
 					const caseFileCriminalInsertQueryPromises: Promise<any>[] = newCriminals.map(
 						(newCriminal) =>
-							CaseFileCriminalModel.create({
+							CasefileCriminalModel.create({
 								criminal_id: newCriminal.id,
-								case_number: createdCaseFile.case_number,
+								case_number: createdCasefile.case_number,
 							})
 					);
 
@@ -132,9 +132,9 @@ const CaseFileController = {
 						status: 'success',
 						data: {
 							...payload,
-							case_number: createdCaseFile.case_number,
-							case_time: createdCaseFile.case_time,
-							crime_time: createdCaseFile.crime_time,
+							case_number: createdCasefile.case_number,
+							case_time: createdCasefile.case_time,
+							crime_time: createdCasefile.crime_time,
 							status: 'open',
 							criminals: associatedCriminals,
 							police: jwtPayload,
@@ -154,4 +154,4 @@ const CaseFileController = {
 	},
 };
 
-export default CaseFileController;
+export default CasefileController;

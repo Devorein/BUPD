@@ -1,4 +1,4 @@
-import { IAdmin, ICaseFile, ICrimeCategory, ICriminal, IPolice, IVictim, IWeapon } from '../types';
+import { IAdmin, ICasefile, ICrimeCategory, ICriminal, IPolice, IVictim, IWeapon } from '../types';
 
 export function transformPoliceData(
 	police: IPolice & { password: string }
@@ -52,7 +52,7 @@ export function transformWeaponData(weapon: IWeapon): IWeapon {
 	};
 }
 
-export function transformCaseFileData(caseFile: ICaseFile): ICaseFile {
+export function transformCasefileData(caseFile: ICasefile): ICasefile {
 	return {
 		case_number: caseFile.case_number,
 		case_time: caseFile.case_time,

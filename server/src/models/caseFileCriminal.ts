@@ -1,10 +1,10 @@
-import { ICaseFileCriminal } from '../shared.types';
+import { ICasefileCriminal } from '../shared.types';
 import { generateInsertQuery, query } from '../utils';
 
-const CaseFileCriminalModel = {
-	async create(payload: ICaseFileCriminal) {
+const CasefileCriminalModel = {
+	async create(payload: ICasefileCriminal) {
 		await query(generateInsertQuery(payload, 'case_criminal'));
 	},
 };
 
-export default CaseFileCriminalModel;
+export default CasefileCriminalModel;
