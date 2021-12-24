@@ -22,6 +22,7 @@ export function generateInsertQuery(payload: Record<string, any>, table: string)
 }
 
 export function generateWhereClause(payload: Record<string, any>) {
+	if (Object.keys(payload).length === 0) return;
 	return `where ${Object.entries(payload)
 		.map(([field, value]) => `${field}=${mysql.escape(value)}`)
 		.join(' and ')};`;
