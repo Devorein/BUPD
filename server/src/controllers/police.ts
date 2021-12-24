@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PoliceModel } from '../models';
-import { ApiResponse, PoliceJwtPayload, UpdatePolicePayload, UpdatePoliceResponse } from '../types';
+import { ApiResponse, PoliceJwtPayload, UpdatePolicePayload, UpdatePoliceResponse, SuccessApiResponse, IPolice } from '../types';
 import { generatePoliceJwtToken, removeFields } from '../utils';
 
 const PoliceController = {
@@ -48,8 +48,8 @@ const PoliceController = {
 		}
 	},
 	async get(
-		req: Request<any, any>,
-		res: Response<any>
+		req: Request<any>,
+		res: Response<SuccessApiResponse<IPolice[]>>
 	) {
 		const polices = await PoliceModel.find(req.query);
 		if (polices) {
