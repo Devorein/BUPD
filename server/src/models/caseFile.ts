@@ -25,7 +25,7 @@ const CasefileModel = {
 			} else {
 				return transformCasefileData({
 					...caseFilePayload,
-					case_number: insertQueryResponse.insertId,
+					case_no: insertQueryResponse.insertId,
 				});
 			}
 		} catch (_) {

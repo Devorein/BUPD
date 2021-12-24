@@ -8,9 +8,9 @@ import {
 	CreateCasePayload,
 	CreateCaseResponse,
 	ICrimeCategory,
+	ICrimeWeapon,
 	ICriminal,
 	IVictim,
-	IWeapon,
 	PoliceJwtPayload,
 } from '../shared.types';
 import { checkForFields, transformCriminalData } from '../utils';
@@ -81,10 +81,10 @@ const CasefileController = {
 
 					const existingCriminals = await Promise.all(criminalFindQueries);
 
-					const weaponInsertQueryPromises: Promise<IWeapon>[] = payload.weapons.map((weapon) =>
+					const weaponInsertQueryPromises: Promise<ICrimeWeapon>[] = payload.weapons.map((weapon) =>
 						WeaponModel.create({
 							name: weapon,
-							case_number: createdCasefile.case_number,
+							case_no: createdCasefile.case_no,
 						})
 					);
 
@@ -92,14 +92,14 @@ const CasefileController = {
 						payload.crime_categories.map((weapon) =>
 							CrimeCategoryModel.create({
 								name: weapon,
-								case_number: createdCasefile.case_number,
+								case_no: createdCasefile.case_no,
 							})
 						);
 
 					const victimInsertQueryPromises: Promise<IVictim>[] = payload.victims.map((victim) =>
 						VictimController.create({
 							victim_name: victim,
-							case_number: createdCasefile.case_number,
+							case_no: createdCasefile.case_no,
 						})
 					);
 
@@ -122,7 +122,7 @@ const CasefileController = {
 						(newCriminal) =>
 							CasefileCriminalModel.create({
 								criminal_id: newCriminal.id,
-								case_number: createdCasefile.case_number,
+								case_no: createdCasefile.case_no,
 							})
 					);
 
@@ -132,7 +132,7 @@ const CasefileController = {
 						status: 'success',
 						data: {
 							...payload,
-							case_number: createdCasefile.case_number,
+							case_no: createdCasefile.case_no,
 							case_time: createdCasefile.case_time,
 							crime_time: createdCasefile.crime_time,
 							status: 'open',

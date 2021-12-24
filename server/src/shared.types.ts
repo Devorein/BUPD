@@ -16,7 +16,6 @@ export interface IPolice {
 	rank: string;
 }
 
-export type TCasefileStatus = 'solved' | 'open' | 'closed';
 export interface ICriminal {
 	id: number;
 	name: string;
@@ -24,36 +23,60 @@ export interface ICriminal {
 }
 
 export interface IVictim {
-	victim_name: string;
-	case_number: number;
+	name: string;
+	address: string;
+	age: number;
+	phone_no: number;
+	description: string;
+	case_no: number;
+}
+
+export type TAccessPermission = 'read' | 'write' | 'update' | 'delete';
+export type TAccessType = 'case' | 'criminal';
+
+export interface IAccess {
+	access_id: number;
+	permission: TAccessPermission;
+	approved: boolean;
+	police_nid: number;
+	type: TAccessType;
+	criminal_id: number | null;
+	case_no: number | null;
+	admin_id: number | null;
 }
 
 export interface ICasefileCriminal {
-	case_number: number;
+	case_no: number;
 	criminal_id: number;
 }
 
-export interface IWeapon {
-	name: string;
-	case_number: number;
+export interface ICrimeWeapon {
+	weapon: string;
+	case_no: number;
 }
 
 export interface ICrimeCategory {
-	name: string;
-	case_number: number;
+	category: string;
+	case_no: number;
 }
+
+export type TCasefileStatus = 'solved' | 'open' | 'closed';
+
+export type TCasefilePriority = 'high' | 'low' | 'medium';
+
 export interface ICasefile {
-	crime_time: string;
-	case_time: string;
+	time: string;
+	priority: TCasefilePriority;
 	status: TCasefileStatus;
 	location: string;
-	case_number: number;
+	case_no: number;
+	police_nid: number;
 }
 
 export interface ICasefilePopulated extends Omit<ICasefile, 'case_time' | 'crime_time'> {
 	case_time: string;
 	crime_time: string;
-	weapons: IWeapon[];
+	weapons: ICrimeWeapon[];
 	crime_categories: ICrimeCategory[];
 	victims: IVictim[];
 	criminals: ICriminal[];

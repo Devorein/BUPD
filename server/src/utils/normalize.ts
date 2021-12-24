@@ -1,4 +1,12 @@
-import { IAdmin, ICasefile, ICrimeCategory, ICriminal, IPolice, IVictim, IWeapon } from '../types';
+import {
+	IAdmin,
+	ICasefile,
+	ICrimeCategory,
+	ICrimeWeapon,
+	ICriminal,
+	IPolice,
+	IVictim,
+} from '../types';
 
 export function transformPoliceData(
 	police: IPolice & { password: string }
@@ -25,7 +33,7 @@ export function transformAdminData(admin: IAdmin & { password: string }) {
 
 export function transformCrimeCategoryData(crimeCategory: ICrimeCategory): ICrimeCategory {
 	return {
-		case_number: crimeCategory.case_number,
+		case_no: crimeCategory.case_no,
 		name: crimeCategory.name,
 	};
 }
@@ -40,21 +48,21 @@ export function transformCriminalData(criminal: ICriminal): ICriminal {
 
 export function transformVictimData(victim: IVictim): IVictim {
 	return {
-		case_number: victim.case_number,
+		case_no: victim.case_no,
 		victim_name: victim.victim_name,
 	};
 }
 
-export function transformWeaponData(weapon: IWeapon): IWeapon {
+export function transformWeaponData(weapon: ICrimeWeapon): ICrimeWeapon {
 	return {
-		case_number: weapon.case_number,
+		case_no: weapon.case_no,
 		name: weapon.name,
 	};
 }
 
 export function transformCasefileData(caseFile: ICasefile): ICasefile {
 	return {
-		case_number: caseFile.case_number,
+		case_no: caseFile.case_no,
 		case_time: caseFile.case_time,
 		crime_time: caseFile.case_time,
 		location: caseFile.location,
