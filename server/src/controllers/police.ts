@@ -1,7 +1,14 @@
 import { Request, Response } from 'express';
 import { PoliceModel } from '../models';
-import { ApiResponse, PoliceJwtPayload, UpdatePolicePayload, UpdatePoliceResponse, SuccessApiResponse, IPolice } from '../types';
-import { generatePoliceJwtToken, removeFields } from '../utils';
+import {
+	ApiResponse,
+	GetPolicesPayload,
+	GetPolicesResponse,
+	PoliceJwtPayload,
+	UpdatePolicePayload,
+	UpdatePoliceResponse,
+} from '../types';
+import { generateCountQuery, generatePoliceJwtToken, query, removeFields } from '../utils';
 
 const PoliceController = {
 	async update(
@@ -11,7 +18,7 @@ const PoliceController = {
 		try {
 			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
 			const payload = req.body;
-			const [police] = await PoliceModel.find({ email: jwtPayload.email });
+			const [police] = await PoliceModel.find({ filter: { email: jwtPayload.email } });
 			if (!police) {
 				res.json({
 					status: 'error',
@@ -46,18 +53,23 @@ const PoliceController = {
 			});
 		}
 	},
-	async get(
-		req: Request<any>,
-		res: Response<SuccessApiResponse<IPolice[]>>
-	) {
-		const polices = await PoliceModel.find(req.query);
+	async get(req: Request<any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
+		const polices = await PoliceModel.find(req.body);
+		const policeCount = (await query(
+			generateCountQuery({ filter: req.body?.filter }, 'police')
+		)) as Array<{ count: number }>;
+
 		if (polices) {
 			res.json({
 				status: 'success',
-				data: polices,//TODO exclude password
+				data: {
+					items: polices,
+					next: null,
+					total: policeCount[0].count,
+				},
 			});
 		}
-	}
+	},
 };
 
 export default PoliceController;

@@ -1,4 +1,10 @@
-import { IPolice, RegisterPolicePayload, UpdatePolicePayload } from '../types';
+import {
+	GetPolicesPayload,
+	IPolice,
+	RegisterPolicePayload,
+	UpdatePolicePayload,
+	WhereClauseQuery,
+} from '../types';
 import { generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
@@ -9,8 +15,14 @@ const PoliceModel = {
 		return payload;
 	},
 
-	find(filterQuery: Partial<IPolice>) {
-		return find<IPolice, IPolice & { password: string }>(filterQuery, 'police');
+	find(whereClauseQuery: Partial<GetPolicesPayload>) {
+		return find<WhereClauseQuery, IPolice>(
+			{
+				...whereClauseQuery,
+				select: ['email', 'phone', 'address', 'designation', '`rank`', 'name', 'nid'],
+			},
+			'police'
+		);
 	},
 
 	async update(filterQuery: Partial<IPolice>, payload: UpdatePolicePayload) {

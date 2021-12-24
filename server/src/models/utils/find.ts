@@ -1,8 +1,8 @@
 import { generateSelectQuery, query } from '../../utils';
 
-export default async function find<FilterQuery, Row = FilterQuery>(
-	filterQuery: Partial<FilterQuery>,
+export default async function find<WhereClauseQuery, Row>(
+	whereClauseQuery: Partial<WhereClauseQuery>,
 	table: string
 ) {
-	return (await query(generateSelectQuery(filterQuery, table))) as Array<Row>;
+	return (await query(generateSelectQuery(whereClauseQuery, table))) as Array<Row>;
 }

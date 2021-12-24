@@ -123,7 +123,7 @@ connection.connect(async (err) => {
 								const registerPoliceResponse = await handleRequest<
 									RegisterPoliceResponse,
 									RegisterPolicePayload
-								>('/auth/register', police, adminToken);
+								>('/casefile', police, adminToken);
 								console.log(colors.blue.bold(`Registered police: ${police.name}`));
 								resolve(registerPoliceResponse);
 							} catch (error) {

@@ -83,6 +83,13 @@ export interface ICasefilePopulated extends Omit<ICasefile, 'case_time' | 'crime
 	police: IPolice;
 }
 
+export interface WhereClauseQuery {
+	filter?: Record<string, any>;
+	sort?: [string, -1 | 1];
+	limit?: number;
+	select?: string[];
+}
+
 // Api Endpoint type definitions
 export interface RegisterPolicePayload extends IPolice {}
 export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {}
@@ -124,6 +131,14 @@ export type ErrorApiResponse = {
 	message: string;
 };
 
+export type PaginatedResponse<Data> = {
+	total: number;
+	items: Data[];
+	next: null | {
+		id: number;
+	};
+};
+
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 
 // Removing confidential information from jwt payload
@@ -136,3 +151,18 @@ export interface PoliceJwtPayload
 }
 
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
+
+export interface IPoliceFilter {
+	designation: null | string;
+	rank: null | string;
+}
+
+export type IPoliceSort = ['designation' | 'rank' | 'name', -1 | 1];
+
+export interface GetPolicesPayload {
+	filter: IPoliceFilter;
+	sort: IPoliceSort;
+	limit: number;
+}
+
+export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;

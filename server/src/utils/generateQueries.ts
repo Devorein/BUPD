@@ -1,4 +1,5 @@
 import mysql from 'mysql';
+import { WhereClauseQuery } from '../shared.types';
 
 /**
  * Generates a sql statement with keys and escaped values extracted from the given object
@@ -24,11 +25,31 @@ export function generateInsertQuery<Payload extends Record<string, any>>(
 	return `INSERT INTO ${table}(${fields.join(',')}) VALUES(${values.join(',')});`;
 }
 
-export function generateWhereClause(payload: Record<string, any>) {
-	if (Object.keys(payload).length === 0) return;
-	return `where ${Object.entries(payload)
-		.map(([field, value]) => `${field}=${mysql.escape(value)}`)
-		.join(' and ')};`;
+export function generateWhereClause(payload: WhereClauseQuery) {
+	let filterClause = '',
+		sortClause = '',
+		limitClause = '';
+	if (payload.filter) {
+		if (Object.keys(payload.filter).length === 0) {
+			filterClause = '';
+		} else {
+			const whereClause = Object.entries(payload.filter)
+				.map(([field, value]) =>
+					value !== null ? `${field === 'rank' ? '`rank`' : field}=${mysql.escape(value)}` : ''
+				)
+				.join(' AND ');
+			filterClause = whereClause !== '' ? `WHERE ${whereClause}` : '';
+		}
+	}
+	if (payload.sort) {
+		const [attribute, order] = payload.sort;
+		sortClause = `ORDER BY ${attribute} ${order === -1 ? 'DESC' : 'ASC'}`;
+	}
+
+	if (payload.limit) {
+		limitClause = `LIMIT ${payload.limit}`;
+	}
+	return `${filterClause} ${sortClause} ${limitClause};`;
 }
 
 export function generateSetClause(payload: Record<string, any>) {
@@ -37,8 +58,19 @@ export function generateSetClause(payload: Record<string, any>) {
 		.join(',')}`;
 }
 
-export function generateSelectQuery(payload: Record<string, any>, table: string) {
-	return `SELECT * FROM ${table} ${generateWhereClause(payload)}`;
+export function generateSelectQuery(whereClauseQuery: WhereClauseQuery, table: string) {
+	return `SELECT ${
+		whereClauseQuery.select ? whereClauseQuery.select.join(',') : '*'
+	} FROM ${table} ${generateWhereClause(whereClauseQuery)}`;
+}
+
+export function generateCountQuery(
+	whereClauseQuery: Pick<WhereClauseQuery, 'filter'>,
+	table: string
+) {
+	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause({
+		filter: whereClauseQuery.filter,
+	})}`;
 }
 
 export function generateUpdateQuery(
