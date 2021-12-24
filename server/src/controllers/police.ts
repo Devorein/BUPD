@@ -47,6 +47,18 @@ const PoliceController = {
 			});
 		}
 	},
+	async get(
+		req: Request<any, any>,
+		res: Response<any>
+	) {
+		const polices = await PoliceModel.find(req.query);
+		if (polices) {
+			res.json({
+				status: 'success',
+				data: polices,//TODO exclude password
+			});
+		}
+	}
 };
 
 export default PoliceController;
