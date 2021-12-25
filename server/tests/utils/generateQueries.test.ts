@@ -1,6 +1,10 @@
 /// <reference types="@types/jest"/>
 
-import { generateCountQuery, generateWhereClause } from '../../src/utils/generateQueries';
+import {
+	generateCountQuery,
+	generateWhereClause,
+	generateInsertQuery,
+} from '../../src/utils/generateQueries';
 
 it(`generateCountQuery`, () => {
 	expect(
@@ -13,11 +17,13 @@ it(`generateCountQuery`, () => {
 			},
 			'police'
 		)
-	).toBe(`SELECT COUNT(*) as count FROM police WHERE filter1='value1' AND filter2='value2';`);
+	).toBe(
+		`SELECT COUNT(*) as count FROM police WHERE \`filter1\`='value1' AND \`filter2\`='value2';`
+	);
 });
 
 //
-describe.only('.generateWhereClause', () => {
+describe('.generateWhereClause', () => {
 	it(`Should work when we pass only filter`, () => {
 		expect(
 			generateWhereClause({
@@ -85,4 +91,18 @@ describe.only('.generateWhereClause', () => {
 			`WHERE \`filter1\`='value1' AND \`filter2\`='value2' AND \`rank\`='Nayak' ORDER BY \`rank\` DESC LIMIT 10`
 		);
 	});
+});
+
+it(`Should work when we Insert`, () => {
+	expect(
+		generateInsertQuery(
+			{
+				payload: {
+					field1: 'value1',
+					field2: 'value2',
+				},
+			},
+			'police'
+		)
+	).toBe(`INSERT INTO police(payload) VALUES(\`field1\` = 'value1', \`field2\` = 'value2');`);
 });
