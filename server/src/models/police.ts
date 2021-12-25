@@ -1,10 +1,9 @@
 import {
 	DeletePolicePayload,
-	GetPolicesPayload,
 	IPolice,
+	IPoliceQuery,
 	RegisterPolicePayload,
 	UpdatePolicePayload,
-	WhereClauseQuery,
 } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
@@ -16,8 +15,8 @@ const PoliceModel = {
 		return payload;
 	},
 
-	find(whereClauseQuery: Partial<GetPolicesPayload>) {
-		return find<WhereClauseQuery, IPolice>(
+	find(whereClauseQuery: Partial<IPoliceQuery>) {
+		return find<IPolice>(
 			{
 				...whereClauseQuery,
 				select: ['email', 'phone', 'address', 'designation', '`rank`', 'name', 'nid'],
@@ -27,9 +26,9 @@ const PoliceModel = {
 	},
 
 	findByNid(nid: number) {
-		return find<WhereClauseQuery, IPolice>(
+		return find<IPolice>(
 			{
-				filter: {nid: nid}
+				filter: { nid },
 			},
 			'police'
 		);
@@ -46,10 +45,10 @@ const PoliceModel = {
 		}
 	},
 
-	async delete(payload: DeletePolicePayload){
+	async delete(payload: DeletePolicePayload) {
 		await query(generateDeleteQuery(payload, 'police'));
 		return payload;
-	}
+	},
 };
 
 export default PoliceModel;

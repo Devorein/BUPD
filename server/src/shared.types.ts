@@ -153,20 +153,22 @@ export interface PoliceJwtPayload
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
 
 export interface IPoliceFilter {
-	designation: null | string;
-	rank: null | string;
+	designation?: string;
+	rank?: string;
 }
 
 export type IPoliceSort = ['designation' | 'rank' | 'name', -1 | 1];
 
-export interface GetPolicesPayload {
-	filter: IPoliceFilter;
+export interface IPoliceQuery<Filter = Partial<IPolice>> {
+	filter: Filter;
 	sort: IPoliceSort;
 	limit: number;
 }
 
+export interface GetPolicesPayload extends IPoliceQuery<IPoliceFilter> {}
+
 export interface DeletePolicePayload {
-	nid: number,
+	nid: number;
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;

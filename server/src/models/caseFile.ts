@@ -1,5 +1,5 @@
 import { CreateCasePayload, ICasefile } from '../shared.types';
-import { generateInsertQuery, query, removeFields, transformCasefileData } from '../utils';
+import { generateInsertQuery, query, removeFields } from '../utils';
 
 const CasefileModel = {
 	async create(payload: CreateCasePayload & { police_nid: number }): Promise<ICasefile | null> {
@@ -13,8 +13,7 @@ const CasefileModel = {
 					'victims',
 				]),
 				status: 'open',
-				case_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
-				crime_time: new Date(payload.crime_time).toISOString().slice(0, 19).replace('T', ' '),
+				time: new Date(payload.crime_time).toISOString().slice(0, 19).replace('T', ' '),
 			};
 			const insertQueryResponse = (await query(
 				generateInsertQuery(caseFilePayload, 'case_file')
@@ -23,10 +22,10 @@ const CasefileModel = {
 			if (!insertQueryResponse) {
 				throw new Error("Couldn't insert case file");
 			} else {
-				return transformCasefileData({
+				return {
 					...caseFilePayload,
 					case_no: insertQueryResponse.insertId,
-				});
+				};
 			}
 		} catch (_) {
 			throw new Error("Couldn't create case file");
