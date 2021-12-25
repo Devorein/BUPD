@@ -17,16 +17,18 @@ it(`generateCountQuery`, () => {
 });
 
 //
-describe('.generateWhereClause', () => {
+describe.only('.generateWhereClause', () => {
 	it(`Should work when we pass only filter`, () => {
 		expect(
 			generateWhereClause({
 				filter: {
 					filter1: 'value1',
 					filter2: 'value2',
+					rank: 'Nayak',
+					filter3: null,
 				},
 			})
-		).toBe(`WHERE filter1='value1' AND filter2='value2'`);
+		).toBe(`WHERE \`filter1\`='value1' AND \`filter2\`='value2' AND \`rank\`='Nayak'`);
 	});
 
 	it(`Should work when we pass empty filter`, () => {
@@ -35,5 +37,52 @@ describe('.generateWhereClause', () => {
 				filter: {},
 			})
 		).toBe(``);
+	});
+
+	it(`Should work when we pass filter with single null value`, () => {
+		expect(
+			generateWhereClause({
+				filter: {
+					filter: null,
+				},
+			})
+		).toBe(``);
+	});
+	it(`Should work when we pass only sort for DESC`, () => {
+		expect(
+			generateWhereClause({
+				sort: ['rank', -1],
+			})
+		).toBe(`ORDER BY \`rank\` DESC`);
+	});
+	it(`Should work when we pass only sort for ASC`, () => {
+		expect(
+			generateWhereClause({
+				sort: ['rank', 1],
+			})
+		).toBe(`ORDER BY \`rank\` ASC`);
+	});
+	it(`Should work when we pass limit`, () => {
+		expect(
+			generateWhereClause({
+				limit: 10,
+			})
+		).toBe(`LIMIT 10`);
+	});
+	it(`Should work when we pass Filter, Limit and Sort`, () => {
+		expect(
+			generateWhereClause({
+				filter: {
+					filter1: 'value1',
+					filter2: 'value2',
+					rank: 'Nayak',
+					filter3: null,
+				},
+				sort: ['rank', -1],
+				limit: 10,
+			})
+		).toBe(
+			`WHERE \`filter1\`='value1' AND \`filter2\`='value2' AND \`rank\`='Nayak' ORDER BY \`rank\` DESC LIMIT 10`
+		);
 	});
 });

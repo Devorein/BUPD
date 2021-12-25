@@ -31,24 +31,19 @@ export function generateWhereClause(payload: WhereClauseQuery) {
 		sortClause = '',
 		limitClause = '';
 	if (payload.filter) {
-		if (Object.keys(payload.filter).length === 0) {
-			filterClause = '';
-		} else {
-			const whereClauses: string[] = [];
-      
-      Object.entries(payload.filter)
-				.forEach(([field, value]) => {
-          if (value !== null) {
-            whereClauses.push(`${field === 'rank' ? '`rank`' : field}=${mysql.escape(value)}`)
-          }
-        });
-			filterClause = whereClauses.length  !== 0 ? `WHERE ${whereClauses.join( "AND ")}` : '';
-		}
+		const whereClauses: string[] = [];
+
+		Object.entries(payload.filter).forEach(([field, value]) => {
+			if (value !== null) {
+				whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
+			}
+		});
+		filterClause = whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 		clauses.push(filterClause);
 	}
 	if (payload.sort) {
 		const [attribute, order] = payload.sort;
-		sortClause = `ORDER BY ${attribute} ${order === -1 ? 'DESC' : 'ASC'}`;
+		sortClause = `ORDER BY \`${attribute}\` ${order === -1 ? 'DESC' : 'ASC'}`;
 		clauses.push(sortClause);
 	}
 
