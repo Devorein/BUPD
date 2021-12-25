@@ -13,7 +13,7 @@ import {
 	IVictim,
 	PoliceJwtPayload,
 } from '../shared.types';
-import { checkForFields, transformCriminalData } from '../utils';
+import { checkForFields } from '../utils';
 
 const CasefileController = {
 	async create(
@@ -23,9 +23,9 @@ const CasefileController = {
 		try {
 			const payload = req.body;
 			const nonExistentFields = checkForFields(payload, [
-				'crime_categories',
+				'categories',
 				'location',
-				'crime_time',
+				'time',
 				'weapons',
 			]);
 			if (nonExistentFields.length !== 0) {
@@ -69,7 +69,7 @@ const CasefileController = {
 										if (!criminalData) {
 											reject(Error("Criminal doesn't exist"));
 										} else {
-											resolve(transformCriminalData(criminalData[0]));
+											resolve(criminalData[0]);
 										}
 									})
 									.catch((err) => {
@@ -83,22 +83,26 @@ const CasefileController = {
 
 					const weaponInsertQueryPromises: Promise<ICrimeWeapon>[] = payload.weapons.map((weapon) =>
 						WeaponModel.create({
-							name: weapon,
+							weapon,
 							case_no: createdCasefile.case_no,
 						})
 					);
 
 					const crimeCategoryInsertQueryPromises: Promise<ICrimeCategory>[] =
-						payload.crime_categories.map((weapon) =>
+						payload.categories.map((category) =>
 							CrimeCategoryModel.create({
-								name: weapon,
+								category,
 								case_no: createdCasefile.case_no,
 							})
 						);
 
 					const victimInsertQueryPromises: Promise<IVictim>[] = payload.victims.map((victim) =>
 						VictimController.create({
-							victim_name: victim,
+							address: null,
+							age: null,
+							description: null,
+							phone_no: null,
+							...victim,
 							case_no: createdCasefile.case_no,
 						})
 					);
@@ -133,14 +137,15 @@ const CasefileController = {
 						data: {
 							...payload,
 							case_no: createdCasefile.case_no,
-							case_time: createdCasefile.case_time,
-							crime_time: createdCasefile.crime_time,
+							time: createdCasefile.time,
 							status: 'open',
 							criminals: associatedCriminals,
 							police: jwtPayload,
-							crime_categories: crimeCategories,
+							categories: crimeCategories,
 							weapons,
 							victims,
+							police_nid: jwtPayload.nid,
+							priority: payload.priority,
 						},
 					});
 				}

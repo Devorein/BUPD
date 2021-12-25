@@ -17,8 +17,6 @@ import {
 	generatePoliceJwtToken,
 	removeFields,
 	signToken,
-	transformAdminData,
-	transformPoliceData,
 	validateEmail,
 	validatePassword,
 } from '../utils';
@@ -47,7 +45,11 @@ export default {
 					});
 				} else {
 					if (payload.as === 'police') {
-						const [police] = await PoliceModel.find({ email: payload.email });
+						const [police] = await PoliceModel.find({
+							filter: { email: payload.email },
+							select: ['password'],
+						});
+
 						if (!police) {
 							res.json({
 								status: 'error',
@@ -203,17 +205,17 @@ export default {
 					res.json({
 						status: 'success',
 						data: {
-							...removeFields<IAdmin, Exclude<IAdmin, 'password'>>(transformAdminData(admin), [
-								'password',
-							]),
+							...removeFields<IAdmin, Exclude<IAdmin, 'password'>>(admin, ['password']),
 							type: 'admin',
 						},
 					});
 				}
 			} else if (jwtPayload.type === 'police') {
 				const [police] = await PoliceModel.find({
-					email: jwtPayload.email,
-					nid: jwtPayload.nid,
+					filter: {
+						email: jwtPayload.email,
+						nid: jwtPayload.nid,
+					},
 				});
 				if (!police) {
 					res.json({
@@ -224,9 +226,7 @@ export default {
 					res.json({
 						status: 'success',
 						data: {
-							...removeFields<IPolice, Exclude<IPolice, 'password'>>(transformPoliceData(police), [
-								'password',
-							]),
+							...removeFields<IPolice, Exclude<IPolice, 'password'>>(police, ['password']),
 							type: 'police',
 						},
 					});

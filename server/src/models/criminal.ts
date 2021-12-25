@@ -1,5 +1,5 @@
 import { ICriminal } from '../shared.types';
-import { generateInsertQuery, query, transformCriminalData } from '../utils';
+import { generateInsertQuery, query } from '../utils';
 import { find } from './utils';
 
 const CriminalController = {
@@ -13,13 +13,13 @@ const CriminalController = {
 				'criminal'
 			)
 		)) as { insertId: number };
-		return transformCriminalData({
+		return {
 			...payload,
 			id: insertQueryResponse.insertId,
-		});
+		};
 	},
 	find(filterQuery: Partial<ICriminal>) {
-		return find<ICriminal>(filterQuery, 'criminal');
+		return find<ICriminal>({ filter: filterQuery }, 'criminal');
 	},
 };
 

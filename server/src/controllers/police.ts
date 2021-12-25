@@ -58,7 +58,7 @@ const PoliceController = {
 	async get(req: Request<any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
 		const polices = await PoliceModel.find(req.body);
 		const policeCount = (await query(
-			generateCountQuery({ filter: req.body?.filter }, 'police')
+			generateCountQuery({ filter: req.body?.filter }, 'Police')
 		)) as Array<{ count: number }>;
 
 		if (polices) {
@@ -74,22 +74,21 @@ const PoliceController = {
 	},
 	async delete(req: Request<any, any, DeletePolicePayload>, res: Response<DeletePoliceResponse>) {
 		const police = await PoliceModel.findByNid(req.body.nid);
-		//if (polices.length !== 1) { //gives sql query 'SELECT email,phone,address,designation,`rank`,name,nid FROM police WHERE nid=10245 AND  AND ;'
 		if (police[0]) {
 			const result = await PoliceModel.delete(req.body);
 			if (result) {
 				res.json({
 					status: 'success',
-					data: police[0]// need to change it to ipolice
+					data: police[0], // need to change it to ipolice
 				});
 			}
 		} else {
 			res.json({
 				status: 'error',
-				message: 'No valid polices given to delete'
-			})
+				message: 'No valid polices given to delete',
+			});
 		}
-	}
+	},
 };
 
 export default PoliceController;
