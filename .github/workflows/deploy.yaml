@@ -23,7 +23,15 @@ jobs:
         run: |
           cd server
           npm install
-      - run: npm run lint
+      - name: Lint code
+        run: |
+          cd server
+          npm run lint
       - name: Building server
-        run: npm run build
-      - run: npm run test
+        run: |
+          cd server
+          npm run build
+      - name: Testing server
+        run: |
+          cd server
+          npm run test
