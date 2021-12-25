@@ -4,6 +4,7 @@ import {
 	generateCountQuery,
 	generateWhereClause,
 	generateInsertQuery,
+	generateSetClause,
 } from '../../src/utils/generateQueries';
 
 it(`generateCountQuery`, () => {
@@ -105,4 +106,14 @@ it(`Should work when we Insert`, () => {
 			'police'
 		)
 	).toBe(`INSERT INTO police(payload) VALUES(\`field1\` = 'value1', \`field2\` = 'value2');`);
+});
+it(`Should work when we SET in SQL`, () => {
+	expect(
+		generateSetClause({
+			payload: {
+				field1: 'value1',
+				field2: 'value2',
+			},
+		})
+	).toBe(`SET payload=\`field1\` = 'value1', \`field2\` = 'value2'`);
 });
