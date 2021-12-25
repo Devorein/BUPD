@@ -26,6 +26,15 @@ const PoliceModel = {
 		);
 	},
 
+	findByNid(nid: number) {
+		return find<WhereClauseQuery, IPolice>(
+			{
+				filter: {nid: nid}
+			},
+			'police'
+		);
+	},
+
 	async update(filterQuery: Partial<IPolice>, payload: UpdatePolicePayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {

@@ -170,4 +170,4 @@ export interface DeletePolicePayload {
 	nid: number,
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
-export type DeletePoliceResponse = ApiResponse<DeletePolicePayload>;
+export type DeletePoliceResponse = ApiResponse<IPolice>;
