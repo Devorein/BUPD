@@ -19,19 +19,27 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: "Install dependencies"
+      - name: Lint, Build and Test
         run: |
           cd server
           npm install
-      - name: Lint code
-        run: |
-          cd server
           npm run lint
-      - name: Building server
-        run: |
-          cd server
           npm run build
-      - name: Testing server
-        run: |
-          cd server
           npm run test
+      - name: Deploy Server
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            rm -rf BUPD
+            git clone git@github.com:Devorein/BUPD.git
+            cd BUPD
+            rm -rf client scripts readme.md
+            cd server
+            npm install
+            npm run build
+            pm2 start ./dist/index.js --name api
+            echo 'Deployment successful to digital ocean'
