@@ -1,0 +1,40 @@
+name: Lint, Build, Test and Deploy
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main", "dev"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: "Install dependencies"
+        run: |
+          cd server
+          npm install
+      - run: npm run lint
+      - name: Install fauton globally
+        run: npm install -g
+      - name: Building library
+        run: npm run build
+      - name: Building examples
+        run: |
+          cd examples
+          npm link fauton
+          npm run build
+      - run: npm run test
+      - name: Uploading test coverage reports
+        run: |
+          chmod +x "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
+          "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
