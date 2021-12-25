@@ -27,7 +27,3 @@ jobs:
       - name: Building server
         run: npm run build
       - run: npm run test
-      - name: Uploading test coverage reports
-        run: |
-          chmod +x "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
-          "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
