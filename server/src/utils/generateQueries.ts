@@ -34,12 +34,15 @@ export function generateWhereClause(payload: WhereClauseQuery) {
 		if (Object.keys(payload.filter).length === 0) {
 			filterClause = '';
 		} else {
-			const whereClause = Object.entries(payload.filter)
-				.map(([field, value]) =>
-					value !== null ? `${field === 'rank' ? '`rank`' : field}=${mysql.escape(value)}` : ''
-				)
-				.join(' AND ');
-			filterClause = whereClause !== '' ? `WHERE ${whereClause}` : '';
+			const whereClauses: string[] = [];
+      
+      Object.entries(payload.filter)
+				.forEach(([field, value]) => {
+          if (value !== null) {
+            whereClauses.push(`${field === 'rank' ? '`rank`' : field}=${mysql.escape(value)}`)
+          }
+        });
+			filterClause = whereClauses.length  !== 0 ? `WHERE ${whereClauses.join( "AND ")}` : '';
 		}
 		clauses.push(filterClause);
 	}
