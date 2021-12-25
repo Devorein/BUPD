@@ -2,11 +2,11 @@
 
 import {
 	generateCountQuery,
-	generateWhereClause,
 	generateInsertQuery,
-	generateSetClause,
 	generateSelectQuery,
+	generateSetClause,
 	generateUpdateQuery,
+	generateWhereClause,
 } from '../../src/utils/generateQueries';
 
 it(`generateCountQuery`, () => {
@@ -20,12 +20,9 @@ it(`generateCountQuery`, () => {
 			},
 			'police'
 		)
-	).toBe(
-		`SELECT COUNT(*) as count FROM police WHERE \`filter1\`='value1' AND \`filter2\`='value2';`
-	);
+	).toBe("SELECT COUNT(*) as count FROM police WHERE `filter1`='value1' AND `filter2`='value2';");
 });
 
-//
 describe('.generateWhereClause', () => {
 	it(`Should work when we pass only filter`, () => {
 		expect(
@@ -37,7 +34,7 @@ describe('.generateWhereClause', () => {
 					filter3: null,
 				},
 			})
-		).toBe(`WHERE \`filter1\`='value1' AND \`filter2\`='value2' AND \`rank\`='Nayak'`);
+		).toBe("WHERE `filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak'");
 	});
 
 	it(`Should work when we pass empty filter`, () => {
@@ -57,20 +54,23 @@ describe('.generateWhereClause', () => {
 			})
 		).toBe(``);
 	});
+
 	it(`Should work when we pass only sort for DESC`, () => {
 		expect(
 			generateWhereClause({
 				sort: ['rank', -1],
 			})
-		).toBe(`ORDER BY \`rank\` DESC`);
+		).toBe('ORDER BY `rank` DESC');
 	});
+
 	it(`Should work when we pass only sort for ASC`, () => {
 		expect(
 			generateWhereClause({
 				sort: ['rank', 1],
 			})
-		).toBe(`ORDER BY \`rank\` ASC`);
+		).toBe('ORDER BY `rank` ASC');
 	});
+
 	it(`Should work when we pass limit`, () => {
 		expect(
 			generateWhereClause({
@@ -78,6 +78,7 @@ describe('.generateWhereClause', () => {
 			})
 		).toBe(`LIMIT 10`);
 	});
+
 	it(`Should work when we pass Filter, Limit and Sort`, () => {
 		expect(
 			generateWhereClause({
@@ -91,60 +92,71 @@ describe('.generateWhereClause', () => {
 				limit: 10,
 			})
 		).toBe(
-			`WHERE \`filter1\`='value1' AND \`filter2\`='value2' AND \`rank\`='Nayak' ORDER BY \`rank\` DESC LIMIT 10`
+			"WHERE `filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak' ORDER BY `rank` DESC LIMIT 10"
 		);
 	});
-});
 
-it(`Should work when we Insert`, () => {
-	expect(
-		generateInsertQuery(
-			{
-				payload: {
+	it(`Should work when we Insert`, () => {
+		expect(
+			generateInsertQuery(
+				{
 					field1: 'value1',
 					field2: 'value2',
 				},
-			},
-			'police'
-		)
-	).toBe(`INSERT INTO police(payload) VALUES(\`field1\` = 'value1', \`field2\` = 'value2');`);
-});
-it(`Should work when we SET in SQL`, () => {
-	expect(
-		generateSetClause({
-			payload: {
+				'police'
+			)
+		).toBe("INSERT INTO police(`field1`,`field2`) VALUES('value1','value2');");
+	});
+
+	it(`Should work when we SET in SQL`, () => {
+		expect(
+			generateSetClause({
 				field1: 'value1',
 				field2: 'value2',
-			},
-		})
-	).toBe(`SET payload=\`field1\` = 'value1', \`field2\` = 'value2'`);
-});
-it(`Should work when we Select in SQL`, () => {
-	expect(
-		generateSelectQuery(
-			{
-				filter: {
-					filter1: 'value1',
+			})
+		).toBe("SET `field1`='value1',`field2`='value2'");
+	});
+
+	it(`Should work when we Select in SQL`, () => {
+		expect(
+			generateSelectQuery(
+				{
+					filter: {
+						filter1: 'value1',
+					},
 				},
-			},
-			'Police'
-		)
-	).toBe(`SELECT * FROM Police WHERE \`filter1\`='value1';`);
-});
-it(`Should work when we UPDATE in SQL`, () => {
-	expect(
-		generateUpdateQuery(
-			{
-				filter: {
-					filter1: 'value1',
+				'Police'
+			)
+		).toBe("SELECT * FROM Police WHERE `filter1`='value1';");
+	});
+
+	it(`Should work when we Select specific attributes in SQL`, () => {
+		expect(
+			generateSelectQuery(
+				{
+					filter: {
+						filter1: 'value1',
+					},
+					select: ['attribute1'],
 				},
-			},
-			{
-				payload: {
+				'Police'
+			)
+		).toBe("SELECT `attribute1` FROM Police WHERE `filter1`='value1';");
+	});
+
+	it(`Should work when we UPDATE in SQL`, () => {
+		expect(
+			generateUpdateQuery(
+				{
+					filter: {
+						filter1: 'value1',
+					},
+				},
+				{
 					payload: 'value',
 				},
-			},
-			'Police'
-		)
-	).toBe(`UPDATE Police SET payload=\`payload\` = 'value' WHERE \`filter1\`='value1'`);
+				'Police'
+			)
+		).toBe("UPDATE Police SET `payload`='value' WHERE `filter1`='value1'");
+	});
 });
