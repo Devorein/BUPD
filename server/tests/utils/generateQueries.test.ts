@@ -6,6 +6,7 @@ import {
 	generateInsertQuery,
 	generateSetClause,
 	generateSelectQuery,
+	generateUpdateQuery,
 } from '../../src/utils/generateQueries';
 
 it(`generateCountQuery`, () => {
@@ -118,7 +119,7 @@ it(`Should work when we SET in SQL`, () => {
 		})
 	).toBe(`SET payload=\`field1\` = 'value1', \`field2\` = 'value2'`);
 });
-it(`Should work when we SET in SQL`, () => {
+it(`Should work when we Select in SQL`, () => {
 	expect(
 		generateSelectQuery(
 			{
@@ -129,4 +130,21 @@ it(`Should work when we SET in SQL`, () => {
 			'Police'
 		)
 	).toBe(`SELECT * FROM Police WHERE \`filter1\`='value1';`);
+});
+it(`Should work when we UPDATE in SQL`, () => {
+	expect(
+		generateUpdateQuery(
+			{
+				filter: {
+					filter1: 'value1',
+				},
+			},
+			{
+				payload: {
+					payload: 'value',
+				},
+			},
+			'Police'
+		)
+	).toBe(`UPDATE Police SET payload=\`payload\` = 'value' WHERE \`filter1\`='value1'`);
 });
