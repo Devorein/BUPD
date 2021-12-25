@@ -1,11 +1,12 @@
 import {
+	DeletePolicePayload,
 	GetPolicesPayload,
 	IPolice,
 	RegisterPolicePayload,
 	UpdatePolicePayload,
 	WhereClauseQuery,
 } from '../types';
-import { generateInsertQuery, generateUpdateQuery, query } from '../utils';
+import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
 const PoliceModel = {
@@ -25,6 +26,15 @@ const PoliceModel = {
 		);
 	},
 
+	findByNid(nid: number) {
+		return find<WhereClauseQuery, IPolice>(
+			{
+				filter: {nid: nid}
+			},
+			'police'
+		);
+	},
+
 	async update(filterQuery: Partial<IPolice>, payload: UpdatePolicePayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
@@ -35,6 +45,11 @@ const PoliceModel = {
 			return null;
 		}
 	},
+
+	async delete(payload: DeletePolicePayload){
+		await query(generateDeleteQuery(payload, 'police'));
+		return payload;
+	}
 };
 
 export default PoliceModel;
