@@ -2,6 +2,7 @@
 
 import {
 	generateCountQuery,
+	generateDeleteQuery,
 	generateInsertQuery,
 	generateSelectQuery,
 	generateSetClause,
@@ -158,5 +159,13 @@ describe('.generateWhereClause', () => {
 				'Police'
 			)
 		).toBe("UPDATE Police SET `payload`='value' WHERE `filter1`='value1'");
+	});
+});
+
+describe('.generateDeleteQuery', () => {
+	it(`Should generate delete query`, () => {
+		expect(generateDeleteQuery({ rank: 'Sergeant' }, 'police')).toBe(
+			"DELETE FROM police WHERE `rank`='Sergeant';"
+		);
 	});
 });

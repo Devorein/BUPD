@@ -24,15 +24,8 @@ jobs:
           cd server
           npm install
       - run: npm run lint
-      - name: Install fauton globally
-        run: npm install -g
-      - name: Building library
+      - name: Building server
         run: npm run build
-      - name: Building examples
-        run: |
-          cd examples
-          npm link fauton
-          npm run build
       - run: npm run test
       - name: Uploading test coverage reports
         run: |
