@@ -6,14 +6,14 @@ const CasefileModel = {
 		try {
 			const caseFilePayload: ICasefile = {
 				...removeFields<CreateCasePayload, ICasefile>(payload, [
-					'crime_categories',
+					'categories',
 					'criminals',
 					'weapons',
-					'crime_time',
+					'time',
 					'victims',
 				]),
 				status: 'open',
-				time: new Date(payload.crime_time).toISOString().slice(0, 19).replace('T', ' '),
+				time: new Date(payload.time).toISOString().slice(0, 19).replace('T', ' '),
 			};
 			const insertQueryResponse = (await query(
 				generateInsertQuery(caseFilePayload, 'case_file')

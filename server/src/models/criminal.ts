@@ -19,7 +19,7 @@ const CriminalController = {
 		};
 	},
 	find(filterQuery: Partial<ICriminal>) {
-		return find<ICriminal[]>({ filter: filterQuery }, 'criminal');
+		return find<ICriminal>({ filter: filterQuery }, 'criminal');
 	},
 };
 

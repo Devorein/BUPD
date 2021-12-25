@@ -24,10 +24,10 @@ export interface ICriminal {
 
 export interface IVictim {
 	name: string;
-	address: string;
-	age: number;
-	phone_no: number;
-	description: string;
+	address: string | null;
+	age: number | null;
+	phone_no: string | null;
+	description: string | null;
 	case_no: number;
 }
 
@@ -74,10 +74,9 @@ export interface ICasefile {
 }
 
 export interface ICasefilePopulated extends Omit<ICasefile, 'case_time' | 'crime_time'> {
-	case_time: string;
-	crime_time: string;
+	time: string;
 	weapons: ICrimeWeapon[];
-	crime_categories: ICrimeCategory[];
+	categories: ICrimeCategory[];
 	victims: IVictim[];
 	criminals: ICriminal[];
 	police: IPolice;
@@ -110,12 +109,19 @@ export interface LoginPayload {
 export type LoginResponse = (IPolice | IAdmin) & { token: string };
 
 export interface CreateCasePayload {
-	crime_categories: string[];
+	categories: string[];
 	weapons: string[];
-	crime_time: number;
+	time: number;
 	location: string;
 	criminals: ({ name: string; photo: string } | { id: number })[];
-	victims: string[];
+	priority: TCasefilePriority;
+	victims: {
+		name: string;
+		address?: string | null;
+		age?: number | null;
+		phone_no?: string | null;
+		description?: string | null;
+	}[];
 }
 
 export interface CreateCaseResponse extends ICasefilePopulated {}

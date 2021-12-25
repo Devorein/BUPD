@@ -23,9 +23,9 @@ const CasefileController = {
 		try {
 			const payload = req.body;
 			const nonExistentFields = checkForFields(payload, [
-				'crime_categories',
+				'categories',
 				'location',
-				'crime_time',
+				'time',
 				'weapons',
 			]);
 			if (nonExistentFields.length !== 0) {
@@ -89,7 +89,7 @@ const CasefileController = {
 					);
 
 					const crimeCategoryInsertQueryPromises: Promise<ICrimeCategory>[] =
-						payload.crime_categories.map((category) =>
+						payload.categories.map((category) =>
 							CrimeCategoryModel.create({
 								category,
 								case_no: createdCasefile.case_no,
@@ -98,7 +98,11 @@ const CasefileController = {
 
 					const victimInsertQueryPromises: Promise<IVictim>[] = payload.victims.map((victim) =>
 						VictimController.create({
-							name: victim,
+							address: null,
+							age: null,
+							description: null,
+							phone_no: null,
+							...victim,
 							case_no: createdCasefile.case_no,
 						})
 					);
@@ -137,9 +141,11 @@ const CasefileController = {
 							status: 'open',
 							criminals: associatedCriminals,
 							police: jwtPayload,
-							crime_categories: crimeCategories,
+							categories: crimeCategories,
 							weapons,
 							victims,
+							police_nid: jwtPayload.nid,
+							priority: payload.priority,
 						},
 					});
 				}
