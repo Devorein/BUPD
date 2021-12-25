@@ -153,7 +153,6 @@ export interface PoliceJwtPayload
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
 
 export interface IPoliceFilter {
-	nid?: number; 
 	designation: null | string;
 	rank: null | string;
 }
