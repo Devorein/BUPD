@@ -2,7 +2,7 @@ import mysql from 'mysql';
 import { WhereClauseQuery } from '../shared.types';
 
 /**
- * Generates a sql statement with keys and escaped values extracted from the given object
+ * Generates a sql statement with fields and escaped values extracted from the given object
  * @param payload The record to generate field, value pairs from
  * @param table The table to insert data to
  * @returns A sql statement
@@ -17,7 +17,7 @@ export function generateInsertQuery<Payload extends Record<string, any>>(
 	const fields: string[] = [],
 		values: (string | number)[] = [];
 	entries.forEach(([field, value]) => {
-		fields.push(field === 'rank' ? `\`${field}\`` : field);
+		fields.push(`\`${field}\``);
 		// Escaping all values to prevent SQL injection
 		values.push(mysql.escape(value));
 	});
@@ -31,24 +31,19 @@ export function generateWhereClause(payload: WhereClauseQuery) {
 		sortClause = '',
 		limitClause = '';
 	if (payload.filter) {
-		if (Object.keys(payload.filter).length === 0) {
-			filterClause = '';
-		} else {
-			const whereClauses: string[] = [];
-      
-      Object.entries(payload.filter)
-				.forEach(([field, value]) => {
-          if (value !== null) {
-            whereClauses.push(`${field === 'rank' ? '`rank`' : field}=${mysql.escape(value)}`)
-          }
-        });
-			filterClause = whereClauses.length  !== 0 ? `WHERE ${whereClauses.join( "AND ")}` : '';
-		}
+		const whereClauses: string[] = [];
+
+		Object.entries(payload.filter).forEach(([field, value]) => {
+			if (value !== null) {
+				whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
+			}
+		});
+		filterClause = whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 		clauses.push(filterClause);
 	}
 	if (payload.sort) {
 		const [attribute, order] = payload.sort;
-		sortClause = `ORDER BY ${attribute} ${order === -1 ? 'DESC' : 'ASC'}`;
+		sortClause = `ORDER BY \`${attribute}\` ${order === -1 ? 'DESC' : 'ASC'}`;
 		clauses.push(sortClause);
 	}
 
@@ -56,19 +51,21 @@ export function generateWhereClause(payload: WhereClauseQuery) {
 		limitClause = `LIMIT ${payload.limit}`;
 		clauses.push(limitClause);
 	}
-	return `${clauses.join(' ')};`;
+	return clauses.join(' ');
 }
 
 export function generateSetClause(payload: Record<string, any>) {
 	return `SET ${Object.entries(payload)
-		.map(([key, value]) => `${key === 'rank' ? '`rank`' : key}=${mysql.escape(value)}`)
+		.map(([field, value]) => `\`${field}\`=${mysql.escape(value)}`)
 		.join(',')}`;
 }
 
 export function generateSelectQuery(whereClauseQuery: WhereClauseQuery, table: string) {
 	return `SELECT ${
-		whereClauseQuery.select ? whereClauseQuery.select.join(',') : '*'
-	} FROM ${table} ${generateWhereClause(whereClauseQuery)}`;
+		whereClauseQuery.select
+			? whereClauseQuery.select.map((attribute) => `\`${attribute}\``).join(',')
+			: '*'
+	} FROM ${table} ${generateWhereClause(whereClauseQuery)};`;
 }
 
 export function generateCountQuery(
@@ -77,7 +74,7 @@ export function generateCountQuery(
 ) {
 	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause({
 		filter: whereClauseQuery.filter,
-	})}`;
+	})};`;
 }
 
 export function generateUpdateQuery(
