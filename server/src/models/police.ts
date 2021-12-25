@@ -1,9 +1,9 @@
 import {
 	DeletePolicePayload,
 	IPolice,
-	IPoliceQuery,
 	RegisterPolicePayload,
 	UpdatePolicePayload,
+	WhereClauseQuery,
 } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
@@ -15,11 +15,20 @@ const PoliceModel = {
 		return payload;
 	},
 
-	find(whereClauseQuery: Partial<IPoliceQuery>) {
+	find(whereClauseQuery: WhereClauseQuery) {
 		return find<IPolice>(
 			{
 				...whereClauseQuery,
-				select: ['email', 'phone', 'address', 'designation', '`rank`', 'name', 'nid'],
+				select: [
+					'email',
+					'phone',
+					'address',
+					'designation',
+					'rank',
+					'name',
+					'nid',
+					...(whereClauseQuery.select ?? []),
+				],
 			},
 			'police'
 		);

@@ -45,7 +45,11 @@ export default {
 					});
 				} else {
 					if (payload.as === 'police') {
-						const [police] = await PoliceModel.find({ filter: { email: payload.email } });
+						const [police] = await PoliceModel.find({
+							filter: { email: payload.email },
+							select: ['password'],
+						});
+
 						if (!police) {
 							res.json({
 								status: 'error',

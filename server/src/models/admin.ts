@@ -3,7 +3,7 @@ import { find } from './utils';
 
 const AdminModel = {
 	find(filterQuery: Partial<IAdmin>) {
-		return find<IAdmin & { password: string }>({ filter: filterQuery }, 'admin');
+		return find<IAdmin & { password: string }>({ filter: filterQuery }, 'Admin');
 	},
 };
 
