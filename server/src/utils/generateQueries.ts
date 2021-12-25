@@ -53,7 +53,7 @@ export function generateWhereClause(payload: WhereClauseQuery) {
 		limitClause = `LIMIT ${payload.limit}`;
 		clauses.push(limitClause);
 	}
-	return `${clauses.join(' ')};`;
+	return `${clauses.join(' ')}`;
 }
 
 export function generateSetClause(payload: Record<string, any>) {
@@ -65,7 +65,7 @@ export function generateSetClause(payload: Record<string, any>) {
 export function generateSelectQuery(whereClauseQuery: WhereClauseQuery, table: string) {
 	return `SELECT ${
 		whereClauseQuery.select ? whereClauseQuery.select.join(',') : '*'
-	} FROM ${table} ${generateWhereClause(whereClauseQuery)}`;
+	} FROM ${table} ${generateWhereClause(whereClauseQuery)};`;
 }
 
 export function generateCountQuery(
@@ -74,7 +74,7 @@ export function generateCountQuery(
 ) {
 	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause({
 		filter: whereClauseQuery.filter,
-	})}`;
+	})};`;
 }
 
 export function generateUpdateQuery(
