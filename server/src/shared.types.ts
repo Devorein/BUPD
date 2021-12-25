@@ -153,6 +153,7 @@ export interface PoliceJwtPayload
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
 
 export interface IPoliceFilter {
+	nid?: number; 
 	designation: null | string;
 	rank: null | string;
 }
@@ -165,4 +166,8 @@ export interface GetPolicesPayload {
 	limit: number;
 }
 
+export interface DeletePolicePayload {
+	nid: number,
+}
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
+export type DeletePoliceResponse = ApiResponse<DeletePolicePayload>;

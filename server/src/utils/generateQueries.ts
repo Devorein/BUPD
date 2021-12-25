@@ -84,3 +84,7 @@ export function generateUpdateQuery(
 ) {
 	return `UPDATE ${table} ${generateSetClause(payload)} ${generateWhereClause(filterQuery)}`;
 }
+
+export function generateDeleteQuery(payload: Record<string, any>, table: string) {
+	return `DELETE FROM ${table} ${generateWhereClause({ filter: payload })}`
+}

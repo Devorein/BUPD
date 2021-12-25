@@ -1,11 +1,12 @@
 import {
+	DeletePolicePayload,
 	GetPolicesPayload,
 	IPolice,
 	RegisterPolicePayload,
 	UpdatePolicePayload,
 	WhereClauseQuery,
 } from '../types';
-import { generateInsertQuery, generateUpdateQuery, query } from '../utils';
+import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
 const PoliceModel = {
@@ -35,6 +36,11 @@ const PoliceModel = {
 			return null;
 		}
 	},
+
+	async delete(payload: DeletePolicePayload){
+		await query(generateDeleteQuery(payload, 'police'));
+		return payload;
+	}
 };
 
 export default PoliceModel;
