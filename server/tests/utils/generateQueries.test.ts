@@ -5,6 +5,7 @@ import {
 	generateWhereClause,
 	generateInsertQuery,
 	generateSetClause,
+	generateSelectQuery,
 } from '../../src/utils/generateQueries';
 
 it(`generateCountQuery`, () => {
@@ -116,4 +117,16 @@ it(`Should work when we SET in SQL`, () => {
 			},
 		})
 	).toBe(`SET payload=\`field1\` = 'value1', \`field2\` = 'value2'`);
+});
+it(`Should work when we SET in SQL`, () => {
+	expect(
+		generateSelectQuery(
+			{
+				filter: {
+					filter1: 'value1',
+				},
+			},
+			'Police'
+		)
+	).toBe(`SELECT * FROM Police WHERE \`filter1\`='value1';`);
 });
