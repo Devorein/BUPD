@@ -12,7 +12,7 @@ import colors from 'colors';
 import dotenv from 'dotenv';
 import faker from 'faker';
 import fs from 'fs';
-import mysql from 'mysql';
+import mysql from 'mysql2';
 import path from 'path';
 
 dotenv.config({

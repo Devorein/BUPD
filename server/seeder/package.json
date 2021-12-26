@@ -1,25 +1,24 @@
 {
-	"name": "seeder",
-	"version": "1.0.0",
-	"description": "",
-	"main": "./dist/index.js",
-	"scripts": {
-		"build:watch": "tsc -w",
-		"start": "node ./dist/seeder/index.js"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"axios": "^0.24.0",
-		"colors": "^1.4.0",
-		"dotenv": "^10.0.0",
-		"faker": "^5.5.3",
-		"mysql": "^2.18.1"
-	},
-	"devDependencies": {
-		"@types/faker": "^5.5.9",
-		"@types/mysql": "^2.15.19",
-		"typescript": "^4.5.3"
-	}
+  "name": "seeder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build:watch": "tsc -w",
+    "start": "node ./dist/seeder/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "colors": "^1.4.0",
+    "dotenv": "^10.0.0",
+    "faker": "^5.5.3",
+    "mysql2": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/faker": "^5.5.9",
+    "typescript": "^4.5.3"
+  }
 }
