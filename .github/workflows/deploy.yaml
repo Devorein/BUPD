@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ (github.actor == 'Devorein' && github.head_ref == 'prod') }}
+    if: ${{ (github.actor == 'Devorein' && github.head_ref == 'staging') }}
     steps:
       - name: Deploy Server
         uses: appleboy/ssh-action@v0.1.2
