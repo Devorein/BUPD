@@ -18,9 +18,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
           script: |
-            cd /
-            rm -rf BUPD
-            if ! (git clone git@github.com:Devorein/BUPD.git) then
+            cd /BUPD
+            rm -rf dist
+            rm -rf node_modules
+            if ! (git clone -b staging --single-branch git@github.com:Devorein/BUPD.git) then
               exit 1
             else
               cd BUPD
@@ -28,8 +29,12 @@ jobs:
               cd server
               npm install
               npm run build
-              rm -rf src seeder tests
+              mv dist ../../
+              mv node_modules ../../
+              cd ../../
+              rm -rf BUPD
               pm2 delete api
+              cp .env ./dist
               pm2 start ./dist/index.js --name api
               echo 'Successfully deployed to digital ocean droplet'
             fi
