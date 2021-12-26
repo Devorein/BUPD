@@ -3,7 +3,7 @@ import { generateInsertQuery, query } from '../utils';
 
 const CrimeCategoryModel = {
 	async create(payload: ICrimeCategory) {
-		await query(generateInsertQuery(payload, 'crime_category'));
+		await query(generateInsertQuery(payload, 'CrimeCategory'));
 		return payload;
 	},
 };

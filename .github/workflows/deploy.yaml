@@ -1,45 +1,40 @@
-name: Lint, Build, Test and Deploy
+name: Deploy Server
 
 on:
   push:
-    branches: ["main", "dev"]
+    branches: ["prod"]
   pull_request:
-    branches: ["main", "dev"]
+    branches: ["prod"]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Lint, Build and Test
-        run: |
-          cd server
-          npm install
-          npm run lint
-          npm run build
-          npm run test
       - name: Deploy Server
+        if: ${{ (github.actor == 'Devorein' && github.head_ref == 'staging') }}
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            rm -rf BUPD
-            git clone git@github.com:Devorein/BUPD.git
-            cd BUPD
-            rm -rf client scripts readme.md
-            cd server
-            npm install
-            npm run build
-            pm2 start ./dist/index.js --name api
-            echo 'Deployment successful to digital ocean'
+            cd /BUPD
+            rm -rf dist
+            rm -rf node_modules
+            if ! (git clone -b staging --single-branch git@github.com:Devorein/BUPD.git) then
+              exit 1
+            else
+              cd BUPD
+              rm -rf client scripts readme.md
+              cd server
+              npm install
+              npm run build
+              mv dist ../../
+              mv node_modules ../../
+              cd ../../
+              rm -rf BUPD
+              pm2 delete api
+              cp .env ./dist
+              pm2 start ./dist/index.js --name api
+              echo 'Successfully deployed to digital ocean droplet'
+            fi

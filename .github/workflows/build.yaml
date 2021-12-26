@@ -1,0 +1,24 @@
+name: Lint, Build and Test Server
+
+on:
+  push:
+    branches: ["staging"]
+  pull_request:
+    branches: ["staging"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Lint, Build and Test Server
+        run: |
+          cd server
+          npm install
+          npm run lint
+          npm run build
+          npm run test
