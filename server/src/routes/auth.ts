@@ -5,7 +5,7 @@ import { isAuthenticated, isAuthorized } from '../middlewares';
 const AuthRouter = express.Router();
 
 AuthRouter.post('/login', AuthController.login);
-AuthRouter.post('/register', isAuthenticated, isAuthorized(['admin']), AuthController.register);
+AuthRouter.post('/register', AuthController.register);
 AuthRouter.get(
 	'/currentUser',
 	isAuthenticated,
