@@ -10,7 +10,7 @@ describe('.removeFields', () => {
 					field1: 'value1',
 					field2: 'value2',
 				},
-				['field2' as any]
+				['field2']
 			)
 		).toStrictEqual({
 			field1: 'value1',
