@@ -49,7 +49,7 @@ const CasefileController = {
           casefile;
       `)) as RowDataPacket[];
 
-			const maxCaseNo = maxCaseNoQueryData[0][0].max_case_no;
+			const maxCaseNo = maxCaseNoQueryData[0][0].max_case_no ?? 1;
 
 			const maxCriminalIdQueryData = (await connection.query(`
         SELECT
@@ -58,7 +58,7 @@ const CasefileController = {
           criminal;
       `)) as RowDataPacket[];
 
-			const maxCriminalId = maxCriminalIdQueryData[0][0].max_criminal_id;
+			const maxCriminalId = maxCriminalIdQueryData[0][0].max_criminal_id ?? 0;
 
 			const casefile: ICasefile = {
 				case_no: maxCaseNo,
