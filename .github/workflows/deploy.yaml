@@ -1,8 +1,6 @@
 name: Deploy Server
 
 on:
-  push:
-    branches: ["prod"]
   pull_request:
     branches: ["prod"]
 

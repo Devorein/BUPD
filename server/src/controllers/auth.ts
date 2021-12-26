@@ -134,6 +134,7 @@ export default {
 				'phone',
 				'rank',
 			]);
+
 			if (nonExistentFields.length !== 0) {
 				res.json({
 					status: 'error',
