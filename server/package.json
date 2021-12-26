@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "start:watch": "nodemon dist/index.js",
     "build:watch": "tsc -w",
-    "lint": "npx eslint \"./src\" --ext tsx,ts",
+    "lint": "npx eslint \"./src\" --ext tsx,ts \"./seeder\" --ext tsx,ts",
     "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
     "test": "npx jest --runInBand --config ./jest.config.js",
     "format": "npx prettier ./src/**/*.{ts,js} --write"

@@ -42,6 +42,6 @@
   ],
   "include": [
     "./index.ts",
-    "./createBupdDb.ts"
+    "./createDb.ts"
   ]
 }
