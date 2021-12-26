@@ -179,3 +179,12 @@ export interface DeletePolicePayload {
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
+
+export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
+
+export interface CreateAccessPayload {
+	case_no: number | null;
+	criminal_id: number | null;
+	permission: AccessPermission;
+}
+export interface CreateAccessResponse {}
