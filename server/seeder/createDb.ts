@@ -1,4 +1,4 @@
-// type "npm run makeDb" to make database
+// type "node ./dist/seeder/createDb in terminal and uncomment the last line" to make databases
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
 import path from 'path';
@@ -53,14 +53,15 @@ export default async function createDb(dbName: string) {
 		await connection.query(query);
 
 		query = `CREATE TABLE Casefile (
-        case_no INT NOT NULL AUTO_INCREMENT,
-        status VARCHAR(10),
-        location VARCHAR(250) NOT NULL,
-        time DATETIME NOT NULL,
-        police_nid INT NOT NULL,
-        FOREIGN KEY (police_nid) REFERENCES Police(nid),
-        PRIMARY KEY (case_no)
-        );`;
+            case_no INT NOT NULL AUTO_INCREMENT,
+            status VARCHAR(10),
+            location VARCHAR(250) NOT NULL,
+            priority VARCHAR(10),
+            time DATETIME NOT NULL,
+            police_nid INT NOT NULL,
+            FOREIGN KEY (police_nid) REFERENCES Police(nid),
+            PRIMARY KEY (case_no)
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Crime_Category (
@@ -134,3 +135,4 @@ export default async function createDb(dbName: string) {
 		await connection?.end();
 	}
 }
+// createDb('test'); //rode
