@@ -1,7 +1,7 @@
 import express from 'express';
 import './config';
 import RootRouter from './routes';
-import connection from './utils/connect';
+import pool from './utils/pool';
 
 const app = express();
 app.use(express.json());
@@ -10,13 +10,12 @@ app.use('/v1', RootRouter);
 
 const PORT = process.env.SERVER_PORT;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
 	console.log(`Server listening on port ${PORT}`);
-	connection.connect((err) => {
-		if (err) {
-			console.error(`Error connecting to database\n${err.message}`);
-		} else {
-			console.log(`Connected to database`);
-		}
-	});
+	try {
+		await pool.getConnection();
+		console.log(`Connected to database`);
+	} catch (err) {
+		console.error(`Error connecting to database\n${err.message}`);
+	}
 });

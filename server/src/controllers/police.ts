@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { RowDataPacket } from 'mysql2';
 import { PoliceModel } from '../models';
 import {
 	ApiResponse,
@@ -59,7 +60,7 @@ const PoliceController = {
 		const polices = await PoliceModel.find(req.body);
 		const policeCount = (await query(
 			generateCountQuery({ filter: req.body?.filter }, 'Police')
-		)) as Array<{ count: number }>;
+		)) as RowDataPacket[];
 
 		if (polices) {
 			res.json({
@@ -67,7 +68,7 @@ const PoliceController = {
 				data: {
 					items: polices,
 					next: null,
-					total: policeCount[0].count,
+					total: policeCount[0][0]?.count,
 				},
 			});
 		}
