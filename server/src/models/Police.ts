@@ -10,7 +10,7 @@ import { find } from './utils';
 
 const PoliceModel = {
 	async create(payload: RegisterPolicePayload) {
-		await query(generateInsertQuery(payload, 'police'));
+		await query(generateInsertQuery(payload, 'Police'));
 		// If the insert was successful, the newly added record will be the same as the payload
 		return payload;
 	},
@@ -30,7 +30,7 @@ const PoliceModel = {
 					...(whereClauseQuery.select ?? []),
 				],
 			},
-			'police'
+			'Police'
 		);
 	},
 
@@ -39,14 +39,14 @@ const PoliceModel = {
 			{
 				filter: { nid },
 			},
-			'police'
+			'Police'
 		);
 	},
 
 	async update(filterQuery: Partial<IPolice>, payload: UpdatePolicePayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
-			await query(generateUpdateQuery(filterQuery, payload, 'police'));
+			await query(generateUpdateQuery(filterQuery, payload, 'Police'));
 			// return the payload if the update operation was successful
 			return payload as Partial<IPolice>;
 		} else {
@@ -55,7 +55,7 @@ const PoliceModel = {
 	},
 
 	async delete(payload: DeletePolicePayload) {
-		await query(generateDeleteQuery(payload, 'police'));
+		await query(generateDeleteQuery(payload, 'Police'));
 		return payload;
 	},
 };

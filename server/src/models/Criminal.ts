@@ -10,7 +10,7 @@ const CriminalController = {
 					name: payload.name,
 					photo: payload.photo,
 				},
-				'criminal'
+				'Criminal'
 			)
 		)) as { insertId: number };
 		return {
@@ -19,7 +19,7 @@ const CriminalController = {
 		};
 	},
 	find(filterQuery: Partial<ICriminal>) {
-		return find<ICriminal>({ filter: filterQuery }, 'criminal');
+		return find<ICriminal>({ filter: filterQuery }, 'Criminal');
 	},
 };
 

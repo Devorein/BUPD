@@ -16,7 +16,7 @@ const CasefileModel = {
 				time: new Date(payload.time).toISOString().slice(0, 19).replace('T', ' '),
 			};
 			const insertQueryResponse = (await query(
-				generateInsertQuery(caseFilePayload, 'case_file')
+				generateInsertQuery(caseFilePayload, 'Casefile')
 			)) as { insertId: number };
 
 			if (!insertQueryResponse) {
