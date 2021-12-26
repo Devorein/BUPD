@@ -5,8 +5,7 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"build:watch": "tsc -w",
-		"start": "node ./dist/seeder/index.js",
-		"makeDb": "node ./dist/seeder/createBupdDb.js"
+		"start": "node ./dist/seeder/index.js"
 	},
 	"keywords": [],
 	"author": "",
