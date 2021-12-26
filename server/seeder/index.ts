@@ -120,13 +120,15 @@ connection.connect(async (err) => {
 									rank: faker.random.arrayElement(policeRanks),
 								};
 								polices.push(police);
+
 								const registerPoliceResponse = await handleRequest<
 									RegisterPoliceResponse,
 									RegisterPolicePayload
-								>('/casefile', police, adminToken);
+								>('/auth/register', police, adminToken);
 								console.log(colors.blue.bold(`Registered police: ${police.name}`));
 								resolve(registerPoliceResponse);
 							} catch (error) {
+								console.log(error);
 								reject(error.message);
 							}
 						}
