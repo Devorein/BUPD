@@ -1,156 +1,162 @@
 import { Request, Response } from 'express';
-import { CasefileModel, CrimeCategoryModel, CriminalModel } from '../models';
-import CasefileCriminalModel from '../models/CasefileCriminal';
-import WeaponModel from '../models/CrimeWeapon';
-import VictimController from '../models/Victim';
+import { FieldPacket, RowDataPacket } from 'mysql2';
 import {
 	ApiResponse,
-	CreateCasePayload,
-	CreateCaseResponse,
+	CreateCasefilePayload,
+	CreateCasefileResponse,
+	ICasefile,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
 } from '../shared.types';
-import { checkForFields } from '../utils';
+import { generateInsertQuery, pool } from '../utils';
 
 const CasefileController = {
 	async create(
-		req: Request<any, any, CreateCasePayload>,
-		res: Response<ApiResponse<CreateCaseResponse>>
+		req: Request<any, any, CreateCasefilePayload>,
+		res: Response<ApiResponse<CreateCasefileResponse>>
 	) {
 		try {
 			const payload = req.body;
-			const nonExistentFields = checkForFields(payload, [
-				'categories',
-				'location',
-				'time',
-				'weapons',
-			]);
-			if (nonExistentFields.length !== 0) {
-				res.json({
-					status: 'error',
-					message: `${nonExistentFields[0]} is required`,
-				});
-			} else {
-				const jwtPayload = req.jwt_payload as PoliceJwtPayload;
-				const createdCasefile = await CasefileModel.create({
-					...payload,
-					police_nid: jwtPayload.nid,
-				});
-
-				if (!createdCasefile) {
-					res.json({
-						status: 'error',
-						message: "Couldn't create case file. Please try again.",
-					});
+			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
+			const connection = await pool.getConnection();
+			// Extracting the criminal ids passed
+			const existingCriminalIds: number[] = [];
+			// We need to filter the criminals so that we only add the new criminals
+			const newCriminalPayloads: Omit<ICriminal, 'criminal_id'>[] = [];
+			const allCriminalIds: number[] = [];
+			const victims: IVictim[] = [],
+				categories: ICrimeCategory[] = [],
+				weapons: ICrimeWeapon[] = [];
+			payload.criminals.forEach((criminal) => {
+				if ('id' in criminal) {
+					existingCriminalIds.push(criminal.id);
+					allCriminalIds.push(criminal.id);
 				} else {
-					// Extracting the criminal ids passed
-					const existingCriminalIds: number[] = [];
-					// We need to filter the criminals so that we only add the new criminals
-					const newCriminalPayloads: { name: string; photo: string }[] = [];
-					payload.criminals.forEach((criminal) => {
-						if ('id' in criminal) {
-							existingCriminalIds.push(criminal.id);
-						} else {
-							newCriminalPayloads.push(criminal);
-						}
-					});
-					const criminalFindQueries: Promise<ICriminal>[] = [];
-
-					// Getting all the criminals from the ids to make sure that they exist in the database
-					// Alongside returning them
-					existingCriminalIds.forEach((existingCriminalId) =>
-						criminalFindQueries.push(
-							new Promise((resolve, reject) => {
-								CriminalModel.find({ id: existingCriminalId })
-									.then((criminalData) => {
-										if (!criminalData) {
-											reject(Error("Criminal doesn't exist"));
-										} else {
-											resolve(criminalData[0]);
-										}
-									})
-									.catch((err) => {
-										reject(err.message);
-									});
-							})
-						)
-					);
-
-					const existingCriminals = await Promise.all(criminalFindQueries);
-
-					const weaponInsertQueryPromises: Promise<ICrimeWeapon>[] = payload.weapons.map((weapon) =>
-						WeaponModel.create({
-							weapon,
-							case_no: createdCasefile.case_no,
-						})
-					);
-
-					const crimeCategoryInsertQueryPromises: Promise<ICrimeCategory>[] =
-						payload.categories.map((category) =>
-							CrimeCategoryModel.create({
-								category,
-								case_no: createdCasefile.case_no,
-							})
-						);
-
-					const victimInsertQueryPromises: Promise<IVictim>[] = payload.victims.map((victim) =>
-						VictimController.create({
-							address: null,
-							age: null,
-							description: null,
-							phone_no: null,
-							...victim,
-							case_no: createdCasefile.case_no,
-						})
-					);
-
-					const criminalInsertQueryPromises: Promise<ICriminal>[] = newCriminalPayloads.map(
-						(newCriminalPayload) =>
-							new Promise((resolve, reject) => {
-								CriminalModel.create(newCriminalPayload)
-									.then((newCriminalData) => resolve(newCriminalData))
-									.catch((err) => reject(err.message));
-							})
-					);
-
-					const crimeCategories = await Promise.all(crimeCategoryInsertQueryPromises);
-					const weapons = await Promise.all(weaponInsertQueryPromises);
-					const newCriminals = await Promise.all(criminalInsertQueryPromises);
-					const associatedCriminals = newCriminals.concat(existingCriminals);
-					const victims = await Promise.all(victimInsertQueryPromises);
-
-					const caseFileCriminalInsertQueryPromises: Promise<any>[] = newCriminals.map(
-						(newCriminal) =>
-							CasefileCriminalModel.create({
-								criminal_id: newCriminal.id,
-								case_no: createdCasefile.case_no,
-							})
-					);
-
-					await Promise.all(caseFileCriminalInsertQueryPromises);
-
-					res.json({
-						status: 'success',
-						data: {
-							...payload,
-							case_no: createdCasefile.case_no,
-							time: createdCasefile.time,
-							status: 'open',
-							criminals: associatedCriminals,
-							police: jwtPayload,
-							categories: crimeCategories,
-							weapons,
-							victims,
-							police_nid: jwtPayload.nid,
-							priority: payload.priority,
-						},
-					});
+					newCriminalPayloads.push(criminal);
 				}
+			});
+
+			await connection.query('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+			await connection.beginTransaction();
+			// Get the maximum case number from db
+			const maxCaseNoQueryData = (await connection.query(`
+        SELECT
+          MAX(case_no) + 1 as max_case_no
+        from
+          casefile;
+      `)) as RowDataPacket[];
+
+			const maxCaseNo = maxCaseNoQueryData[0][0].max_case_no;
+
+			const maxCriminalIdQueryData = (await connection.query(`
+        SELECT
+          MAX(criminal_id) as max_criminal_id
+        from
+          criminal;
+      `)) as RowDataPacket[];
+
+			const maxCriminalId = maxCriminalIdQueryData[0][0].max_criminal_id;
+
+			const casefile: ICasefile = {
+				case_no: maxCaseNo,
+				time: new Date(payload.time).toISOString().slice(0, 19).replace('T', ' '),
+				status: payload.status ?? 'open',
+				priority: payload.priority,
+				location: payload.location,
+				police_nid: jwtPayload.nid,
+			};
+			await connection.query(generateInsertQuery(casefile, 'Casefile'));
+
+			for (let index = 0; index < payload.weapons.length; index += 1) {
+				const weapon: ICrimeWeapon = {
+					case_no: maxCaseNo,
+					weapon: payload.weapons[index],
+				};
+				weapons.push(weapon);
+
+				await connection.query(generateInsertQuery(weapon, 'Crime_Weapon'));
 			}
-		} catch (_) {
+
+			for (let index = 0; index < payload.categories.length; index += 1) {
+				const category: ICrimeCategory = {
+					case_no: maxCaseNo,
+					category: payload.categories[index],
+				};
+				categories.push(category);
+
+				await connection.query(generateInsertQuery(category, 'Crime_Category'));
+			}
+
+			for (let index = 0; index < payload.victims.length; index += 1) {
+				const victimPayload = payload.victims[index];
+				const victim: IVictim = {
+					name: victimPayload.name,
+					age: victimPayload.age ?? null,
+					address: victimPayload.address ?? null,
+					phone_no: victimPayload.phone_no ?? null,
+					description: victimPayload.description ?? null,
+					case_no: maxCaseNo,
+				};
+				victims.push(victim);
+				await connection.query(generateInsertQuery(victim, 'Victim'));
+			}
+
+			for (let index = 0; index < newCriminalPayloads.length; index += 1) {
+				const newCriminal = newCriminalPayloads[index];
+				allCriminalIds.push(maxCriminalId + index + 1);
+				await connection.query(
+					generateInsertQuery(
+						{
+							criminal_id: maxCriminalId + index + 1,
+							name: newCriminal.name,
+							photo: newCriminal.photo ?? null,
+						},
+						'Criminal'
+					)
+				);
+			}
+
+			for (let index = 0; index < allCriminalIds.length; index += 1) {
+				const criminalId = allCriminalIds[index];
+				await connection.query(
+					generateInsertQuery(
+						{
+							case_no: maxCaseNo,
+							criminal_id: criminalId,
+						},
+						'Casefile_Criminal'
+					)
+				);
+			}
+
+			const joinedData = (await connection.query(`
+        SELECT
+          CR.name,
+          CR.photo,
+          CR.criminal_id
+        from
+          casefile as CF
+          left join casefile_criminal as CFC on CFC.case_no = ${maxCaseNo}
+          left join criminal as CR on CR.criminal_id = CFC.criminal_id
+        where
+          CF.case_no = ${maxCaseNo};
+      `)) as [RowDataPacket[], FieldPacket[]];
+			await connection.commit();
+			res.json({
+				status: 'success',
+				data: {
+					...casefile,
+					categories,
+					victims,
+					weapons,
+					criminals: joinedData[0] as ICriminal[],
+				},
+			});
+		} catch (err) {
+			console.log(err);
 			res.json({
 				status: 'error',
 				message: "Couldn't create case file. Please try again.",

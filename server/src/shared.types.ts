@@ -17,9 +17,9 @@ export interface IPolice {
 }
 
 export interface ICriminal {
-	id: number;
+	criminal_id: number;
 	name: string;
-	photo: string;
+	photo: string | null;
 }
 
 export interface IVictim {
@@ -73,7 +73,7 @@ export interface ICasefile {
 	police_nid: number;
 }
 
-export interface ICasefilePopulated extends Omit<ICasefile, 'case_time' | 'crime_time'> {
+export interface ICasefilePopulated extends ICasefile {
 	time: string;
 	weapons: ICrimeWeapon[];
 	categories: ICrimeCategory[];
@@ -108,10 +108,11 @@ export interface LoginPayload {
 }
 export type LoginResponse = (IPolice | IAdmin) & { token: string };
 
-export interface CreateCasePayload {
+export interface CreateCasefilePayload {
 	categories: string[];
 	weapons: string[];
 	time: number;
+	status?: TCasefileStatus | null;
 	location: string;
 	criminals: ({ name: string; photo: string } | { id: number })[];
 	priority: TCasefilePriority;
@@ -124,7 +125,7 @@ export interface CreateCasePayload {
 	}[];
 }
 
-export interface CreateCaseResponse extends ICasefilePopulated {}
+export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police'> {}
 
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
