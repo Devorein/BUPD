@@ -9,9 +9,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ (github.actor == 'Devorein' && github.head_ref == 'prod') }}
     steps:
       - name: Deploy Server
-        if: ${{ (github.actor == 'Devorein' && github.head_ref == 'staging') }}
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.SSH_HOST }}
