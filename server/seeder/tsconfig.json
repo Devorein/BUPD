@@ -30,18 +30,12 @@
     "types": [
       "node",
       "jest"
-    ],
-    "paths": {
-      "@backend": [
-        "../src/shared.types.ts"
-      ]
-    }
+    ]
   },
   "exclude": [
     "node_modules"
   ],
   "include": [
-    "./index.ts",
-    "./createDb.ts"
+    "./src/**/*.ts"
   ]
 }
