@@ -3,6 +3,8 @@ import './config';
 import RootRouter from './routes';
 import pool from './utils/pool';
 
+export * from './types';
+
 const app = express();
 app.use(express.json());
 

@@ -8,7 +8,7 @@
     "strict": false,
     "skipLibCheck": true,
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "outDir": "./dist",
     "moduleResolution": "node",
     "removeComments": true,

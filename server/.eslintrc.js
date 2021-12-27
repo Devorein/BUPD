@@ -25,5 +25,11 @@ module.exports = {
 		'no-console': 'off',
 		'import/extensions': 'off',
 		'no-lonely-if': 'off',
+		'import/no-unresolved': [
+			2,
+			{
+				ignore: ['bupd-server'],
+			},
+		],
 	},
 };
