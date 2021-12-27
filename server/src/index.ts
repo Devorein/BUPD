@@ -1,5 +1,6 @@
 import express from 'express';
 import './config';
+import logger from './middlewares/logger';
 import RootRouter from './routes';
 import pool from './utils/pool';
 
@@ -7,7 +8,7 @@ export * from './types';
 
 const app = express();
 app.use(express.json());
-
+app.use(logger);
 app.use('/v1', RootRouter);
 
 const PORT = process.env.SERVER_PORT;
