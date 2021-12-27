@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "del-cli ./dist",
     "prepublishOnly": "npm run build && npm run test",
-    "build": "tsc --sourceMap false --declaration false",
+    "build": "tsc --sourceMap false",
     "start": "node dist/index.js",
     "start:watch": "nodemon dist/index.js",
     "build:watch": "tsc -w",
