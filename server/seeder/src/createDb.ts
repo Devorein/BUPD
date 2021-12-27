@@ -1,4 +1,4 @@
-// type "node ./dist/seeder/createDb in terminal and uncomment the last line" to make databases
+import colors from 'colors';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
 import path from 'path';
@@ -20,11 +20,21 @@ export default async function createDb(dbName: string) {
 			password: process.env.DATABASE_PASSWORD,
 		});
 
-		console.log('Connected!');
+		if (!dbName) {
+			throw new Error(colors.bold.red('Database name is required'));
+		}
+		console.log(colors.bold.blue('Connected!'));
 
-		// change db name here
-
-		await connection.query(`create database ${dbName};`);
+		try {
+			console.log(colors.bold.blue(`Creating database ${dbName}`));
+			await connection.query(`create database ${dbName};`);
+		} catch (_) {
+			console.log(
+				colors.bold.blue(`Database ${dbName} already exists, deleting and creating again`)
+			);
+			await connection.query(`DROP database ${dbName}`);
+			await connection.query(`create database ${dbName};`);
+		}
 
 		await connection.query(`use ${dbName};`);
 
@@ -42,6 +52,7 @@ export default async function createDb(dbName: string) {
             PRIMARY KEY (nid)
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created police table`));
 
 		query = `CREATE TABLE Admin (
             id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -51,6 +62,7 @@ export default async function createDb(dbName: string) {
             PRIMARY KEY (id)
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created admin table`));
 
 		query = `CREATE TABLE Casefile (
             case_no INT NOT NULL AUTO_INCREMENT,
@@ -64,6 +76,7 @@ export default async function createDb(dbName: string) {
             PRIMARY KEY (case_no)
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created casefile table`));
 
 		query = `CREATE TABLE Crime_Category (
             category VARCHAR(50) NOT NULL,
@@ -73,6 +86,7 @@ export default async function createDb(dbName: string) {
                 REFERENCES Casefile(case_no) ON DELETE CASCADE
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created crime_category table`));
 
 		query = `CREATE TABLE Crime_Weapon (
             weapon VARCHAR(50) NOT NULL,
@@ -82,6 +96,7 @@ export default async function createDb(dbName: string) {
                 REFERENCES Casefile(case_no) ON DELETE CASCADE
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created crime_weapon table`));
 
 		query = `CREATE TABLE Criminal (
             name VARCHAR(50) NOT NULL,
@@ -103,6 +118,7 @@ export default async function createDb(dbName: string) {
             PRIMARY KEY (case_no, name)
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created victim table`));
 
 		query = `CREATE TABLE Casefile_Criminal (
             case_no INT NOT NULL,
@@ -114,6 +130,7 @@ export default async function createDb(dbName: string) {
             PRIMARY KEY (case_no, criminal_id)
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created casefile_criminal table`));
 
 		query = `CREATE TABLE Access (
             access_id INT NOT NULL AUTO_INCREMENT,
@@ -133,10 +150,12 @@ export default async function createDb(dbName: string) {
             PRIMARY KEY (access_id)
             );`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Created access table`));
 
 		query = `INSERT INTO Admin(email, password) values("${process.env.ADMIN_EMAIL!}", "${process.env
 			.ADMIN_DB_PASS!}");`;
 		await connection.query(query);
+		console.log(colors.bold.blue(`Inserted admin`));
 		console.log('All queries should be executed successfully now., closing connection...');
 		await connection.end();
 	} catch (err) {
@@ -144,4 +163,3 @@ export default async function createDb(dbName: string) {
 		await connection?.end();
 	}
 }
-// createDb('dev'); // rode
