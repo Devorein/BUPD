@@ -165,7 +165,7 @@ export interface IAccessFilter {
 	access_type: TAccessType;
 }
 
-export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1, 1];
+export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];
 
 export interface IPoliceFilter {
 	designation?: string;
