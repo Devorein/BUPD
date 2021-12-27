@@ -28,7 +28,7 @@ interface CreateCasefileSeederOptions {
 	minCriminalsPerCase?: number;
 }
 
-export async function createCaseFile(
+export async function createCasefile(
 	policeTokens: string[],
 	seederOptions: CreateCasefileSeederOptions
 ) {
