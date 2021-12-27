@@ -35,7 +35,7 @@ const CasefileController = {
 					existingCriminalIds.push(criminal.id);
 					allCriminalIds.push(criminal.id);
 				} else {
-					newCriminalPayloads.push(criminal);
+					newCriminalPayloads.push({ name: criminal.name, photo: criminal.photo ?? null });
 				}
 			});
 
@@ -145,6 +145,7 @@ const CasefileController = {
           CF.case_no = ${maxCaseNo};
       `)) as [RowDataPacket[], FieldPacket[]];
 			await connection.commit();
+			connection.release();
 			res.json({
 				status: 'success',
 				data: {

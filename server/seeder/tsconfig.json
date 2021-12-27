@@ -7,8 +7,8 @@
     ],
     "strict": false,
     "skipLibCheck": true,
-    "sourceMap": true,
-    "declaration": true,
+    "sourceMap": false,
+    "declaration": false,
     "outDir": "./dist",
     "moduleResolution": "node",
     "removeComments": true,
@@ -25,23 +25,16 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "incremental": false,
     "types": [
-      "node",
-      "jest"
-    ],
-    "paths": {
-      "@backend": [
-        "../src/shared.types.ts"
-      ]
-    }
+      "node"
+    ]
   },
   "exclude": [
     "node_modules"
   ],
   "include": [
-    "./index.ts",
-    "./createDb.ts"
+    "./src/**/*.ts"
   ]
 }

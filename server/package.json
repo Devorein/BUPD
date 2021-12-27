@@ -1,8 +1,8 @@
 {
-  "name": "server",
+  "name": "bupd-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "BUPD Server",
+  "main": "dist/index.js",
   "scripts": {
     "prebuild": "del-cli ./dist",
     "prepublishOnly": "npm run build && npm run test",
