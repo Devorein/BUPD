@@ -13,10 +13,11 @@ import {
 	UpdatePoliceResponse,
 } from '../types';
 import { generateCountQuery, generatePoliceJwtToken, query, removeFields } from '../utils';
+import { VALID_REGEX } from '../utils/validate';
 
 const PoliceRequest = {
 	update: yup.object().shape({
-		email: yup.string().email(),
+		email: yup.string().email({ regex: VALID_REGEX }),
 		phone: yup.string().nullable(),
 		address: yup.string().nullable(),
 		designation: yup.string().nullable(),
@@ -35,10 +36,13 @@ const PoliceRequest = {
 				(arr) =>
 					arr === undefined ||
 					(arr.length === 2 &&
-						arr[0].match(/^designation$|^rank$|^name$/) &&
+						arr[0].match(/^(designation|rank|name)$/) &&
 						(arr[1] === -1 || arr[1] === 1))
 			),
 		limit: yup.number(),
+	}),
+	delete: yup.object().shape({
+		nid: yup.number().min(10000).required(),
 	}),
 };
 

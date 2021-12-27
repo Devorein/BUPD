@@ -7,7 +7,8 @@ const validateReq =
 	async (req: Request, res: Response<ErrorApiResponse>, next: NextFunction) => {
 		try {
 			// throws an error if not valid
-			await resourceSchema.validate(req.body);
+			const validatedReq = await resourceSchema.validate(req.body);
+			req.body = validatedReq;
 			next();
 		} catch (err) {
 			res.status(400).json({
