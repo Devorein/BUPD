@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import mysql from 'mysql2';
 import path from 'path';
+import { createCaseFile } from './createCasefile';
 import { createPolices } from './createPolices';
 import { loginPolices } from './loginPolices';
 import { handleRequest } from './utils';
@@ -39,6 +40,12 @@ connection.connect(async (err) => {
 			const adminToken = loginResponse.token;
 			const polices = await createPolices(5, adminToken);
 			const loginPoliceResponses = await loginPolices(polices);
+			createCaseFile(
+				loginPoliceResponses.map((loginPoliceResponse) => loginPoliceResponse.token),
+				{
+					totalCaseFiles: 50,
+				}
+			);
 			console.log(polices);
 			fs.writeFileSync(path.join(__dirname, 'polices.json'), JSON.stringify(polices), 'utf-8');
 			connection.destroy();

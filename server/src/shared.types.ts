@@ -114,7 +114,7 @@ export interface CreateCasefilePayload {
 	time: number;
 	status?: TCasefileStatus | null;
 	location: string;
-	criminals: ({ name: string; photo: string } | { id: number })[];
+	criminals: ({ name: string; photo?: string } | { id: number })[];
 	priority: TCasefilePriority;
 	victims: {
 		name: string;

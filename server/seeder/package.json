@@ -12,11 +12,12 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.24.0",
+    "bupd-server": "0.0.0",
     "colors": "^1.4.0",
+    "dayjs": "^1.10.7",
     "dotenv": "^10.0.0",
     "faker": "^5.5.3",
-    "mysql2": "^2.3.3",
-    "bupd-server": "0.0.0"
+    "mysql2": "^2.3.3"
   },
   "devDependencies": {
     "@types/faker": "^5.5.9",
