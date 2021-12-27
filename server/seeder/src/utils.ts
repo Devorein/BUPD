@@ -37,3 +37,9 @@ export async function promiseAll<Data>(promises: Promise<Data>[]) {
 		process.exit(0);
 	}
 }
+
+export function sleep(milliseconds: number) {
+	return new Promise((resolve) => {
+		setTimeout(() => resolve(null), milliseconds);
+	});
+}

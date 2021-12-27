@@ -40,13 +40,12 @@ connection.connect(async (err) => {
 			const adminToken = loginResponse.token;
 			const polices = await createPolices(5, adminToken);
 			const loginPoliceResponses = await loginPolices(polices);
-			createCaseFile(
+			await createCaseFile(
 				loginPoliceResponses.map((loginPoliceResponse) => loginPoliceResponse.token),
 				{
 					totalCaseFiles: 50,
 				}
 			);
-			console.log(polices);
 			fs.writeFileSync(path.join(__dirname, 'polices.json'), JSON.stringify(polices), 'utf-8');
 			connection.destroy();
 		} catch (error) {

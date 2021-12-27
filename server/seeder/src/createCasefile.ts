@@ -1,7 +1,7 @@
 import { CreateCasefilePayload, CreateCasefileResponse, TCasefilePriority } from 'bupd-server';
 import dayjs from 'dayjs';
 import faker from 'faker';
-import { handleRequest } from './utils';
+import { handleRequest, sleep } from './utils';
 
 const crimeWeapons = [
 	'Machete',
@@ -34,8 +34,8 @@ export async function createCaseFile(
 ) {
 	try {
 		const {
-			maxCriminalsPerCase,
-			minCriminalsPerCase,
+			maxCriminalsPerCase = 5,
+			minCriminalsPerCase = 1,
 			totalCaseFiles,
 			maxCrimeCategoriesPerCase = 3,
 			maxCrimeWeaponsPerCase = 3,
@@ -85,10 +85,9 @@ export async function createCaseFile(
 						max: 50,
 						min: 10,
 					}),
-					description: faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 5 })),
+					description: faker.lorem.lines(faker.datatype.number({ min: 1, max: 3 })),
 					phone_no: faker.phone.phoneNumber(),
 				});
-				categories.push(faker.random.arrayElement(crimeCategories));
 			}
 
 			const criminals: CreateCasefilePayload['criminals'] = [];
@@ -103,12 +102,12 @@ export async function createCaseFile(
 				await handleRequest<CreateCasefileResponse, CreateCasefilePayload>(
 					`/casefile`,
 					{
-						categories,
+						categories: Array.from(new Set(categories)),
 						criminals,
 						location: `${faker.address.streetAddress()} ${faker.address.city()}`,
 						priority: faker.random.arrayElement(casePriorities),
 						victims,
-						weapons,
+						weapons: Array.from(new Set(weapons)),
 						time: faker.datatype.number({
 							min: new Date(dayjs().subtract(1, 'year').toDate()).getTime(),
 							max: Date.now(),
@@ -117,6 +116,8 @@ export async function createCaseFile(
 					policeToken
 				)
 			);
+			await sleep(500);
+			console.log(`Created case ${caseNumber + 1}`);
 		}
 
 		return createCasefileResponses;
