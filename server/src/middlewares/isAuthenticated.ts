@@ -8,7 +8,6 @@ export default function isAuthenticated(
 	next: NextFunction
 ) {
 	const { headers } = req;
-
 	if (!headers.authorization) {
 		res.json({
 			status: 'error',
@@ -31,7 +30,8 @@ export default function isAuthenticated(
 				const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 				req.jwt_payload = decoded;
 				next();
-			} catch (_) {
+			} catch (err) {
+				console.log(err)
 				res.json({
 					status: 'error',
 					message: 'Not authenticated',

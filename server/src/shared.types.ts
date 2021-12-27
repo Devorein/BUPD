@@ -17,9 +17,9 @@ export interface IPolice {
 }
 
 export interface ICriminal {
-	id: number;
+	criminal_id: number;
 	name: string;
-	photo: string;
+	photo: string | null;
 }
 
 export interface IVictim {
@@ -73,7 +73,7 @@ export interface ICasefile {
 	police_nid: number;
 }
 
-export interface ICasefilePopulated extends Omit<ICasefile, 'case_time' | 'crime_time'> {
+export interface ICasefilePopulated extends ICasefile {
 	time: string;
 	weapons: ICrimeWeapon[];
 	categories: ICrimeCategory[];
@@ -108,12 +108,13 @@ export interface LoginPayload {
 }
 export type LoginResponse = (IPolice | IAdmin) & { token: string };
 
-export interface CreateCasePayload {
+export interface CreateCasefilePayload {
 	categories: string[];
 	weapons: string[];
 	time: number;
+	status?: TCasefileStatus | null;
 	location: string;
-	criminals: ({ name: string; photo: string } | { id: number })[];
+	criminals: ({ name: string; photo?: string } | { id: number })[];
 	priority: TCasefilePriority;
 	victims: {
 		name: string;
@@ -124,7 +125,7 @@ export interface CreateCasePayload {
 	}[];
 }
 
-export interface CreateCaseResponse extends ICasefilePopulated {}
+export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police'> {}
 
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
@@ -158,6 +159,14 @@ export interface PoliceJwtPayload
 
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
 
+export interface IAccessFilter {
+	approved: boolean;
+	permission: TAccessPermission[];
+	access_type: TAccessType;
+}
+
+export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];
+
 export interface IPoliceFilter {
 	designation?: string;
 	rank?: string;
@@ -165,16 +174,29 @@ export interface IPoliceFilter {
 
 export type IPoliceSort = ['designation' | 'rank' | 'name', -1 | 1];
 
-export interface IPoliceQuery<Filter = Partial<IPolice>> {
+export interface IQuery<Filter, Sort> {
 	filter: Filter;
-	sort: IPoliceSort;
+	sort: Sort;
 	limit: number;
 }
 
-export interface GetPolicesPayload extends IPoliceQuery<IPoliceFilter> {}
+export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}
+
 
 export interface DeletePolicePayload {
 	nid: number;
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
+
+export interface GetAccessPayload extends IQuery<IAccessFilter, IPoliceSort> {}
+export type GetAccessResponse = ApiResponse<PaginatedResponse<IAccess>>;
+
+export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
+
+export interface CreateAccessPayload {
+	case_no: number | null;
+	criminal_id: number | null;
+	permission: AccessPermission;
+}
+export interface CreateAccessResponse {}

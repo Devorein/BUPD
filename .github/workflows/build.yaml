@@ -1,8 +1,6 @@
 name: Lint, Build and Test Server
 
 on:
-  push:
-    branches: ["staging"]
   pull_request:
     branches: ["staging"]
 
@@ -18,7 +16,22 @@ jobs:
       - name: Lint, Build and Test Server
         run: |
           cd server
+          # Install server dependencies
           npm install
-          npm run lint
+          # Build server, required for seeder
           npm run build
+
+          # Install bupd-server globally
+          npm install -g
+          cd seeder
+          # Install seeder dependencies
+          npm install
+          # Linking bupd-server
+          npm link bupd-server
+          # Build seeder
+          npm run build
+
+          # Go back to server root
+          cd ../
+          npm run lint
           npm run test

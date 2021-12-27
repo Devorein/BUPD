@@ -1,9 +1,12 @@
 import { WhereClauseQuery } from '../../shared.types';
-import { generateSelectQuery, query } from '../../utils';
+import { generateSelectQuery, pool } from '../../utils';
 
 export default async function find<Row>(
 	whereClauseQuery: Partial<WhereClauseQuery>,
 	table: string
 ) {
-	return (await query(generateSelectQuery(whereClauseQuery, table))) as Array<Row>;
+	const connection = await pool.getConnection();
+	const response = await connection.query(generateSelectQuery(whereClauseQuery, table));
+	connection.release();
+	return response[0] as Array<Row>;
 }

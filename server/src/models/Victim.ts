@@ -1,10 +1,12 @@
 import { IVictim } from '../shared.types';
 import { generateInsertQuery } from '../utils/generateQueries';
-import query from '../utils/query';
+import pool from '../utils/pool';
 
 const VictimController = {
 	async create(payload: IVictim): Promise<IVictim> {
-		await query(generateInsertQuery<IVictim>(payload, 'Victim'));
+		const connection = await pool.getConnection();
+		await connection.query(generateInsertQuery<IVictim>(payload, 'Victim'));
+		connection.release();
 		return payload;
 	},
 };

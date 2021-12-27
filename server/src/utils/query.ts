@@ -1,19 +1,8 @@
-import connection from './connect';
+import pool from './pool';
 
-/**
- * A wrapper around connection.query to make it async/await compatible
- * @param queryString SQL statement to execute
- * @param values array of values to be escaped
- * @returns A promise that either resolves with the response or reject with error
- */
-export default function query(queryString: string, values?: any[]) {
-	return new Promise((resolve, reject) => {
-		connection.query({ sql: queryString, values }, (err, rows) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(rows);
-			}
-		});
-	});
+export default async function query(sqlString: string) {
+	const connection = await pool.getConnection();
+	const response = await connection.query(sqlString);
+	connection.release();
+	return response;
 }

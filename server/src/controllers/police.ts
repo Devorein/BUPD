@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { RowDataPacket } from 'mysql2';
+import * as yup from 'yup';
 import { PoliceModel } from '../models';
 import {
 	ApiResponse,
@@ -11,6 +13,38 @@ import {
 	UpdatePoliceResponse,
 } from '../types';
 import { generateCountQuery, generatePoliceJwtToken, query, removeFields } from '../utils';
+import { VALID_REGEX } from '../utils/validate';
+
+const PoliceRequest = {
+	update: yup.object().shape({
+		email: yup.string().email({ regex: VALID_REGEX }),
+		phone: yup.string().nullable(),
+		address: yup.string().nullable(),
+		designation: yup.string().nullable(),
+		nid: yup.number().min(10000),
+		name: yup.string(),
+		rank: yup.string(),
+	}),
+	get: yup.object().shape({
+		filter: yup.object({
+			designation: yup.string(),
+			rank: yup.string(),
+		}),
+		sort: yup
+			.array()
+			.test(
+				(arr) =>
+					arr === undefined ||
+					(arr.length === 2 &&
+						arr[0].match(/^(designation|rank|name)$/) &&
+						(arr[1] === -1 || arr[1] === 1))
+			),
+		limit: yup.number(),
+	}),
+	delete: yup.object().shape({
+		nid: yup.number().min(10000).required(),
+	}),
+};
 
 const PoliceController = {
 	async update(
@@ -59,7 +93,7 @@ const PoliceController = {
 		const polices = await PoliceModel.find(req.body);
 		const policeCount = (await query(
 			generateCountQuery({ filter: req.body?.filter }, 'Police')
-		)) as Array<{ count: number }>;
+		)) as RowDataPacket[];
 
 		if (polices) {
 			res.json({
@@ -67,7 +101,7 @@ const PoliceController = {
 				data: {
 					items: polices,
 					next: null,
-					total: policeCount[0].count,
+					total: policeCount[0][0]?.count,
 				},
 			});
 		}
@@ -91,4 +125,4 @@ const PoliceController = {
 	},
 };
 
-export default PoliceController;
+export { PoliceRequest, PoliceController };

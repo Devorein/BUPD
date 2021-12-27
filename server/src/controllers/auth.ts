@@ -1,5 +1,6 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
+import * as yup from 'yup';
 import { AdminModel, PoliceModel } from '../models';
 import {
 	AdminJwtPayload,
@@ -19,9 +20,31 @@ import {
 	signToken,
 	validateEmail,
 	validatePassword,
+	VALID_REGEX,
 } from '../utils';
 
-export default {
+const AuthRequest = {
+	register: yup.object().shape({
+		email: yup.string().email({ regex: VALID_REGEX }).required(),
+		phone: yup.string().nullable(),
+		address: yup.string().nullable(),
+		designation: yup.string().nullable(),
+		nid: yup.number().min(10000).required(),
+		name: yup.string().required(),
+		rank: yup.string().required(),
+		password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
+	}),
+	login: yup.object().shape({
+		password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
+		email: yup.string().email({ regex: VALID_REGEX }).required(),
+		as: yup.string().oneOf(['police', 'admin']).default('police'),
+	}),
+	delete: yup.object().shape({
+		nid: yup.number().min(10000).required(),
+	}),
+};
+
+const AuthController = {
 	login: async (
 		req: Request<any, any, LoginPayload>,
 		res: Response<ApiResponse<LoginResponse>>
@@ -134,6 +157,7 @@ export default {
 				'phone',
 				'rank',
 			]);
+
 			if (nonExistentFields.length !== 0) {
 				res.json({
 					status: 'error',
@@ -245,3 +269,5 @@ export default {
 		}
 	},
 };
+
+export { AuthController, AuthRequest };
