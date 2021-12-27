@@ -159,6 +159,14 @@ export interface PoliceJwtPayload
 
 export type JwtPayload = PoliceJwtPayload | AdminJwtPayload;
 
+export interface IAccessFilter {
+	approved: boolean;
+	permission: TAccessPermission[];
+	access_type: TAccessType;
+}
+
+export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1, 1];
+
 export interface IPoliceFilter {
 	designation?: string;
 	rank?: string;
@@ -166,19 +174,23 @@ export interface IPoliceFilter {
 
 export type IPoliceSort = ['designation' | 'rank' | 'name', -1 | 1];
 
-export interface IPoliceQuery<Filter = Partial<IPolice>> {
+export interface IQuery<Filter, Sort> {
 	filter: Filter;
-	sort: IPoliceSort;
+	sort: Sort;
 	limit: number;
 }
 
-export interface GetPolicesPayload extends IPoliceQuery<IPoliceFilter> {}
+export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}
+
 
 export interface DeletePolicePayload {
 	nid: number;
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
+
+export interface GetAccessPayload extends IQuery<IAccessFilter, IPoliceSort> {}
+export type GetAccessResponse = ApiResponse<PaginatedResponse<IAccess>>;
 
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
 
