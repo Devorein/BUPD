@@ -18,6 +18,9 @@ jobs:
           cd server
           # Install server dependencies
           npm install
+          # Build server, required for seeder
+          npm run build
+
           # Install bupd-server globally
           npm install -g
           cd seeder
@@ -27,8 +30,8 @@ jobs:
           npm install
           # Build seeder
           npm run build
+
           # Go back to server root
           cd ../
           npm run lint
-          npm run build
           npm run test
