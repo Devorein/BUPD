@@ -18,6 +18,12 @@ PoliceRouter.get(
 	isAuthorized(['admin', 'police']),
 	PoliceController.get
 );
-PoliceRouter.delete('/', isAuthenticated, isAuthorized(['admin']), PoliceController.delete);
+PoliceRouter.delete(
+	'/',
+	validateReq(PoliceRequest.delete),
+	isAuthenticated,
+	isAuthorized(['admin']),
+	PoliceController.delete
+);
 
 export default PoliceRouter;
