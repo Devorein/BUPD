@@ -29,27 +29,27 @@ export default async function createDb(dbName: string) {
 		await connection.query(`use ${dbName};`);
 
 		let query = `CREATE TABLE Police (
-        nid int NOT NULL,
-        name varchar(255) NOT NULL,
-        password varchar(255) NOT NULL,
-        email varchar(50) NOT NULL,
-        address varchar(250),
-        designation varchar(250),
-        phone varchar(25),
-        -- Need to use backtics around rank as its a reserved keyword in MySQL 8
-        \`rank\` varchar(100) NOT NULL,
-        UNIQUE (email),
-        PRIMARY KEY (nid)
-      );`;
+            nid int NOT NULL,
+            name varchar(255) NOT NULL,
+            password varchar(255) NOT NULL,
+            email varchar(50) NOT NULL,
+            address varchar(250),
+            designation varchar(250),
+            phone varchar(25),
+            -- Need to use backtics around rank as its a reserved keyword in MySQL 8
+            \`rank\` varchar(100) NOT NULL,
+            UNIQUE (email),
+            PRIMARY KEY (nid)
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Admin (
-        id MEDIUMINT NOT NULL AUTO_INCREMENT,
-        email varchar(50) NOT NULL,
-        password varchar(255) NOT NULL,
-        UNIQUE (email),
-        PRIMARY KEY (id)
-      );`;
+            id MEDIUMINT NOT NULL AUTO_INCREMENT,
+            email varchar(50) NOT NULL,
+            password varchar(255) NOT NULL,
+            UNIQUE (email),
+            PRIMARY KEY (id)
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Casefile (
@@ -58,71 +58,80 @@ export default async function createDb(dbName: string) {
             location VARCHAR(250) NOT NULL,
             priority VARCHAR(10),
             time DATETIME NOT NULL,
-            police_nid INT NOT NULL,
-            FOREIGN KEY (police_nid) REFERENCES Police(nid),
+            police_nid INT,
+            FOREIGN KEY (police_nid) 
+                REFERENCES Police(nid) ON DELETE SET NULL,
             PRIMARY KEY (case_no)
             );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Crime_Category (
-        category VARCHAR(50) NOT NULL,
-        case_no INT NOT NULL,
-        PRIMARY KEY(category, case_no),
-        FOREIGN KEY (case_no) REFERENCES Casefile(case_no)
-        );`;
+            category VARCHAR(50) NOT NULL,
+            case_no INT NOT NULL,
+            PRIMARY KEY(category, case_no),
+            FOREIGN KEY (case_no) 
+                REFERENCES Casefile(case_no) ON DELETE CASCADE
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Crime_Weapon (
-        weapon VARCHAR(50) NOT NULL,
-        case_no INT NOT NULL,
-        PRIMARY KEY(weapon, case_no),
-        FOREIGN KEY (case_no) REFERENCES Casefile(case_no)
-        );`;
+            weapon VARCHAR(50) NOT NULL,
+            case_no INT NOT NULL,
+            PRIMARY KEY(weapon, case_no),
+            FOREIGN KEY (case_no) 
+                REFERENCES Casefile(case_no) ON DELETE CASCADE
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Criminal (
-        name VARCHAR(50) NOT NULL,
-        criminal_id INT NOT NULL AUTO_INCREMENT,
-        photo VARCHAR(255),
-        PRIMARY KEY (criminal_id)
-        );`;
+            name VARCHAR(50) NOT NULL,
+            criminal_id INT NOT NULL AUTO_INCREMENT,
+            photo VARCHAR(255),
+            PRIMARY KEY (criminal_id)
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Victim (
-        case_no INT NOT NULL,
-        name VARCHAR(50),
-        address VARCHAR(255),
-        age INT,
-        phone_no VARCHAR(50),
-        description VARCHAR(500),
-        FOREIGN KEY (case_no) REFERENCES Casefile(case_no),
-        PRIMARY KEY (case_no, name)
-        );`;
+            case_no INT NOT NULL,
+            name VARCHAR(50),
+            address VARCHAR(255),
+            age INT,
+            phone_no VARCHAR(50),
+            description VARCHAR(500),
+            FOREIGN KEY (case_no)
+                REFERENCES Casefile(case_no) ON DELETE CASCADE,
+            PRIMARY KEY (case_no, name)
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Casefile_Criminal (
-        case_no INT NOT NULL,
-        criminal_id INT NOT NULL,
-        FOREIGN KEY (case_no) REFERENCES Casefile(case_no),
-        FOREIGN KEY (criminal_id) REFERENCES Criminal(criminal_id ),
-        PRIMARY KEY (case_no, criminal_id)
-        );`;
+            case_no INT NOT NULL,
+            criminal_id INT NOT NULL,
+            FOREIGN KEY (case_no)
+                REFERENCES Casefile(case_no) ON DELETE CASCADE,
+            FOREIGN KEY (criminal_id) 
+                REFERENCES Criminal(criminal_id ) ON DELETE CASCADE,
+            PRIMARY KEY (case_no, criminal_id)
+            );`;
 		await connection.query(query);
 
 		query = `CREATE TABLE Access (
-        access_id INT NOT NULL AUTO_INCREMENT,
-        permission VARCHAR(10) NOT NULL,
-        approved BOOLEAN NOT NULL,
-        police_nid INT NOT NULL,
-        type VARCHAR(10) NOT NULL,
-        criminal_id INT,
-        case_no INT,
-        admin_id MEDIUMINT,
-        FOREIGN KEY (case_no) REFERENCES Casefile(case_no),
-        FOREIGN KEY (criminal_id) REFERENCES Criminal(criminal_id),
-        FOREIGN KEY (admin_id) REFERENCES Admin(id),
-        PRIMARY KEY (access_id)
-        );`;
+            access_id INT NOT NULL AUTO_INCREMENT,
+            permission VARCHAR(10) NOT NULL,
+            approved BOOLEAN NOT NULL,
+            police_nid INT NOT NULL,
+            type VARCHAR(10) NOT NULL,
+            criminal_id INT,
+            case_no INT,
+            admin_id MEDIUMINT,
+            FOREIGN KEY (case_no)
+                REFERENCES Casefile(case_no) ON DELETE CASCADE,
+            FOREIGN KEY (criminal_id)
+              REFERENCES Criminal(criminal_id) ON DELETE CASCADE,
+            FOREIGN KEY (admin_id)
+                REFERENCES Admin(id),
+            PRIMARY KEY (access_id)
+            );`;
 		await connection.query(query);
 
 		query = `INSERT INTO Admin(email, password) values("${process.env.ADMIN_EMAIL!}", "${process.env
@@ -135,4 +144,4 @@ export default async function createDb(dbName: string) {
 		await connection?.end();
 	}
 }
-// createDb('test'); //rode
+// createDb('dev'); // rode
