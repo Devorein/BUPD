@@ -145,6 +145,7 @@ const CasefileController = {
           CF.case_no = ${maxCaseNo};
       `)) as [RowDataPacket[], FieldPacket[]];
 			await connection.commit();
+			connection.end();
 			res.json({
 				status: 'success',
 				data: {

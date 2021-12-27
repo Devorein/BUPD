@@ -4,7 +4,7 @@ import colors from 'colors';
 import faker from 'faker';
 import { handleRequest, promiseAll } from './utils';
 
-export async function createPolice(TOTAL_POLICES: number, adminToken: string) {
+export async function createPolices(TOTAL_POLICES: number, adminToken: string) {
 	const policeRanks = [
 		'Constable',
 		'Assistant Sub Inspector',

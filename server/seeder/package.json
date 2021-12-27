@@ -15,7 +15,8 @@
     "colors": "^1.4.0",
     "dotenv": "^10.0.0",
     "faker": "^5.5.3",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "bupd-server": "0.0.0"
   },
   "devDependencies": {
     "@types/faker": "^5.5.9",

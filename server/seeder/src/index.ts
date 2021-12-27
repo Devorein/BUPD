@@ -5,7 +5,8 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import mysql from 'mysql2';
 import path from 'path';
-import { createPolice } from './police';
+import { createPolices } from './createPolices';
+import { loginPolices } from './loginPolices';
 import { handleRequest } from './utils';
 
 dotenv.config({
@@ -36,7 +37,8 @@ connection.connect(async (err) => {
 				password: process.env.ADMIN_PASSWORD!,
 			});
 			const adminToken = loginResponse.token;
-			const polices = await createPolice(5, adminToken);
+			const polices = await createPolices(5, adminToken);
+			const loginPoliceResponses = await loginPolices(polices);
 			console.log(polices);
 			fs.writeFileSync(path.join(__dirname, 'polices.json'), JSON.stringify(polices), 'utf-8');
 			connection.destroy();
