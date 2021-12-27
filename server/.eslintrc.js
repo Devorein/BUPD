@@ -25,11 +25,19 @@ module.exports = {
 		'no-console': 'off',
 		'import/extensions': 'off',
 		'no-lonely-if': 'off',
-		'import/no-unresolved': [
-			2,
-			{
-				ignore: ['bupd-server'],
-			},
-		],
 	},
+	overrides: [
+		{
+			files: ['./seeder/**/*.ts'],
+			rules: {
+				'import/no-unresolved': [
+					2,
+					{
+						ignore: ['bupd-server'],
+					},
+				],
+				'import/no-extraneous-dependencies': 'off',
+			},
+		},
+	],
 };
