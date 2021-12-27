@@ -1,7 +1,16 @@
 import { Request, Response } from 'express';
-import { CreateAccessPayload, CreateAccessResponse, IAccess } from '../shared.types';
+import { RowDataPacket } from 'mysql2';
+import AccessModel from '../models/Access';
+
+import {
+	CreateAccessPayload,
+	CreateAccessResponse,
+	GetAccessPayload,
+	GetAccessResponse,
+	IAccess,
+} from '../shared.types';
 import { ApiResponse, PoliceJwtPayload } from '../types';
-import { generateInsertQuery, query } from '../utils';
+import { generateCountQuery, generateInsertQuery, query } from '../utils';
 
 export default {
 	create: async (
@@ -32,5 +41,19 @@ export default {
 				message: 'Something went wrong. Please try again.',
 			});
 		}
+	},
+	find: async (req: Request<any, any, GetAccessPayload>, res: Response<GetAccessResponse>) => {
+		const access = await AccessModel.find(req.body);
+		const accessCount = (await query(
+			generateCountQuery({ filter: req.body?.filter }, 'Access')
+		)) as RowDataPacket[];
+		res.json({
+			status: 'success',
+			data: {
+				total: accessCount[0][0]?.count,
+				items: access,
+				next: null,
+			},
+		});
 	},
 };
