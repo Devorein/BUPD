@@ -24,10 +24,10 @@ jobs:
           # Install bupd-server globally
           npm install -g
           cd seeder
-          # Linking bupd-server
-          npm link bupd-server
           # Install seeder dependencies
           npm install
+          # Linking bupd-server
+          npm link bupd-server
           # Build seeder
           npm run build
 
