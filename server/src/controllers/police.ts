@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { RowDataPacket } from 'mysql2';
+import * as yup from 'yup';
 import { PoliceModel } from '../models';
 import {
 	ApiResponse,
@@ -12,6 +13,34 @@ import {
 	UpdatePoliceResponse,
 } from '../types';
 import { generateCountQuery, generatePoliceJwtToken, query, removeFields } from '../utils';
+
+const PoliceRequest = {
+	update: yup.object().shape({
+		email: yup.string().email(),
+		phone: yup.string().nullable(),
+		address: yup.string().nullable(),
+		designation: yup.string().nullable(),
+		nid: yup.number(),
+		name: yup.string(),
+		rank: yup.string(),
+	}),
+	get: yup.object().shape({
+		filter: yup.object({
+			designation: yup.string(),
+			rank: yup.string(),
+		}),
+		sort: yup
+			.array()
+			.test(
+				(arr) =>
+					arr === undefined ||
+					(arr.length === 2 &&
+						arr[0].match(/^designation$|^rank$|^name$/) &&
+						(arr[1] === -1 || arr[1] === 1))
+			),
+		limit: yup.number(),
+	}),
+};
 
 const PoliceController = {
 	async update(
@@ -92,4 +121,4 @@ const PoliceController = {
 	},
 };
 
-export default PoliceController;
+export { PoliceRequest, PoliceController };

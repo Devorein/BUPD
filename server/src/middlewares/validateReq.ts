@@ -1,18 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
-import { AnySchema } from 'yup';
+import { BaseSchema } from 'yup';
 import { ErrorApiResponse } from '../types';
 
 const validateReq =
-	(resourceSchema: AnySchema) =>
+	(resourceSchema: BaseSchema) =>
 	async (req: Request, res: Response<ErrorApiResponse>, next: NextFunction) => {
 		try {
 			// throws an error if not valid
 			await resourceSchema.validate(req.body);
 			next();
 		} catch (err) {
-			res.json({
+			res.status(400).json({
 				status: 'error',
-				message: err.message,
+				message: 'Bad Request',
 			});
 		}
 	};
