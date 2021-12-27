@@ -26,7 +26,6 @@ const PoliceRequest = {
 		phone: yup.string().nullable(),
 		address: yup.string().nullable(),
 		designation: yup.string().nullable(),
-		nid: yup.number().min(10000),
 		name: yup.string(),
 		rank: yup.string(),
 	}),
