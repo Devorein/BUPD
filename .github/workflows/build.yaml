@@ -16,7 +16,19 @@ jobs:
       - name: Lint, Build and Test Server
         run: |
           cd server
+          # Install server dependencies
           npm install
+          # Install bupd-server globally
+          npm install -g
+          cd seeder
+          # Linking bupd-server
+          npm link bupd-server
+          # Install seeder dependencies
+          npm install
+          # Build seeder
+          npm run build
+          # Go back to server root
+          cd ../
           npm run lint
           npm run build
           npm run test
