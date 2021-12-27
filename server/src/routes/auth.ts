@@ -1,11 +1,11 @@
 import express from 'express';
 import { AuthController, AuthRequest } from '../controllers';
-import { isAuthenticated, isAuthorized, validateReq } from '../middlewares';
+import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const AuthRouter = express.Router();
 
-AuthRouter.post('/login', validateReq(AuthRequest.login), AuthController.login);
-AuthRouter.post('/register', validateReq(AuthRequest.register), AuthController.register);
+AuthRouter.post('/login', validatePayload(AuthRequest.login), AuthController.login);
+AuthRouter.post('/register', validatePayload(AuthRequest.register), AuthController.register);
 AuthRouter.get(
 	'/currentUser',
 	isAuthenticated,
