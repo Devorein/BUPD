@@ -124,6 +124,8 @@ export interface CreateCasefilePayload {
 		description?: string | null;
 	}[];
 }
+export interface UpdateCasefilePayload extends Exclude<ICasefile, 'case_no'> {}
+export interface UpdateCasefileResponse extends ICasefile {}
 
 export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police'> {}
 

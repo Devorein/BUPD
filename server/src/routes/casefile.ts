@@ -4,6 +4,7 @@ import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const CasefileRouter = express.Router();
 
+CasefileRouter.put('/', isAuthenticated, isAuthorized(['police']), CasefileController.update);
 CasefileRouter.post(
 	'/',
 	validatePayload(CasefilePayload.create),
