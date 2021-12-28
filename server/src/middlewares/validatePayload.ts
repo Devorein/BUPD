@@ -12,6 +12,7 @@ const validatePayload =
 			req.body = validatedPayload;
 			next();
 		} catch (err) {
+			console.log(err.message);
 			handleError(res, 400, 'Bad Request');
 		}
 	};

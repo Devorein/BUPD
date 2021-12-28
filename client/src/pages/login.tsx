@@ -51,12 +51,15 @@ function FormikForm(props: FormikFormProps) {
             onError(response) {
               enqueueSnackbar((response as any).message, { variant: 'error' });
             },
+            onSettled() {
+              setIsLoggingIn(false);
+            }
           }
         );
       } catch (err: any) {
         enqueueSnackbar(err.message, { variant: 'error' });
+        setIsLoggingIn(false);
       }
-      setIsLoggingIn(false);
     }}
   >
     {({ isSubmitting, isValid }) => (

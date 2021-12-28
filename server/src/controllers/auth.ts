@@ -23,24 +23,33 @@ import {
 } from '../utils';
 
 const AuthRequest = {
-	register: yup.object().shape({
-		email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
-		phone: yup.string().nullable(),
-		address: yup.string().nullable(),
-		designation: yup.string().nullable(),
-		nid: yup.number().min(10000).required(),
-		name: yup.string().required(),
-		rank: yup.string().required(),
-		password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
-	}),
-	login: yup.object().shape({
-		password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
-		email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
-		as: yup.string().oneOf(['police', 'admin']).default('police'),
-	}),
-	delete: yup.object().shape({
-		nid: yup.number().min(10000).required(),
-	}),
+	register: yup
+		.object()
+		.shape({
+			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
+			phone: yup.string().nullable(),
+			address: yup.string().nullable(),
+			designation: yup.string().nullable(),
+			nid: yup.number().min(10000).required(),
+			name: yup.string().required(),
+			rank: yup.string().required(),
+			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
+		})
+		.strict(),
+	login: yup
+		.object()
+		.shape({
+			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
+			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
+			as: yup.string().oneOf(['police', 'admin']).default('police'),
+		})
+		.strict(),
+	delete: yup
+		.object()
+		.shape({
+			nid: yup.number().min(10000).required(),
+		})
+		.strict(),
 };
 
 const AuthController = {

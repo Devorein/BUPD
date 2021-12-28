@@ -55,12 +55,15 @@ export default function Register() {
                 onError(response) {
                   enqueueSnackbar((response as any).message, { variant: 'error' });
                 },
+                onSettled() {
+                  setIsRegistering(false);
+                }
               }
             );
           } catch (err: any) {
             enqueueSnackbar(err.message, { variant: 'error' });
+            setIsRegistering(false);
           }
-          setIsRegistering(false);
         }}
       >
         {({ isSubmitting, isValid }) => (
@@ -105,6 +108,7 @@ export default function Register() {
                 name="nid"
                 label="NID"
                 placeholder="123456"
+                type="number"
               />
               <FormikTextInput
                 disabled={isRegistering}
@@ -123,7 +127,7 @@ export default function Register() {
             </div>
             <div className="flex justify-between my-5">
               <Button
-                content="login"
+                content="Register"
                 type="submit"
                 disabled={!isValid || isSubmitting || isRegistering}
               />
