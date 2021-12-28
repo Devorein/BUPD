@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
+import { CasefileModel } from '../models';
 import {
 	ApiResponse,
 	CreateCasefilePayload,
@@ -10,8 +11,10 @@ import {
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
+	UpdateCasefilePayload,
+	UpdateCasefileResponse,
 } from '../shared.types';
-import { generateInsertQuery, pool } from '../utils';
+import { generateInsertQuery, pool, removeFields } from '../utils';
 
 const CasefileController = {
 	async create(
@@ -161,6 +164,43 @@ const CasefileController = {
 			res.json({
 				status: 'error',
 				message: "Couldn't create case file. Please try again.",
+			});
+		}
+	},
+	async update(
+		req: Request<any, any, UpdateCasefilePayload>,
+		res: Response<ApiResponse<UpdateCasefileResponse>>
+	) {
+		try {
+			const payload = req.body;
+			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
+			const [casefile] = await CasefileModel.find({ filter: { case_no: payload.case_no } });
+			if (!casefile) {
+				res.json({
+					status: 'error',
+					message: "Casefile doesn't exist",
+				});
+			} else {
+				await CasefileModel.update(
+					{
+						police_nid: jwtPayload.nid,
+						case_no: payload.case_no,
+					},
+					removeFields(payload, ['case_no'])
+				);
+				res.json({
+					status: 'success',
+					data: {
+						...casefile,
+						...payload,
+					},
+				});
+			}
+		} catch (err) {
+			console.log(err);
+			res.json({
+				status: 'error',
+				message: "Couldn't update the casefile",
 			});
 		}
 	},
