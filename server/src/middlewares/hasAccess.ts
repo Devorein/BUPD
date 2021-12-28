@@ -16,6 +16,7 @@ const hasAccess =
 				switch (accessType) {
 					case 'case':
 						filter = {
+							approved: 1,
 							police_nid: req.jwt_payload.nid,
 							type: accessType,
 							permission: accessPermission,
@@ -24,6 +25,7 @@ const hasAccess =
 						break;
 					default:
 						filter = {
+							approved: 1,
 							police_nid: req.jwt_payload.nid,
 							type: accessType,
 							permission: accessPermission,
@@ -34,7 +36,7 @@ const hasAccess =
 				const test = await AccessModel.find({ filter });
 				console.log(filter, test);
 
-				if (Array.isArray(test[0]) ? test[0].length > 0 : Object.keys(test[0]).length > 0) next();
+				if (Object.keys(test[0]).length > 0) next();
 				else handleError(res, 403, 'Not Authorized');
 			}
 		} catch (_) {
