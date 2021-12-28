@@ -1,6 +1,6 @@
 import { ICasefile, UpdateCasefilePayload, WhereClauseQuery } from '../types';
-import { find } from './utils';
 import { generateUpdateQuery, query } from '../utils';
+import { find } from './utils';
 
 const CasefileModel = {
 	find(whereClauseQuery: WhereClauseQuery) {

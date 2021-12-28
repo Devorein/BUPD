@@ -173,7 +173,6 @@ const CasefileController = {
 	) {
 		try {
 			const payload = req.body;
-			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
 			const [casefile] = await CasefileModel.find({ filter: { case_no: payload.case_no } });
 			if (!casefile) {
 				res.json({
@@ -183,7 +182,6 @@ const CasefileController = {
 			} else {
 				await CasefileModel.update(
 					{
-						police_nid: jwtPayload.nid,
 						case_no: payload.case_no,
 					},
 					removeFields(payload, ['case_no'])
