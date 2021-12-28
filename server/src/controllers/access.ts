@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { RowDataPacket } from 'mysql2';
+import * as yup from 'yup';
 import AccessModel from '../models/Access';
 
 import {
@@ -12,7 +13,38 @@ import {
 import { ApiResponse, PoliceJwtPayload } from '../types';
 import { generateCountQuery, generateInsertQuery, query } from '../utils';
 
-export default {
+const AccessPayload = {
+	get: yup.object().shape({
+		filter: yup.object({
+			approved: yup.boolean(),
+			permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
+			access_type: yup.string().oneOf(['case', 'criminal']),
+		}),
+		sort: yup
+			.array()
+			.test(
+				(arr) =>
+					arr === undefined ||
+					(arr.length === 2 &&
+						arr[0].match(/^(criminal_id|case_no|approved|permission)$/) &&
+						(arr[1] === -1 || arr[1] === 1))
+			),
+		limit: yup.number(),
+	}),
+	create: yup
+		.object()
+		.shape({
+			case_no: yup.number().nullable(),
+			criminal_id: yup.number().nullable(),
+			permission: yup.string().oneOf(['read', 'write', 'update', 'delete']).required(),
+		})
+		.test(
+			(obj) =>
+				(!obj.case_no && Boolean(obj.criminal_id)) || (!obj.criminal_id && Boolean(obj.case_no))
+		),
+};
+
+const AccessController = {
 	create: async (
 		req: Request<any, any, CreateAccessPayload>,
 		res: Response<ApiResponse<CreateAccessResponse>>
@@ -57,3 +89,5 @@ export default {
 		});
 	},
 };
+
+export { AccessController, AccessPayload };

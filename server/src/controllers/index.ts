@@ -1,7 +1,7 @@
 import { AuthController, AuthRequest } from './auth';
 import { CasefileController, CasefilePayload } from './casefile';
 import { PoliceController, PoliceRequest } from './police';
-import AccessController from './access';
+import { AccessController, AccessPayload } from './access';
 
 export {
 	CasefileController,
@@ -11,4 +11,5 @@ export {
 	PoliceController,
 	PoliceRequest,
 	AccessController,
+	AccessPayload,
 };
