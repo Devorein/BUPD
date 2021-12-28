@@ -75,11 +75,25 @@ export function generateTheme() {
 					},
 				},
 			},
+			MuiFormHelperText: {
+				styleOverrides: {
+					root: {
+						'&.Mui-error': {
+							fontWeight: 600,
+							margin: 0,
+							fontSize: '0.857rem',
+							lineHeight: '1.25rem',
+						},
+					},
+				},
+			},
 			MuiTab: {
 				styleOverrides: {
 					textColorPrimary: {
 						'&.MuiButtonBase-root.Mui-selected': {
 							color: 'white',
+							backgroundColor: grey[900],
+							fontWeight: 600,
 						},
 					},
 				},

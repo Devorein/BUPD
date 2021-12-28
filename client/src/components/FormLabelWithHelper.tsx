@@ -12,6 +12,6 @@ export function FormLabelWithHelper(props: FormLabelWithHelperProps) {
 
   return <div className={`${className ?? ""} flex justify-between items-center my-1`}>
     <FormLabel htmlFor={name}>{label}</FormLabel>
-    {Boolean(error) && <FormHelperText className="text-sm m-0" error={Boolean(error)}>{error}</FormHelperText>}
+    {Boolean(error) && <FormHelperText error={Boolean(error)}>{error}</FormHelperText>}
   </div>
 }

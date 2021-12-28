@@ -48,7 +48,9 @@ export function MultiTabs(props: MultiTabsProps) {
       value={tabState}
       onChange={(_, newValue: number) => setTabState(newValue)}
     >
-      {tabs.map((label, labelIndex) => <Tab className={`MultiTabs-header-tab text-base ${labelIndex === tabState ? "bg-black font-bold" : ""}`} label={label} key={label} />)}
+      {tabs.map((label) => <Tab sx={{
+
+      }} className="MultiTabs-header-tab text-base" label={label} key={label} />)}
     </Tabs>
     <div className="MultiTabs-panels">
       {panels.map((panel, index) => <MultiTabsPanel key={`panel.${index + 1}`} value={tabState} index={index}>{panel}</MultiTabsPanel>)}
