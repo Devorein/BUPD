@@ -36,8 +36,9 @@
     "paths": {
       "@shared": [
         "../server/src/shared.types.ts"
-      ],
+      ]
     },
+    "incremental": true
   },
   "exclude": [
     "./out/**/*",

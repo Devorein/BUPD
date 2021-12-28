@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import * as Yup from 'yup';
+import { useLoginMutation } from "../api/mutations";
+import { Button, FormikTextInput } from "../components";
 
 const loginInputInitialValue: Omit<LoginPayload, "as"> = {
   email: '',
@@ -18,6 +20,7 @@ const loginInputValidationSchema = Yup.object().shape({
 export default function Login() {
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const loginMutation = useLoginMutation();
 
   const { enqueueSnackbar } = useSnackbar();
   return <div>
@@ -27,9 +30,17 @@ export default function Login() {
       initialValues={loginInputInitialValue} onSubmit={async (values) => {
         setIsLoggingIn(true)
         try {
-          await loginWithEmailAndPassword(auth, values.email, values.password);
+          loginMutation.mutate({
+            as: "admin",
+            email: values.email,
+            password: values.password
+          }, {
+            onSuccess() {
+              router.push("/");
+              enqueueSnackbar("Successfully logged in as admin", { variant: 'success' });
+            }
+          });
 
-          router.push("/");
         } catch (err: any) {
           enqueueSnackbar(err.message, { variant: 'error' });
         }

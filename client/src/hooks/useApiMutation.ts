@@ -1,6 +1,7 @@
 import { ApiResponse } from '@shared';
 import axios from 'axios';
 import { useMutation, UseMutationOptions } from 'react-query';
+import { SERVER_URL } from '../constants';
 
 export function useApiMutation<R, P>(
 	keys: string[],
@@ -11,7 +12,7 @@ export function useApiMutation<R, P>(
 		keys,
 		async (payload) => {
 			const { data: response } = await axios.post<ApiResponse<R>>(
-				`${process.env.BASE_URL!}/${endpoint}`,
+				`${SERVER_URL!}/${endpoint}`,
 				payload
 			);
 			if (response.status === 'error') {
