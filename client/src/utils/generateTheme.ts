@@ -73,6 +73,11 @@ export function generateTheme() {
 					input: {
 						padding: 10,
 					},
+					root: {
+						'&.MuiInputBase-multiline': {
+							padding: 5,
+						},
+					},
 				},
 			},
 			MuiFormHelperText: {
