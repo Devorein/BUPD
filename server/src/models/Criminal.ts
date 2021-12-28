@@ -1,6 +1,11 @@
 /* eslint-disable camelcase */
-import { generateUpdateQuery, query } from '../utils';
-import { ICriminal, UpdateCriminalPayload, WhereClauseQuery } from '../shared.types';
+import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
+import {
+	DeleteCriminalPayload,
+	ICriminal,
+	UpdateCriminalPayload,
+	WhereClauseQuery,
+} from '../shared.types';
 import { find } from './utils';
 
 const CriminalModel = {
@@ -14,7 +19,7 @@ const CriminalModel = {
 		);
 	},
 
-	findByCaseNo(criminal_id: number) {
+	findByCriminalID(criminal_id: number) {
 		return find<ICriminal>(
 			{
 				filter: { criminal_id },
@@ -31,6 +36,10 @@ const CriminalModel = {
 		} else {
 			return null;
 		}
+	},
+	async delete(payload: DeleteCriminalPayload) {
+		await query(generateDeleteQuery(payload, 'Criminal'));
+		return payload;
 	},
 };
 

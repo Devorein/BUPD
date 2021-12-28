@@ -1,5 +1,11 @@
 import { Request, Response } from 'express';
-import { ApiResponse, UpdateCriminalPayload, UpdateCriminalResponse } from '../shared.types';
+import {
+	ApiResponse,
+	DeleteCriminalPayload,
+	DeleteCriminalResponse,
+	UpdateCriminalPayload,
+	UpdateCriminalResponse,
+} from '../shared.types';
 import { CriminalModel } from '../models';
 
 import { removeFields } from '../utils';
@@ -11,7 +17,6 @@ const CriminalController = {
 	) {
 		try {
 			const payload = req.body;
-            console.log(payload);
 			const [criminal] = await CriminalModel.find({ filter: { criminal_id: payload.criminal_id } });
 			if (!criminal) {
 				res.json({
@@ -38,6 +43,26 @@ const CriminalController = {
 			res.json({
 				status: 'error',
 				message: "Couldn't update the criminal",
+			});
+		}
+	},
+	async delete(
+		req: Request<any, any, DeleteCriminalPayload>,
+		res: Response<DeleteCriminalResponse>
+	) {
+		const criminal = await CriminalModel.findByCriminalID(req.body.criminal_id);
+		if (criminal[0]) {
+			const result = await CriminalModel.delete(req.body);
+			if (result) {
+				res.json({
+					status: 'success',
+					data: criminal[0],
+				});
+			}
+		} else {
+			res.json({
+				status: 'error',
+				message: 'No valid criminals given to delete',
 			});
 		}
 	},
