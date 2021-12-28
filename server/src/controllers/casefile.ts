@@ -6,6 +6,8 @@ import {
 	ApiResponse,
 	CreateCasefilePayload,
 	CreateCasefileResponse,
+	DeleteCasefilePayload,
+	DeleteCasefileResponse,
 	ICasefile,
 	ICrimeCategory,
 	ICrimeWeapon,
@@ -234,6 +236,27 @@ const CasefileController = {
 			res.json({
 				status: 'error',
 				message: "Couldn't update the casefile",
+			});
+		}
+	},
+	async delete(
+		req: Request<any, any, DeleteCasefilePayload>,
+		res: Response<DeleteCasefileResponse>
+	) {
+		const file = await CasefileModel.findByCaseNo(req.body.case_no);
+		console.log(file);
+		if (file[0]) {
+			const result = await CasefileModel.delete(req.body);
+			if (result) {
+				res.json({
+					status: 'success',
+					data: file[0],
+				});
+			}
+		} else {
+			res.json({
+				status: 'error',
+				message: 'No valid case files given to delete',
 			});
 		}
 	},

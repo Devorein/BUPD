@@ -1,5 +1,11 @@
-import { ICasefile, UpdateCasefilePayload, WhereClauseQuery } from '../types';
-import { generateUpdateQuery, query } from '../utils';
+/* eslint-disable camelcase */
+import {
+	DeleteCasefilePayload,
+	ICasefile,
+	UpdateCasefilePayload,
+	WhereClauseQuery,
+} from '../types';
+import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
 const CasefileModel = {
@@ -20,6 +26,15 @@ const CasefileModel = {
 			'CaseFile'
 		);
 	},
+
+	findByCaseNo(case_no: number) {
+		return find<ICasefile>(
+			{
+				filter: { case_no },
+			},
+			'Casefile'
+		);
+	},
 	async update(filterQuery: Partial<ICasefile>, payload: UpdateCasefilePayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
@@ -29,6 +44,10 @@ const CasefileModel = {
 		} else {
 			return null;
 		}
+	},
+	async delete(payload: DeleteCasefilePayload) {
+		await query(generateDeleteQuery(payload, 'Casefile'));
+		return payload;
 	},
 };
 
