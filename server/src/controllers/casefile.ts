@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
+import * as yup from 'yup';
 import {
 	ApiResponse,
 	CreateCasefilePayload,
@@ -12,6 +13,40 @@ import {
 	PoliceJwtPayload,
 } from '../shared.types';
 import { generateInsertQuery, pool } from '../utils';
+
+const CasefilePayload = {
+	create: yup.object().shape({
+		categories: yup.array(yup.string()).default([]),
+		weapons: yup.array(yup.string()).default([]),
+		time: yup.number().required(),
+		status: yup.string().oneOf(['solved', 'open', 'closed']).nullable(),
+		location: yup.string().required(),
+		criminals: yup
+			.array()
+			.of(
+				yup
+					.mixed()
+					.test(
+						(obj) =>
+							(obj.name !== undefined && typeof obj.name === 'string') ||
+							(obj.id !== undefined && typeof obj.id === 'number')
+					)
+			)
+			.default([]),
+		priority: yup.string().oneOf(['high', 'low', 'medium']),
+		victims: yup.array().of(
+			yup
+				.object({
+					name: yup.string().default('John Doe'),
+					address: yup.string().nullable(),
+					age: yup.number().max(120).nullable(),
+					phone_no: yup.string().nullable(),
+					description: yup.string().nullable(),
+				})
+				.required()
+		),
+	}),
+};
 
 const CasefileController = {
 	async create(
@@ -166,4 +201,4 @@ const CasefileController = {
 	},
 };
 
-export default CasefileController;
+export { CasefilePayload, CasefileController };
