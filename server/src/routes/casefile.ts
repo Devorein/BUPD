@@ -1,9 +1,15 @@
 import express from 'express';
-import { CasefileController } from '../controllers';
-import { isAuthenticated, isAuthorized } from '../middlewares';
+import { CasefileController, CasefilePayload } from '../controllers';
+import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const CasefileRouter = express.Router();
 
-CasefileRouter.post('/', isAuthenticated, isAuthorized(['police']), CasefileController.create);
+CasefileRouter.post(
+	'/',
+	validatePayload(CasefilePayload.create),
+	isAuthenticated,
+	isAuthorized(['police']),
+	CasefileController.create
+);
 
 export default CasefileRouter;

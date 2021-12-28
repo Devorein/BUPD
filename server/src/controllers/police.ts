@@ -12,16 +12,20 @@ import {
 	UpdatePolicePayload,
 	UpdatePoliceResponse,
 } from '../types';
-import { generateCountQuery, generatePoliceJwtToken, query, removeFields } from '../utils';
-import { VALID_REGEX } from '../utils/validate';
+import {
+	generateCountQuery,
+	generatePoliceJwtToken,
+	query,
+	removeFields,
+	validateEmail,
+} from '../utils';
 
 const PoliceRequest = {
 	update: yup.object().shape({
-		email: yup.string().email({ regex: VALID_REGEX }),
+		email: yup.string().test((email) => (email === undefined ? true : validateEmail(email))),
 		phone: yup.string().nullable(),
 		address: yup.string().nullable(),
 		designation: yup.string().nullable(),
-		nid: yup.number().min(10000),
 		name: yup.string(),
 		rank: yup.string(),
 	}),

@@ -20,12 +20,11 @@ import {
 	signToken,
 	validateEmail,
 	validatePassword,
-	VALID_REGEX,
 } from '../utils';
 
 const AuthRequest = {
 	register: yup.object().shape({
-		email: yup.string().email({ regex: VALID_REGEX }).required(),
+		email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
 		phone: yup.string().nullable(),
 		address: yup.string().nullable(),
 		designation: yup.string().nullable(),
@@ -36,7 +35,7 @@ const AuthRequest = {
 	}),
 	login: yup.object().shape({
 		password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
-		email: yup.string().email({ regex: VALID_REGEX }).required(),
+		email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
 		as: yup.string().oneOf(['police', 'admin']).default('police'),
 	}),
 	delete: yup.object().shape({
