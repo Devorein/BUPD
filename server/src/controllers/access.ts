@@ -16,9 +16,9 @@ import { generateCountQuery, generateInsertQuery, query } from '../utils';
 const AccessPayload = {
 	get: yup.object().shape({
 		filter: yup.object({
-			approved: yup.boolean(),
+			approved: yup.number().min(0).max(1),
 			permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
-			access_type: yup.string().oneOf(['case', 'criminal']),
+			type: yup.string().oneOf(['case', 'criminal']),
 		}),
 		sort: yup
 			.array()
