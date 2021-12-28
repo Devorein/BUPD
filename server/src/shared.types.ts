@@ -95,6 +95,8 @@ export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {}
 // You shouldn't be able to update police password using this endpoint
 // there should be a separate endpoint for that as you need to provide your current password if you want to update it
 export interface UpdatePolicePayload extends Exclude<IPolice, 'password'> {}
+export interface UpdateCriminalPayload extends Exclude<ICriminal, 'criminal_id'> {}
+export interface UpdateCriminalResponse extends ICriminal {}
 export interface UpdatePoliceResponse extends Exclude<IPolice, 'password'> {
 	token: string;
 }
