@@ -38,9 +38,11 @@ export default function Login() {
             onSuccess() {
               router.push("/");
               enqueueSnackbar("Successfully logged in as admin", { variant: 'success' });
+            },
+            onError(response) {
+              enqueueSnackbar((response as any).message, { variant: 'error' });
             }
           });
-
         } catch (err: any) {
           enqueueSnackbar(err.message, { variant: 'error' });
         }

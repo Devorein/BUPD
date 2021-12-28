@@ -1,5 +1,5 @@
-import { ApiResponse } from '@shared';
-import axios from 'axios';
+import { ApiResponse, ErrorApiResponse } from '@shared';
+import axios, { AxiosError } from 'axios';
 import { useMutation, UseMutationOptions } from 'react-query';
 import { SERVER_URL } from '../constants';
 
@@ -11,14 +11,20 @@ export function useApiMutation<R, P>(
 	return useMutation<ApiResponse<R>, string, P>(
 		keys,
 		async (payload) => {
-			const { data: response } = await axios.post<ApiResponse<R>>(
-				`${SERVER_URL!}/${endpoint}`,
-				payload
-			);
-			if (response.status === 'error') {
-				throw new Error(response.message);
+			try {
+				const { data: response } = await axios.post<ApiResponse<R>>(
+					`${SERVER_URL!}/${endpoint}`,
+					payload
+				);
+				if (response.status === 'error') {
+					throw new Error(response.message);
+				}
+				return response;
+			} catch (err: any) {
+				throw new Error(
+					(err as AxiosError<ErrorApiResponse>)?.response?.data.message ?? err.message
+				);
 			}
-			return response;
 		},
 		options
 	);
