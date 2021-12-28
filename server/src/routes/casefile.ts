@@ -12,5 +12,5 @@ CasefileRouter.post(
 	isAuthorized(['police']),
 	CasefileController.create
 );
-
+CasefileRouter.delete('/', isAuthenticated, isAuthorized(['police']), CasefileController.delete);
 export default CasefileRouter;

@@ -183,14 +183,15 @@ export interface IQuery<Filter, Sort> {
 }
 
 export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}
-
-
 export interface DeletePolicePayload {
 	nid: number;
 }
+export interface DeleteCasefilePayload {
+	case_no: number;
+}
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
-
+export type DeleteCasefileResponse = ApiResponse<ICasefile>;
 export interface GetAccessPayload extends IQuery<IAccessFilter, IPoliceSort> {}
 export type GetAccessResponse = ApiResponse<PaginatedResponse<IAccess>>;
 
