@@ -35,7 +35,7 @@
     "isolatedModules": true,
     "paths": {
       "@shared": [
-        "../server/functions/src/shared.types.ts"
+        "../server/src/shared.types.ts"
       ],
     },
   },
