@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { BaseSchema } from 'yup';
+import { handleError } from '../utils';
 import { ErrorApiResponse } from '../types';
 
 const validatePayload =
@@ -11,10 +12,7 @@ const validatePayload =
 			req.body = validatedPayload;
 			next();
 		} catch (err) {
-			res.status(400).json({
-				status: 'error',
-				message: 'Bad Request',
-			});
+			handleError(res, 400, 'Bad Request');
 		}
 	};
 

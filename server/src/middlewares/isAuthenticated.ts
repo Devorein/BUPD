@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { handleError } from '../utils';
 import { ErrorApiResponse, JwtPayload } from '../types';
 
 export default function isAuthenticated(
@@ -9,33 +10,21 @@ export default function isAuthenticated(
 ) {
 	const { headers } = req;
 	if (!headers.authorization) {
-		res.json({
-			status: 'error',
-			message: 'Not authenticated',
-		});
+		handleError(res, 401, 'Not authenticated');
 	} else {
 		const [method, token] = headers.authorization!.split(' ');
 		if (!token) {
-			res.json({
-				status: 'error',
-				message: 'Not authenticated',
-			});
+			handleError(res, 401, 'Not authenticated');
 		} else if (method !== 'Bearer') {
-			res.json({
-				status: 'error',
-				message: 'Not authenticated',
-			});
+			handleError(res, 401, 'Not authenticated');
 		} else {
 			try {
 				const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 				req.jwt_payload = decoded;
 				next();
 			} catch (err) {
-				console.log(err)
-				res.json({
-					status: 'error',
-					message: 'Not authenticated',
-				});
+				console.log(err);
+				handleError(res, 401, 'Not authenticated');
 			}
 		}
 	}
