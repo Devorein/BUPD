@@ -75,6 +75,15 @@ export function generateTheme() {
 					},
 				},
 			},
+			MuiTab: {
+				styleOverrides: {
+					textColorPrimary: {
+						'&.MuiButtonBase-root.Mui-selected': {
+							color: 'white',
+						},
+					},
+				},
+			},
 		},
 	};
 
