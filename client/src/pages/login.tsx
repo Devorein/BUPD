@@ -23,7 +23,7 @@ export default function Login() {
   const loginMutation = useLoginMutation();
 
   const { enqueueSnackbar } = useSnackbar();
-  return <div>
+  return <div className="flex items-center justify-center w-full h-full">
     <Formik
       validateOnMount
       validationSchema={loginInputValidationSchema}
@@ -49,9 +49,11 @@ export default function Login() {
         setIsLoggingIn(false);
       }}>
       {({ isSubmitting, isValid }) => (<Form>
-        <FormikTextInput disabled={isLoggingIn} name="email" label="Email address" placeholder="johndoe@gmail.com" />
-        <FormikTextInput disabled={isLoggingIn} name="password" label="Password" placeholder="*****" type="password" />
-        <div className="flex justify-between">
+        <div className="flex flex-col min-w-[350px]">
+          <FormikTextInput disabled={isLoggingIn} name="email" label="Email address" placeholder="johndoe@gmail.com" />
+          <FormikTextInput disabled={isLoggingIn} name="password" label="Password" placeholder="*****" type="password" />
+        </div>
+        <div className="flex justify-between my-5">
           <Button content="login" type="submit" disabled={!isValid || isSubmitting || isLoggingIn} />
         </div>
       </Form>)}

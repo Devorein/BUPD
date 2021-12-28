@@ -30,7 +30,7 @@ export function generateTheme() {
 			},
 		},
 		typography: {
-			fontFamily: 'Poppins',
+			fontFamily: 'Rubik',
 			fontSize: 14,
 			body1: {
 				fontWeight: 500,
@@ -67,7 +67,15 @@ export function generateTheme() {
 				fontWeight: 700,
 			},
 		},
-		components: {},
+		components: {
+			MuiOutlinedInput: {
+				styleOverrides: {
+					input: {
+						padding: 10,
+					},
+				},
+			},
+		},
 	};
 
 	return createTheme(themeOptions);
