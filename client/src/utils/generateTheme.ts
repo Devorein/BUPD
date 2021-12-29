@@ -1,5 +1,5 @@
 import { blue, grey, red } from '@mui/material/colors';
-import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { createTheme, lighten, ThemeOptions } from '@mui/material/styles';
 
 export function generateTheme() {
 	const text: {
@@ -109,6 +109,21 @@ export function generateTheme() {
 							color: 'white',
 							backgroundColor: grey[900],
 							fontWeight: 600,
+						},
+					},
+				},
+			},
+			MuiMenuItem: {
+				styleOverrides: {
+					root: {
+						'&.Mui-selected,&.Mui-selected:hover': {
+							backgroundColor: blue[900],
+							color: 'white',
+							fontWeight: 500,
+						},
+						'&:hover': {
+							backgroundColor: lighten(grey[700], 0.5),
+							color: 'white',
 						},
 					},
 				},

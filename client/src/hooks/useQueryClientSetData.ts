@@ -2,7 +2,7 @@ import { ApiResponse, PaginatedResponse } from '@shared';
 import { InfiniteData, useQueryClient } from 'react-query';
 
 export type CacheHitFunction<ResponseData> = (
-	queryResponse: ApiResponse<ResponseData>
+	queryResponse: ApiResponse<ResponseData> | null | undefined
 ) => ApiResponse<ResponseData>;
 
 export function useQueryClientSetData<ResponseData>() {
@@ -11,10 +11,7 @@ export function useQueryClientSetData<ResponseData>() {
 		queryClient.setQueriesData<ApiResponse<ResponseData> | null | undefined>(
 			queryKey,
 			(queryResponse) => {
-				if (queryResponse) {
-					return cacheHitCb(queryResponse);
-				}
-				return queryResponse;
+				return cacheHitCb(queryResponse);
 			}
 		);
 	};

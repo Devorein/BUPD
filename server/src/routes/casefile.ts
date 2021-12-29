@@ -1,6 +1,6 @@
 import express from 'express';
 import { CasefileController, CasefilePayload } from '../controllers';
-import { isAuthenticated, isAuthorized, validatePayload, hasAccess } from '../middlewares';
+import { hasAccess, isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const CasefileRouter = express.Router();
 

@@ -11,8 +11,8 @@ const validatePayload =
 			const validatedPayload = await resourceSchema.validate(req.body);
 			req.body = validatedPayload;
 			next();
-        } catch (err) {
-            logger.error(err);
+		} catch (err) {
+			logger.error(err);
 			handleError(res, 400, 'Bad Request');
 		}
 	};

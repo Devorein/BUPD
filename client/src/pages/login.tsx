@@ -2,7 +2,7 @@ import { ApiResponse, CurrentUserResponse, LoginPayload, LoginResponse } from '@
 import { Form, Formik } from 'formik';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { useContext } from 'react';
 import { UseMutationResult } from 'react-query';
 import * as Yup from 'yup';
 import { useGetCurrentUserQueryData } from '../api';
@@ -22,14 +22,12 @@ const loginInputValidationSchema = Yup.object().shape({
 });
 
 interface FormikFormProps {
-  isLoggingIn: boolean
   as: "admin" | "police"
-  setIsLoggingIn: Dispatch<SetStateAction<boolean>>
   loginMutation: UseMutationResult<ApiResponse<LoginResponse>, string, LoginPayload, unknown>
 }
 
 function FormikForm(props: FormikFormProps) {
-  const { as, loginMutation, setIsLoggingIn, isLoggingIn } = props;
+  const { as, loginMutation } = props;
   const getCurrentUserQueryData = useGetCurrentUserQueryData();
   const { enqueueSnackbar } = useSnackbar();
   return <Formik
@@ -38,7 +36,6 @@ function FormikForm(props: FormikFormProps) {
     validationSchema={loginInputValidationSchema}
     initialValues={loginInputInitialValue}
     onSubmit={async (values) => {
-      setIsLoggingIn(true);
       try {
         loginMutation.mutate(
           {
@@ -66,15 +63,11 @@ function FormikForm(props: FormikFormProps) {
             },
             onError(response) {
               enqueueSnackbar((response as any).message, { variant: 'error' });
-            },
-            onSettled() {
-              setIsLoggingIn(false);
             }
           }
         );
       } catch (err: any) {
         enqueueSnackbar(err.message, { variant: 'error' });
-        setIsLoggingIn(false);
       }
     }}
   >
@@ -82,13 +75,13 @@ function FormikForm(props: FormikFormProps) {
       <Form>
         <div className="flex flex-col min-w-[350px]">
           <FormikTextInput
-            disabled={isLoggingIn}
+            disabled={loginMutation.isLoading}
             name="email"
             label="Email address"
             placeholder="johndoe@gmail.com"
           />
           <FormikTextInput
-            disabled={isLoggingIn}
+            disabled={loginMutation.isLoading}
             name="password"
             label="Password"
             placeholder="*****"
@@ -100,7 +93,7 @@ function FormikForm(props: FormikFormProps) {
             color="secondary"
             content="login"
             type="submit"
-            disabled={!isValid || isSubmitting || isLoggingIn}
+            disabled={!isValid || isSubmitting || loginMutation.isLoading}
           />
         </div>
       </Form>
@@ -109,7 +102,6 @@ function FormikForm(props: FormikFormProps) {
 }
 
 export default function Login() {
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const loginMutation = useLoginMutation();
   const { currentUser } = useContext(RootContext);
 
@@ -121,8 +113,8 @@ export default function Login() {
       <div className="flex items-center justify-center h-full">
         <MultiTabs
           panels={[
-            <FormikForm as='admin' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="admin" />,
-            <FormikForm as='police' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="police" />,
+            <FormikForm as='admin' loginMutation={loginMutation} key="admin" />,
+            <FormikForm as='police' loginMutation={loginMutation} key="police" />,
           ]}
           tabs={['admin', 'police']}
         />
