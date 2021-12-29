@@ -250,7 +250,6 @@ const CasefileController = {
 		res: Response<DeleteCasefileResponse>
 	) {
 		const file = await CasefileModel.findByCaseNo(req.body.case_no);
-		console.log(file);
 		if (file[0]) {
 			const result = await CasefileModel.delete(req.body);
 			if (result) {

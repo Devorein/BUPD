@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { handleError, logger } from '../utils';
 import { ErrorApiResponse, JwtPayload } from '../types';
+import { handleError, logger } from '../utils';
 
 export default function isAuthenticated(
 	req: Request,
@@ -23,8 +23,7 @@ export default function isAuthenticated(
 				req.jwt_payload = decoded;
 				next();
 			} catch (err) {
-				logger.error(err);				
-				console.log(err);
+				logger.error(err);
 				handleError(res, 401, 'Not authenticated');
 			}
 		}

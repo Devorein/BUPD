@@ -34,12 +34,11 @@ const hasAccess =
 						break;
 				}
 				const test = await AccessModel.find({ filter });
-				console.log(filter, test);
 				if (Object.keys(test[0]).length > 0) next();
 				else handleError(res, 403, 'Not Authorized');
 			}
-        } catch (err) {
-            logger.error(err);			
+		} catch (err) {
+			logger.error(err);
 			handleError(res, 403, 'Not Authorized');
 		}
 	};

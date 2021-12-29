@@ -10,7 +10,7 @@ export function CaseCriminalsForm() {
 
   return <div className="flex flex-col">
     <div className="font-bold text-3xl">Criminals</div>
-    {(values.criminals).length !== 0 ? <div className="flex gap-1 flex-col">{(values.criminals as NewCriminalPayload[]).map((_, criminalNumber) => <div key={criminalNumber} className="flex flex-col gap-3 w-full items-end">
+    {(values.criminals).length !== 0 ? <div className="flex gap-1 flex-col">{(values.criminals as NewCriminalPayload[]).map((_, criminalNumber) => <div key={criminalNumber} className="flex flex-col w-full items-end">
       <div className="mt-5 text-xl w-full font-bold">Criminal {criminalNumber + 1}</div>
       <FormikTextInput
         rightIcon={<DeleteIcon sx={svgIconSx} className="cursor-pointer" color="error" onClick={() => {
@@ -20,8 +20,8 @@ export function CaseCriminalsForm() {
           }, true)
         }} />}
         name={`criminals.[${criminalNumber}].name`}
-        label={`Criminal ${criminalNumber + 1} name`}
-        placeholder={`John Doe ${criminalNumber + 1}`}
+        label={`Criminal name`}
+        placeholder={`Criminal ${criminalNumber + 1} name`}
       />
     </div>)}</div> : <div className="text-lg text-gray-600">No Criminals added</div>}
     <div className="flex my-3 gap-3 items-center justify-center flex-col">

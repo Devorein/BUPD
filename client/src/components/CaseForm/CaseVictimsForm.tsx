@@ -10,7 +10,7 @@ export function CaseVictimsForm() {
 
   return <div className="flex flex-col">
     <div className="font-bold text-3xl">Victims</div>
-    {(values.victims).length !== 0 ? <div className="flex gap-1 flex-col">{(values.victims).map((_, victimNumber) => <div key={victimNumber} className="flex gap-1 flex-col w-full items-end">
+    {(values.victims).length !== 0 ? <div className="flex gap-1 flex-col">{(values.victims).map((_, victimNumber) => <div key={victimNumber} className="flex flex-col w-full items-end">
       <div className="mt-5 text-xl w-full font-bold">Victim {victimNumber + 1}</div>
       <FormikTextInput
         rightIcon={<DeleteIcon sx={svgIconSx} className="cursor-pointer" color="error" onClick={() => {
@@ -20,30 +20,30 @@ export function CaseVictimsForm() {
           }, true)
         }} />}
         name={`victims.[${victimNumber}].name`}
-        label={`Victim ${victimNumber + 1} Name`}
-        placeholder={`John Doe ${victimNumber + 1}`}
+        label={`Victim Name`}
+        placeholder={`Victim ${victimNumber + 1} name`}
       />
       <FormikTextInput
         name={`victims.[${victimNumber}].address`}
-        label={`Victim ${victimNumber + 1} Address`}
+        label={`Victim Address`}
         placeholder={`Victim ${victimNumber + 1} address`}
       />
       <FormikTextInput
         type="number"
         name={`victims.[${victimNumber}].age`}
-        label={`Victim ${victimNumber + 1} age`}
-        placeholder={`Victim ${victimNumber + 1} age`}
+        label={`Victim age`}
+        placeholder={'25'}
       />
       <FormikTextInput
         name={`victims.[${victimNumber}].phone_no`}
-        label={`Victim ${victimNumber + 1} Phone number`}
-        placeholder={`Victim ${victimNumber + 1} phone number`}
+        label={`Victim Phone number`}
+        placeholder={`+8801...`}
       />
       <FormikTextInput
         multiline
         rows={3}
         name={`victims.[${victimNumber}].description`}
-        label={`Victim ${victimNumber + 1} Description`}
+        label={`Victim Description`}
         placeholder={`Victim ${victimNumber + 1} description`}
       />
     </div>)}</div> : <div className="text-lg text-gray-600">No Victims added</div>}

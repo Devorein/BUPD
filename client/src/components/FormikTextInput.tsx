@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import React, { InputHTMLAttributes } from 'react';
 import { FormLabelWithHelper } from './FormLabelWithHelper';
 
-type FormikTextInputProps = InputHTMLAttributes<HTMLInputElement> & { helperText?: string, name: string, label?: string; placeholder?: string, textarea?: boolean, multiline?: boolean, rows?: number, fullWidth?: boolean, rightIcon?: JSX.Element };
+type FormikTextInputProps = InputHTMLAttributes<HTMLInputElement> & { helperText?: string, name: string, label?: string; placeholder?: string | number, textarea?: boolean, multiline?: boolean, rows?: number, fullWidth?: boolean, rightIcon?: JSX.Element };
 
 export function FormikTextInput({ helperText, label, placeholder, multiline = false, rows = 1, fullWidth, rightIcon, ...props }: FormikTextInputProps) {
   const [field, { error }] = useField(props);
