@@ -1,4 +1,4 @@
-import { IPolice, LoginPayload, LoginResponse } from 'bupd-server';
+import { IPolice, LoginPayload, LoginResponse } from '@bupd/server';
 import colors from 'colors';
 import { handleRequest, promiseAll } from './utils';
 

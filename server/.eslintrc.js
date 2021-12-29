@@ -33,7 +33,7 @@ module.exports = {
 				'import/no-unresolved': [
 					2,
 					{
-						ignore: ['bupd-server'],
+						ignore: ['@bupd/server'],
 					},
 				],
 				'import/no-extraneous-dependencies': 'off',

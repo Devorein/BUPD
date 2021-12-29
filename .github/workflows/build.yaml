@@ -21,13 +21,13 @@ jobs:
           # Build server, required for seeder
           npm run build
 
-          # Install bupd-server globally
+          # Install @bupd/server globally
           npm install -g
           cd seeder
           # Install seeder dependencies
           npm install
-          # Linking bupd-server
-          npm link bupd-server
+          # Linking @bupd/server
+          npm link @bupd/server
           # Build seeder
           npm run build
 
