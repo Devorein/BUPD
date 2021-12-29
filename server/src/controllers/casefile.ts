@@ -20,29 +20,29 @@ import {
 import { generateInsertQuery, logger, pool, removeFields } from '../utils';
 
 const CasefilePayload = {
-	create: yup.object().shape({
-		categories: yup.array(yup.string()).default([]).strict(),
-		weapons: yup.array(yup.string()).default([]).strict(),
-		time: yup.number().required().strict(),
-		status: yup.string().oneOf(['solved', 'open', 'closed']).nullable().strict(),
-		location: yup.string().required().strict(),
-		criminals: yup
-			.array()
-			.of(
-				yup
-					.mixed()
-					.test(
-						(obj) =>
-							(obj.name !== undefined && typeof obj.name === 'string') ||
-							(obj.id !== undefined && typeof obj.id === 'number')
-					)
-			)
-			.default([])
-			.strict(),
-		priority: yup.string().oneOf(['high', 'low', 'medium']).strict(),
-		victims: yup
-			.array()
-			.of(
+	create: yup
+		.object()
+		.shape({
+			categories: yup.array(yup.string()).default([]).strict(),
+			weapons: yup.array(yup.string()).default([]).strict(),
+			time: yup.number().required().strict(),
+			status: yup.string().oneOf(['solved', 'open', 'closed']).nullable().strict(),
+			location: yup.string().required().strict(),
+			criminals: yup
+				.array()
+				.of(
+					yup
+						.mixed()
+						.test(
+							(obj) =>
+								(obj.name !== undefined && typeof obj.name === 'string') ||
+								(obj.id !== undefined && typeof obj.id === 'number')
+						)
+				)
+				.default([])
+				.strict(),
+			priority: yup.string().oneOf(['high', 'low', 'medium']).strict(),
+			victims: yup.array().of(
 				yup
 					.object({
 						name: yup.string().default('John Doe'),
@@ -52,9 +52,9 @@ const CasefilePayload = {
 						description: yup.string().nullable(),
 					})
 					.required()
-			)
-			.strict(),
-	}),
+			),
+		})
+		.strict(),
 };
 
 const CasefileController = {

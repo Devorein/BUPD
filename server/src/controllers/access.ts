@@ -14,26 +14,28 @@ import { ApiResponse, PoliceJwtPayload } from '../types';
 import { generateCountQuery, generateInsertQuery, logger, query } from '../utils';
 
 const AccessPayload = {
-	get: yup.object().shape({
-		filter: yup
-			.object({
-				approved: yup.number().min(0).max(1),
-				permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
-				type: yup.string().oneOf(['case', 'criminal']),
-			})
-			.strict(),
-		sort: yup
-			.array()
-			.test(
-				(arr) =>
-					arr === undefined ||
-					(arr.length === 2 &&
-						arr[0].match(/^(criminal_id|case_no|approved|permission)$/) &&
-						(arr[1] === -1 || arr[1] === 1))
-			)
-			.strict(),
-		limit: yup.number().strict(),
-	}),
+	get: yup
+		.object()
+		.shape({
+			filter: yup
+				.object({
+					approved: yup.number().min(0).max(1),
+					permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
+					type: yup.string().oneOf(['case', 'criminal']),
+				})
+				.strict(),
+			sort: yup
+				.array()
+				.test(
+					(arr) =>
+						arr === undefined ||
+						(arr.length === 2 &&
+							arr[0].match(/^(criminal_id|case_no|approved|permission)$/) &&
+							(arr[1] === -1 || arr[1] === 1))
+				),
+			limit: yup.number(),
+		})
+		.strict(),
 	create: yup
 		.object()
 		.shape({
