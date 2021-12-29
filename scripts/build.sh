@@ -30,7 +30,7 @@ for package in "${packages[@]}" ; do
     echo -e "${GREEN}Successfully installed $package_name dependencies${NC}"
   fi
 
-  if ! (node $eslint ./libs --ext tsx,ts) then
+  if ! (node $eslint ./src --ext tsx,ts) then
     echo -e "${RED}Error linting $package_name${NC}"
     exit 1
   else

@@ -16,7 +16,7 @@ jobs:
       - name: Lint, Build and
       - name: Lint, Build and Test Server
         run: |
-
+          npm install -g zx
           cd server
           # Install server dependencies
           npm install
