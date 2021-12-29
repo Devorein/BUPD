@@ -22,7 +22,8 @@ const AccessPayload = {
 					permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
 					type: yup.string().oneOf(['case', 'criminal']),
 				})
-				.strict().noUnknown(),
+				.strict()
+				.noUnknown(),
 			sort: yup
 				.array()
 				.test(
