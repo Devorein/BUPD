@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AccessModel } from '../models';
+import { AccessPermission, ErrorApiResponse, TAccessType } from '../types';
 import { handleError } from '../utils';
-import { ErrorApiResponse, TAccessType, AccessPermission } from '../types';
 
 const hasAccess =
 	(accessType: TAccessType, accessPermission: AccessPermission) =>
@@ -35,7 +35,6 @@ const hasAccess =
 				}
 				const test = await AccessModel.find({ filter });
 				console.log(filter, test);
-
 				if (Object.keys(test[0]).length > 0) next();
 				else handleError(res, 403, 'Not Authorized');
 			}

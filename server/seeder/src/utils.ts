@@ -1,6 +1,6 @@
-import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
 /* eslint-disable import/no-extraneous-dependencies */
-import { ApiResponse } from 'bupd-server';
+import { ApiResponse } from '@bupd/server';
+import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import colors from 'colors';
 
 export async function handleRequest<Response, Payload>(
