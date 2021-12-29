@@ -21,8 +21,7 @@ import { generateInsertQuery, logger, pool, removeFields } from '../utils';
 
 const CasefilePayload = {
 	create: yup
-		.object()
-		.shape({
+		.object({
 			categories: yup.array(yup.string()).default([]).strict(),
 			weapons: yup.array(yup.string()).default([]).strict(),
 			time: yup.number().required().strict(),
@@ -52,9 +51,12 @@ const CasefilePayload = {
 						description: yup.string().nullable(),
 					})
 					.required()
+					.strict()
+					.noUnknown()
 			),
 		})
-		.strict(),
+		.strict()
+		.noUnknown(),
 };
 
 const CasefileController = {

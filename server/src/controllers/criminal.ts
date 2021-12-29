@@ -38,8 +38,8 @@ const CriminalController = {
 					},
 				});
 			}
-        } catch (err) {
-            logger.error(err);
+		} catch (err) {
+			logger.error(err);
 			res.json({
 				status: 'error',
 				message: "Couldn't update the criminal",
