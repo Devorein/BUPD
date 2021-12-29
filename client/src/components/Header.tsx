@@ -19,16 +19,14 @@ export function Header() {
     }
   }
   return <div className="flex gap-3 items-center justify-between shadow-md p-3">
-    <div>
-      <div className="flex gap-1 items-center">
-        <Logo />
-        <span className="font-bold text-xl">
-          BUPD
-        </span>
-      </div>
-      {currentUser ? <div><span className="font-medium">Welcome back, </span><span className="font-bold text-lg">{currentUserName}</span></div> : null}
+    <div className="flex gap-1 items-center">
+      <Logo />
+      <span className="font-bold text-xl">
+        BUPD
+      </span>
     </div>
-    <div className="flex gap-3">
+    <div className="flex gap-3 items-center">
+      {currentUser ? <div className="mr-3"><span className="font-medium">Welcome back, </span><span className="font-bold text-lg">{currentUserName}</span></div> : null}
       {currentUser?.type === "admin" ? <Button content="Register a police" onClick={() => {
         router.push(`/register`)
       }} /> : null}
