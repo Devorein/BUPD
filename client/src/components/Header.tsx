@@ -30,7 +30,7 @@ export function Header() {
       {currentUser?.type === "admin" ? <Button content="Register a police" onClick={() => {
         router.push(`/register`)
       }} /> : null}
-      {currentUser?.type === "police" ? <Button content="Create a case" onClick={() => {
+      {currentUser?.type === "police" ? <Button content="Report a case" onClick={() => {
         router.push(`/case`)
       }} /> : null}
       {!currentUser ? <Button content="Login" onClick={() => {
