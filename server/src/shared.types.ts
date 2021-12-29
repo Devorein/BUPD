@@ -113,13 +113,17 @@ export interface LoginPayload {
 }
 export type LoginResponse = (IPolice | IAdmin) & { token: string };
 
+export interface NewCriminalPayload {
+	name: string;
+	photo?: string;
+}
 export interface CreateCasefilePayload {
 	categories: string[];
 	weapons: string[];
 	time: number;
 	status?: TCasefileStatus | null;
 	location: string;
-	criminals: ({ name: string; photo?: string } | { id: number })[];
+	criminals: (NewCriminalPayload | { id: number })[];
 	priority: TCasefilePriority;
 	victims: {
 		name: string;
