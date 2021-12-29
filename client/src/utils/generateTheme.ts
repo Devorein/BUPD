@@ -1,4 +1,4 @@
-import { grey, red } from '@mui/material/colors';
+import { blue, grey, red } from '@mui/material/colors';
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 export function generateTheme() {
@@ -28,16 +28,19 @@ export function generateTheme() {
 			primary: {
 				main: grey[900],
 			},
+			secondary: {
+				main: blue[900],
+			},
 		},
 		typography: {
 			fontFamily: 'Rubik',
 			fontSize: 14,
 			body1: {
-				fontWeight: 500,
+				fontWeight: 400,
 				fontSize: '1em',
 			},
 			body2: {
-				fontWeight: 500,
+				fontWeight: 400,
 				fontSize: '0.85em',
 			},
 			subtitle1: {
@@ -77,6 +80,13 @@ export function generateTheme() {
 						'&.MuiInputBase-multiline': {
 							padding: 5,
 						},
+					},
+				},
+			},
+			MuiButton: {
+				styleOverrides: {
+					root: {
+						borderRadius: 0,
 					},
 				},
 			},

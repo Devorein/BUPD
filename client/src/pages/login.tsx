@@ -1,12 +1,15 @@
-import { ApiResponse, LoginPayload, LoginResponse } from '@shared';
+import { ApiResponse, CurrentUserResponse, LoginPayload, LoginResponse } from '@shared';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
+import router from 'next/router';
 import { useSnackbar } from 'notistack';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { UseMutationResult } from 'react-query';
 import * as Yup from 'yup';
+import { useGetCurrentUserQueryData } from '../api';
 import { useLoginMutation } from '../api/mutations';
-import { Button, FormikTextInput, MultiTabs } from '../components';
+import { Button, FormikTextInput, MultiTabs, Page } from '../components';
+import { JWT_LS_KEY } from '../constants';
+import { RootContext } from '../contexts';
 
 const loginInputInitialValue: Omit<LoginPayload, 'as'> = {
   email: '',
@@ -27,10 +30,10 @@ interface FormikFormProps {
 
 function FormikForm(props: FormikFormProps) {
   const { as, loginMutation, setIsLoggingIn, isLoggingIn } = props;
-  const router = useRouter();
+  const getCurrentUserQueryData = useGetCurrentUserQueryData();
   const { enqueueSnackbar } = useSnackbar();
   return <Formik
-    key="admin"
+    key={as}
     validateOnMount
     validationSchema={loginInputValidationSchema}
     initialValues={loginInputInitialValue}
@@ -44,9 +47,22 @@ function FormikForm(props: FormikFormProps) {
             password: values.password,
           },
           {
-            onSuccess() {
+            onSuccess(response) {
               router.push('/');
-              enqueueSnackbar(`Successfully logged in as ${as}`, { variant: 'success' });
+              if (response.status === "success") {
+                localStorage.setItem(JWT_LS_KEY, response.data.token);
+                // Logging the current user
+                getCurrentUserQueryData(() => {
+                  return {
+                    status: "success",
+                    data: {
+                      type: as,
+                      ...response.data
+                    } as CurrentUserResponse
+                  }
+                })
+                enqueueSnackbar(`Successfully logged in`, { variant: 'success' });
+              }
             },
             onError(response) {
               enqueueSnackbar((response as any).message, { variant: 'error' });
@@ -81,6 +97,7 @@ function FormikForm(props: FormikFormProps) {
         </div>
         <div className="flex justify-between my-5">
           <Button
+            color="secondary"
             content="login"
             type="submit"
             disabled={!isValid || isSubmitting || isLoggingIn}
@@ -94,16 +111,22 @@ function FormikForm(props: FormikFormProps) {
 export default function Login() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const loginMutation = useLoginMutation();
+  const { currentUser } = useContext(RootContext);
 
+  if (currentUser) {
+    router.push('/')
+  }
   return (
-    <div className="flex items-center justify-center w-full h-full">
-      <MultiTabs
-        panels={[
-          <FormikForm as='admin' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="admin" />,
-          <FormikForm as='police' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="admin" />,
-        ]}
-        tabs={['admin', 'police']}
-      />
-    </div>
+    <Page>
+      <div className="flex items-center justify-center h-full">
+        <MultiTabs
+          panels={[
+            <FormikForm as='admin' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="admin" />,
+            <FormikForm as='police' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="police" />,
+          ]}
+          tabs={['admin', 'police']}
+        />
+      </div>
+    </Page>
   );
 }

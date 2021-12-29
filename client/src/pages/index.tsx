@@ -1,8 +1,12 @@
+import { Page } from "../components";
+
 const Index = () => {
   return (
-    <div>
-      Hello World
-    </div>
+    <Page>
+      <div>
+        Hello World
+      </div>
+    </Page>
   );
 };
 

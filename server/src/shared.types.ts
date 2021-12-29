@@ -101,7 +101,10 @@ export interface UpdatePoliceResponse extends Exclude<IPolice, 'password'> {
 	token: string;
 }
 
-export type CurrentUserResponse = (IAdmin & { type: 'admin' }) | (IPolice & { type: 'police' });
+export type CurrentUserResponse =
+	| (IAdmin & { type: 'admin' })
+	| (IPolice & { type: 'police' })
+	| null;
 
 export interface LoginPayload {
 	email: string;

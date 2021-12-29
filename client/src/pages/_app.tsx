@@ -4,14 +4,29 @@ import Head from "next/head";
 import { SnackbarProvider } from "notistack";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { useGetCurrentUserQuery } from "../api";
+import { IRootContext, RootContext } from "../contexts";
 import '../styles/main.css';
 import { createClient, generateTheme } from "../utils";
 
 const generatedTheme = generateTheme();
 const client = createClient()
 
-const MyApp = ({ Component, pageProps }: AppProps) => (
-  <ThemeProvider theme={generatedTheme}>
+const Index: React.FC<{}> = (props) => {
+  const { data: getCurrentUserQueryData, isLoading: isGetCurrentUserQueryLoading } = useGetCurrentUserQuery();
+  let currentUser: IRootContext["currentUser"] = null;
+  if (!isGetCurrentUserQueryLoading) {
+    currentUser = getCurrentUserQueryData?.status === "success" ? getCurrentUserQueryData.data : null;
+  }
+
+  return <RootContext.Provider value={{ currentUser }}>
+    {props.children}
+    <ReactQueryDevtools />
+  </RootContext.Provider>
+}
+
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  return <ThemeProvider theme={generatedTheme}>
     <Head>
       <title>BUPD</title>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,11 +40,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => (
           horizontal: 'center',
         }}
       >
-        <Component {...pageProps} />
-        <ReactQueryDevtools />
+        <Index>
+          <Component {...pageProps} />
+        </Index>
       </SnackbarProvider>
     </QueryClientProvider>
   </ThemeProvider>
-);
+};
 
 export default MyApp;
