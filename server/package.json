@@ -1,5 +1,5 @@
 {
-  "name": "bupd-server",
+  "name": "@bupd/server",
   "version": "1.0.0",
   "description": "BUPD Server",
   "main": "dist/index.js",
@@ -13,7 +13,8 @@
     "lint": "npx eslint \"./src\" --ext tsx,ts \"./seeder\" --ext tsx,ts",
     "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
     "test": "npx jest --runInBand --config ./jest.config.js",
-    "format": "npx prettier ./src/**/*.{ts,js} --write"
+    "format": "npx prettier ./src/**/*.{ts,js} --write",
+    "dev": "concurrently \"npm run build:watch\" \"npm run start:watch\" -n tsc,node -c blue,green"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
     "@types/node": "^16.11.12",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
+    "concurrently": "^6.5.1",
     "del-cli": "^4.0.1",
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
