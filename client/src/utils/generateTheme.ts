@@ -33,11 +33,11 @@ export function generateTheme() {
 			fontFamily: 'Rubik',
 			fontSize: 14,
 			body1: {
-				fontWeight: 500,
+				fontWeight: 400,
 				fontSize: '1em',
 			},
 			body2: {
-				fontWeight: 500,
+				fontWeight: 400,
 				fontSize: '0.85em',
 			},
 			subtitle1: {

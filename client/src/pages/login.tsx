@@ -7,6 +7,7 @@ import { UseMutationResult } from 'react-query';
 import * as Yup from 'yup';
 import { useLoginMutation } from '../api/mutations';
 import { Button, FormikTextInput, MultiTabs } from '../components';
+import { JWT_LS_KEY } from '../constants';
 
 const loginInputInitialValue: Omit<LoginPayload, 'as'> = {
   email: '',
@@ -30,7 +31,7 @@ function FormikForm(props: FormikFormProps) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   return <Formik
-    key="admin"
+    key={as}
     validateOnMount
     validationSchema={loginInputValidationSchema}
     initialValues={loginInputInitialValue}
@@ -44,8 +45,11 @@ function FormikForm(props: FormikFormProps) {
             password: values.password,
           },
           {
-            onSuccess() {
+            onSuccess(response) {
               router.push('/');
+              if (response.status === "success") {
+                localStorage.setItem(JWT_LS_KEY, response.data.token);
+              }
               enqueueSnackbar(`Successfully logged in as ${as}`, { variant: 'success' });
             },
             onError(response) {
@@ -100,7 +104,7 @@ export default function Login() {
       <MultiTabs
         panels={[
           <FormikForm as='admin' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="admin" />,
-          <FormikForm as='police' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="admin" />,
+          <FormikForm as='police' isLoggingIn={isLoggingIn} loginMutation={loginMutation} setIsLoggingIn={setIsLoggingIn} key="police" />,
         ]}
         tabs={['admin', 'police']}
       />
