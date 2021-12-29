@@ -1,13 +1,17 @@
-import { AuthController, AuthRequest } from './auth';
-import CasefileController from './casefile';
+import { AuthController, AuthPayload } from './auth';
+import { CasefileController, CasefilePayload } from './casefile';
 import { PoliceController, PoliceRequest } from './police';
-import AccessController from './access';
+import { AccessController, AccessPayload } from './access';
+import { CriminalController } from './criminal';
 
 export {
 	CasefileController,
+	CasefilePayload,
 	AuthController,
-	AuthRequest,
+	AuthPayload,
 	PoliceController,
 	PoliceRequest,
 	AccessController,
+	AccessPayload,
+	CriminalController,
 };

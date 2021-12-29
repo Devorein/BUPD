@@ -1,5 +1,5 @@
 {
-  "name": "bupd-server",
+  "name": "@bupd/server",
   "version": "1.0.0",
   "description": "BUPD Server",
   "main": "dist/index.js",
@@ -13,18 +13,22 @@
     "lint": "npx eslint \"./src\" --ext tsx,ts \"./seeder\" --ext tsx,ts",
     "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
     "test": "npx jest --runInBand --config ./jest.config.js",
-    "format": "npx prettier ./src/**/*.{ts,js} --write"
+    "format": "npx prettier ./src/**/*.{ts,js} --write",
+    "dev": "concurrently \"npm run build:watch\" \"npm run start:watch\" -n tsc,node -c blue,green"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.3",
     "@types/jsonwebtoken": "^8.5.6",
+    "@types/morgan": "^1.9.3",
     "@types/node": "^16.11.12",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
+    "concurrently": "^6.5.1",
     "del-cli": "^4.0.1",
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -40,10 +44,13 @@
   },
   "dependencies": {
     "argon2": "^0.28.3",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
+    "winston": "^3.3.3",
     "yup": "^0.32.11"
   }
 }

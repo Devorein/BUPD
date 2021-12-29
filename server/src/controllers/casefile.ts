@@ -1,17 +1,63 @@
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
+import * as yup from 'yup';
+import { CasefileModel } from '../models';
 import {
 	ApiResponse,
 	CreateCasefilePayload,
 	CreateCasefileResponse,
+	DeleteCasefilePayload,
+	DeleteCasefileResponse,
 	ICasefile,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
+	UpdateCasefilePayload,
+	UpdateCasefileResponse,
 } from '../shared.types';
-import { generateInsertQuery, pool } from '../utils';
+import { generateInsertQuery, logger, pool, removeFields } from '../utils';
+
+const CasefilePayload = {
+	create: yup
+		.object({
+			categories: yup.array(yup.string()).default([]).strict(),
+			weapons: yup.array(yup.string()).default([]).strict(),
+			time: yup.number().required().strict(),
+			status: yup.string().oneOf(['solved', 'open', 'closed']).nullable().strict(),
+			location: yup.string().required().strict(),
+			criminals: yup
+				.array()
+				.of(
+					yup
+						.mixed()
+						.test(
+							(obj) =>
+								(obj.name !== undefined && typeof obj.name === 'string') ||
+								(obj.id !== undefined && typeof obj.id === 'number')
+						)
+				)
+				.default([])
+				.strict(),
+			priority: yup.string().oneOf(['high', 'low', 'medium']).strict(),
+			victims: yup.array().of(
+				yup
+					.object({
+						name: yup.string().default('John Doe'),
+						address: yup.string().nullable(),
+						age: yup.number().max(120).nullable(),
+						phone_no: yup.string().nullable(),
+						description: yup.string().nullable(),
+					})
+					.required()
+					.strict()
+					.noUnknown()
+			),
+		})
+		.strict()
+		.noUnknown(),
+};
 
 const CasefileController = {
 	async create(
@@ -157,13 +203,69 @@ const CasefileController = {
 				},
 			});
 		} catch (err) {
-			console.log(err);
+			logger.error(err);
 			res.json({
 				status: 'error',
 				message: "Couldn't create case file. Please try again.",
 			});
 		}
 	},
+	async update(
+		req: Request<any, any, UpdateCasefilePayload>,
+		res: Response<ApiResponse<UpdateCasefileResponse>>
+	) {
+		try {
+			const payload = req.body;
+			const [casefile] = await CasefileModel.find({ filter: { case_no: payload.case_no } });
+			if (!casefile) {
+				res.json({
+					status: 'error',
+					message: "Casefile doesn't exist",
+				});
+			} else {
+				await CasefileModel.update(
+					{
+						case_no: payload.case_no,
+					},
+					removeFields(payload, ['case_no'])
+				);
+				res.json({
+					status: 'success',
+					data: {
+						...casefile,
+						...payload,
+					},
+				});
+			}
+		} catch (err) {
+			logger.error(err);
+			res.json({
+				status: 'error',
+				message: "Couldn't update the casefile",
+			});
+		}
+	},
+	async delete(
+		req: Request<any, any, DeleteCasefilePayload>,
+		res: Response<DeleteCasefileResponse>
+	) {
+		const file = await CasefileModel.findByCaseNo(req.body.case_no);
+		console.log(file);
+		if (file[0]) {
+			const result = await CasefileModel.delete(req.body);
+			if (result) {
+				res.json({
+					status: 'success',
+					data: file[0],
+				});
+			}
+		} else {
+			res.json({
+				status: 'error',
+				message: 'No valid case files given to delete',
+			});
+		}
+	},
 };
 
-export default CasefileController;
+export { CasefilePayload, CasefileController };

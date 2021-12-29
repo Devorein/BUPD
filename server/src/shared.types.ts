@@ -95,11 +95,16 @@ export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {}
 // You shouldn't be able to update police password using this endpoint
 // there should be a separate endpoint for that as you need to provide your current password if you want to update it
 export interface UpdatePolicePayload extends Exclude<IPolice, 'password'> {}
+export interface UpdateCriminalPayload extends Exclude<ICriminal, 'criminal_id'> {}
+export interface UpdateCriminalResponse extends ICriminal {}
 export interface UpdatePoliceResponse extends Exclude<IPolice, 'password'> {
 	token: string;
 }
 
-export type CurrentUserResponse = (IAdmin & { type: 'admin' }) | (IPolice & { type: 'police' });
+export type CurrentUserResponse =
+	| (IAdmin & { type: 'admin' })
+	| (IPolice & { type: 'police' })
+	| null;
 
 export interface LoginPayload {
 	email: string;
@@ -124,6 +129,8 @@ export interface CreateCasefilePayload {
 		description?: string | null;
 	}[];
 }
+export interface UpdateCasefilePayload extends Exclude<ICasefile, 'case_no'> {}
+export interface UpdateCasefileResponse extends ICasefile {}
 
 export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police'> {}
 
@@ -181,14 +188,19 @@ export interface IQuery<Filter, Sort> {
 }
 
 export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}
-
-
 export interface DeletePolicePayload {
 	nid: number;
 }
+export interface DeleteCasefilePayload {
+	case_no: number;
+}
+export interface DeleteCriminalPayload {
+	criminal_id: number;
+}
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
-
+export type DeleteCasefileResponse = ApiResponse<ICasefile>;
+export type DeleteCriminalResponse = ApiResponse<ICriminal>;
 export interface GetAccessPayload extends IQuery<IAccessFilter, IPoliceSort> {}
 export type GetAccessResponse = ApiResponse<PaginatedResponse<IAccess>>;
 

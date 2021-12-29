@@ -1,11 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { LoginPayload, LoginResponse } from 'bupd-server';
+import { LoginPayload, LoginResponse } from '@bupd/server';
 import colors from 'colors';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import mysql from 'mysql2';
 import path from 'path';
-import { createCaseFile } from './createCasefile';
+import { createAccess } from './createAccess';
+import { createCasefile } from './createCasefile';
 import { createPolices } from './createPolices';
 import { loginPolices } from './loginPolices';
 import { handleRequest } from './utils';
@@ -40,12 +41,22 @@ connection.connect(async (err) => {
 			const adminToken = loginResponse.token;
 			const polices = await createPolices(5, adminToken);
 			const loginPoliceResponses = await loginPolices(polices);
-			await createCaseFile(
-				loginPoliceResponses.map((loginPoliceResponse) => loginPoliceResponse.token),
-				{
-					totalCaseFiles: 50,
-				}
+			const policeTokens = loginPoliceResponses.map(
+				(loginPoliceResponse) => loginPoliceResponse.token
 			);
+			const createCasefileResponses = await createCasefile(policeTokens, {
+				totalCaseFiles: 10,
+			});
+			const caseNumbers: number[] = [],
+				criminalIds: number[] = [];
+
+			createCasefileResponses.forEach((createCasefileResponse) => {
+				caseNumbers.push(createCasefileResponse.case_no);
+				createCasefileResponse.criminals.forEach((criminal) => {
+					criminalIds.push(criminal.criminal_id);
+				});
+			});
+			await createAccess(policeTokens, caseNumbers, criminalIds, 50);
 			fs.writeFileSync(path.join(__dirname, 'polices.json'), JSON.stringify(polices), 'utf-8');
 			connection.destroy();
 		} catch (error) {

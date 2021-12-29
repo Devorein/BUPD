@@ -1,0 +1,6 @@
+logs
+dist
+coverage
+.env
+tests
+server/seeder

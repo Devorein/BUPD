@@ -1,5 +1,6 @@
+import hasAccess from './hasAccess';
 import isAuthenticated from './isAuthenticated';
 import isAuthorized from './isAuthorized';
-import validateReq from './validateReq';
+import validatePayload from './validatePayload';
 
-export { isAuthenticated, isAuthorized, validateReq };
+export { isAuthenticated, isAuthorized, validatePayload, hasAccess };

@@ -1,13 +1,20 @@
+import cors from 'cors';
 import express from 'express';
 import './config';
+import logger from './middlewares/logger';
 import RootRouter from './routes';
 import pool from './utils/pool';
 
 export * from './types';
 
 const app = express();
+app.use(
+	cors({
+		origin: process.env.NODE_ENV === 'production' ? `https://bupd.xyz` : `http://localhost:4000`,
+	})
+);
 app.use(express.json());
-
+app.use(logger);
 app.use('/v1', RootRouter);
 
 const PORT = process.env.SERVER_PORT;

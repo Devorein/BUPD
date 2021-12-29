@@ -1,4 +1,4 @@
-import { CreateCasefilePayload, CreateCasefileResponse, TCasefilePriority } from 'bupd-server';
+import { CreateCasefilePayload, CreateCasefileResponse, TCasefilePriority } from '@bupd/server';
 import dayjs from 'dayjs';
 import faker from 'faker';
 import { handleRequest, sleep } from './utils';
@@ -28,7 +28,7 @@ interface CreateCasefileSeederOptions {
 	minCriminalsPerCase?: number;
 }
 
-export async function createCaseFile(
+export async function createCasefile(
 	policeTokens: string[],
 	seederOptions: CreateCasefileSeederOptions
 ) {

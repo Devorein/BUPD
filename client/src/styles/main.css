@@ -1,21 +1,33 @@
 @tailwind base;
-
-a {
-  @apply text-blue-700;
-}
-
-a:hover {
-  @apply border-b-2 border-blue-700;
-}
-
 @tailwind components;
-
 @tailwind utilities;
 
-.content p {
-  @apply my-6;
+body {
+  height: 100vh;
+  width: 100vw;
 }
 
-.content ul {
-  @apply my-6;
+#__next, .Page {
+  width: 100%;
+  height: 100%;
+}
+
+.Body {
+  margin: 15px 0px;
+  height: calc(100% - 60px);
+  overflow: auto;
+  width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #eee;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #212121;
 }

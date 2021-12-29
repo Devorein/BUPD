@@ -96,7 +96,9 @@ describe('.generateWhereClause', () => {
 			"WHERE `filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak' ORDER BY `rank` DESC LIMIT 10"
 		);
 	});
+});
 
+describe('.generateInsertQuery', () => {
 	it(`Should work when we Insert`, () => {
 		expect(
 			generateInsertQuery(
@@ -108,7 +110,9 @@ describe('.generateWhereClause', () => {
 			)
 		).toBe("INSERT INTO police(`field1`,`field2`) VALUES('value1','value2');");
 	});
+});
 
+describe('.generateSetClause', () => {
 	it(`Should work when we SET in SQL`, () => {
 		expect(
 			generateSetClause({
@@ -117,7 +121,9 @@ describe('.generateWhereClause', () => {
 			})
 		).toBe("SET `field1`='value1',`field2`='value2'");
 	});
+});
 
+describe('.generateSelectQuery', () => {
 	it(`Should work when we Select in SQL`, () => {
 		expect(
 			generateSelectQuery(
@@ -144,14 +150,14 @@ describe('.generateWhereClause', () => {
 			)
 		).toBe("SELECT `attribute1` FROM Police WHERE `filter1`='value1';");
 	});
+});
 
+describe('.generateUpdateQuery', () => {
 	it(`Should work when we UPDATE in SQL`, () => {
 		expect(
 			generateUpdateQuery(
 				{
-					filter: {
-						filter1: 'value1',
-					},
+					filter1: 'value1',
 				},
 				{
 					payload: 'value',

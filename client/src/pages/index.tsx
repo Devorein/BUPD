@@ -1,12 +1,12 @@
-import { useRouter } from 'next/router';
+import { Page } from "../components";
 
 const Index = () => {
-  const router = useRouter();
-
   return (
-    <div>
-      Hello World
-    </div>
+    <Page>
+      <div>
+        Hello World
+      </div>
+    </Page>
   );
 };
 

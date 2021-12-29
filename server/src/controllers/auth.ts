@@ -20,28 +20,34 @@ import {
 	signToken,
 	validateEmail,
 	validatePassword,
-	VALID_REGEX,
+	logger,
 } from '../utils';
 
-const AuthRequest = {
-	register: yup.object().shape({
-		email: yup.string().email({ regex: VALID_REGEX }).required(),
-		phone: yup.string().nullable(),
-		address: yup.string().nullable(),
-		designation: yup.string().nullable(),
-		nid: yup.number().min(10000).required(),
-		name: yup.string().required(),
-		rank: yup.string().required(),
-		password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
-	}),
-	login: yup.object().shape({
-		password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
-		email: yup.string().email({ regex: VALID_REGEX }).required(),
-		as: yup.string().oneOf(['police', 'admin']).default('police'),
-	}),
-	delete: yup.object().shape({
-		nid: yup.number().min(10000).required(),
-	}),
+const AuthPayload = {
+	register: yup
+		.object({
+			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
+			phone: yup.string().nullable(),
+			address: yup.string().nullable(),
+			designation: yup.string().nullable(),
+			nid: yup.number().min(10000).required(),
+			name: yup.string().required(),
+			rank: yup.string().required(),
+			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
+		})
+		.strict().noUnknown(),
+	login: yup
+		.object({
+			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
+			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
+			as: yup.string().oneOf(['police', 'admin']).default('police'),
+		})
+		.strict().noUnknown(),
+	delete: yup
+		.object({
+			nid: yup.number().min(10000).required(),
+		})
+		.strict().noUnknown(),
 };
 
 const AuthController = {
@@ -135,7 +141,8 @@ const AuthController = {
 					}
 				}
 			}
-		} catch (_) {
+		} catch (err) {
+			logger.error(err);
 			res.json({
 				status: 'error',
 				message: 'Something went wrong. Please try again.',
@@ -192,6 +199,7 @@ const AuthController = {
 				});
 			}
 		} catch (err) {
+			logger.error(err);
 			// This error is thrown when unique constraint is violated
 			// Since we are adding this constraint to both email and nid
 			// We should detect which field is violating this constraint
@@ -261,7 +269,8 @@ const AuthController = {
 					message: 'Invalid token used',
 				});
 			}
-		} catch (_) {
+		} catch (err) {
+			logger.error(err);
 			res.json({
 				status: 'error',
 				message: 'Something went wrong. Please try again.',
@@ -270,4 +279,4 @@ const AuthController = {
 	},
 };
 
-export { AuthController, AuthRequest };
+export { AuthController, AuthPayload };

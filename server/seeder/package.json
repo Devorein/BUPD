@@ -6,7 +6,8 @@
   "scripts": {
     "build:watch": "tsc -w",
     "build": "tsc",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "create-db": "node ./dist/createDbScript"
   },
   "keywords": [],
   "author": "",
