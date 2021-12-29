@@ -1,6 +1,6 @@
 /// <reference types="@types/jest"/>
 
-import { validateEmail, validatePassword, checkForFields } from '../../src/utils/validate';
+import { checkForFields, validateEmail, validatePassword } from '../src/validate';
 describe('.validateEmail', () => {
 	it(`Should return true if the email is valid`, () => {
 		expect(validateEmail('randomemail1922@gmail.com')).toBe(true);

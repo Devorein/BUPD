@@ -16,24 +16,7 @@ jobs:
       - name: Lint, Build and
       - name: Lint, Build and Test Server
         run: |
+          npm install
           npm install -g zx
-          cd server
-          # Install server dependencies
-          npm install
-          # Build server, required for seeder
-          npm run build
-
-          # Install @bupd/server globally
-          npm install -g
-          cd seeder
-          # Install seeder dependencies
-          npm install
-          # Linking @bupd/server
-          npm link @bupd/server
-          # Build seeder
-          npm run build
-
-          # Go back to server root
-          cd ../
-          npm run lint
-          npm run test
+          chmod +x ${GITHUB_WORKSPACE}/scripts/build.js
+          zx ${GITHUB_WORKSPACE}/scripts/build.js
