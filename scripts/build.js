@@ -23,11 +23,13 @@ async function executeScript(command, successMessage, errorMessage) {
 	}
 }
 
+const scope = '@bupd';
+
 async function main() {
 	for (let index = 0; index < packagesInfo.length; index++) {
 		const [package, linkedPackages] = packagesInfo[index];
-		const packageName = `@bupd/${package}`;
-		cd(`${$WORKSPACE}/${package}`);
+		const packageName = `${scope}/${package}`;
+		cd(`${$WORKSPACE}/packages/${package}`);
 
 		console.log(`Building package ${chalk.blue.bold(packageName)}`);
 
@@ -47,9 +49,9 @@ async function main() {
 			for (let index = 0; index < linkedPackages.length; index++) {
 				const linkedPackage = linkedPackages[index];
 				await executeScript(
-					$`npm link @bupd/${linkedPackage}`,
-					`Successfully linked @bupd/${linkedPackage} package`,
-					`Error linking @bupd/${linkedPackage}`
+					$`npm link ${scope}/${linkedPackage}`,
+					`Successfully linked ${scope}/${linkedPackage} package`,
+					`Error linking ${scope}/${linkedPackage}`
 				);
 			}
 		} else {
