@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { useGetCurrentUserQueryData } from "../api";
 import { JWT_LS_KEY } from "../constants";
 import { RootContext } from "../contexts";
+import Logo from "../svg/logo";
 import { Button } from "./Button";
 
 export function Header() {
@@ -19,6 +20,12 @@ export function Header() {
   }
   return <div className="flex gap-3 items-center justify-between shadow-md p-3">
     <div>
+      <div className="flex gap-1 items-center">
+        <Logo />
+        <span className="font-bold text-xl">
+          BUPD
+        </span>
+      </div>
       {currentUser ? <div><span className="font-medium">Welcome back, </span><span className="font-bold text-lg">{currentUserName}</span></div> : null}
     </div>
     <div className="flex gap-3">
