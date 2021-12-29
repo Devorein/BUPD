@@ -7,6 +7,7 @@ const CasefileRouter = express.Router();
 CasefileRouter.put(
 	'/',
 	isAuthenticated,
+	validatePayload(CasefilePayload.update),
 	isAuthorized(['police']),
 	hasAccess('case', 'update'),
 	CasefileController.update
@@ -21,6 +22,7 @@ CasefileRouter.post(
 CasefileRouter.delete(
 	'/',
 	isAuthenticated,
+	validatePayload(CasefilePayload.delete),
 	isAuthorized(['police']),
 	hasAccess('case', 'delete'),
 	CasefileController.delete

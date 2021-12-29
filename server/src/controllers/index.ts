@@ -2,7 +2,7 @@ import { AuthController, AuthPayload } from './auth';
 import { CasefileController, CasefilePayload } from './casefile';
 import { PoliceController, PoliceRequest } from './police';
 import { AccessController, AccessPayload } from './access';
-import { CriminalController } from './criminal';
+import { CriminalController, CriminalPayload } from './criminal';
 
 export {
 	CasefileController,
@@ -14,4 +14,5 @@ export {
 	AccessController,
 	AccessPayload,
 	CriminalController,
+	CriminalPayload,
 };
