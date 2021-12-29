@@ -10,7 +10,8 @@ export * from './types';
 const app = express();
 app.use(
 	cors({
-		origin: process.env.NODE_ENV === 'production' ? `https://bupd.xyz` : `http://localhost:4000`,
+		origin:
+			process.env.NODE_ENV === 'production' ? `https://www.bupd.xyz` : `http://localhost:4000`,
 	})
 );
 app.use(express.json());

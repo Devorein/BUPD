@@ -3,7 +3,6 @@ import { RegisterPolicePayload } from '@shared';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
 import * as Yup from 'yup';
 import { useRegisterMutation } from '../api/mutations';
 import { Button, FormikTextInput, Page } from '../components';
@@ -37,7 +36,6 @@ export default function Register() {
 
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const [isRegistering, setIsRegistering] = useState(false);
   const registerMutation = useRegisterMutation();
   return (
     <Page>
@@ -47,7 +45,6 @@ export default function Register() {
           validationSchema={registerInputValidationSchema}
           initialValues={registerInputInitialValue}
           onSubmit={async (values) => {
-            setIsRegistering(true);
             try {
               registerMutation.mutate(
                 values,
@@ -58,15 +55,11 @@ export default function Register() {
                   },
                   onError(response) {
                     enqueueSnackbar((response as any).message, { variant: 'error' });
-                  },
-                  onSettled() {
-                    setIsRegistering(false);
                   }
                 }
               );
             } catch (err: any) {
               enqueueSnackbar(err.message, { variant: 'error' });
-              setIsRegistering(false);
             }
           }}
         >
@@ -77,51 +70,51 @@ export default function Register() {
               </div>
               <div className="flex flex-col min-w-[450px] max-h-[500px] overflow-auto pr-5">
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="name"
                   label="Full name"
                   placeholder="John Doe"
                 />
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="email"
                   label="Email address"
                   placeholder="johndoe@gmail.com"
                 />
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="password"
                   label="Password"
                   placeholder="*****"
                   type="password"
                 />
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="phone"
                   label="Phone"
                   placeholder="+880..."
                 />
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="designation"
                   label="Designation"
                   placeholder="Police Station"
                 />
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="nid"
                   label="NID"
                   placeholder="123456"
                   type="number"
                 />
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="rank"
                   label="Rank"
                   placeholder="Superintendent"
                 />
                 <FormikTextInput
-                  disabled={isRegistering}
+                  disabled={registerMutation.isLoading}
                   name="address"
                   label="Address"
                   placeholder="Road 123"
@@ -134,7 +127,7 @@ export default function Register() {
                   color="secondary"
                   content="Register"
                   type="submit"
-                  disabled={!isValid || isSubmitting || isRegistering}
+                  disabled={!isValid || isSubmitting || registerMutation.isLoading}
                 />
               </div>
             </Form>
