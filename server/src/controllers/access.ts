@@ -15,15 +15,14 @@ import { generateCountQuery, generateInsertQuery, logger, query } from '../utils
 
 const AccessPayload = {
 	get: yup
-		.object()
-		.shape({
+		.object({
 			filter: yup
 				.object({
 					approved: yup.number().min(0).max(1),
 					permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
 					type: yup.string().oneOf(['case', 'criminal']),
 				})
-				.strict(),
+				.strict().noUnknown(),
 			sort: yup
 				.array()
 				.test(
@@ -35,10 +34,10 @@ const AccessPayload = {
 				),
 			limit: yup.number(),
 		})
-		.strict(),
+		.strict()
+		.noUnknown(),
 	create: yup
-		.object()
-		.shape({
+		.object({
 			case_no: yup.number().nullable(),
 			criminal_id: yup.number().nullable(),
 			permission: yup.string().oneOf(['read', 'write', 'update', 'delete']).required(),
@@ -47,7 +46,8 @@ const AccessPayload = {
 			(obj) =>
 				(!obj.case_no && Boolean(obj.criminal_id)) || (!obj.criminal_id && Boolean(obj.case_no))
 		)
-		.strict(),
+		.strict()
+		.noUnknown(),
 };
 
 const AccessController = {

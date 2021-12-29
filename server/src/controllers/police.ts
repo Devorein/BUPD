@@ -23,8 +23,7 @@ import {
 
 const PoliceRequest = {
 	update: yup
-		.object()
-		.shape({
+		.object({
 			email: yup.string().test((email) => (email === undefined ? true : validateEmail(email))),
 			phone: yup.string().nullable(),
 			address: yup.string().nullable(),
@@ -32,10 +31,10 @@ const PoliceRequest = {
 			name: yup.string(),
 			rank: yup.string(),
 		})
-		.strict(),
+		.strict()
+		.noUnknown(),
 	get: yup
-		.object()
-		.shape({
+		.object({
 			filter: yup.object({
 				designation: yup.string(),
 				rank: yup.string(),
@@ -51,13 +50,14 @@ const PoliceRequest = {
 				),
 			limit: yup.number(),
 		})
-		.strict(),
+		.strict()
+		.noUnknown(),
 	delete: yup
-		.object()
-		.shape({
+		.object({
 			nid: yup.number().min(10000).required(),
 		})
-		.strict(),
+		.strict()
+		.noUnknown(),
 };
 
 const PoliceController = {

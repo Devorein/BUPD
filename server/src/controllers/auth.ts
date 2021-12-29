@@ -25,8 +25,7 @@ import {
 
 const AuthPayload = {
 	register: yup
-		.object()
-		.shape({
+		.object({
 			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
 			phone: yup.string().nullable(),
 			address: yup.string().nullable(),
@@ -36,21 +35,19 @@ const AuthPayload = {
 			rank: yup.string().required(),
 			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
 		})
-		.strict(),
+		.strict().noUnknown(),
 	login: yup
-		.object()
-		.shape({
+		.object({
 			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
 			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
 			as: yup.string().oneOf(['police', 'admin']).default('police'),
 		})
-		.strict(),
+		.strict().noUnknown(),
 	delete: yup
-		.object()
-		.shape({
+		.object({
 			nid: yup.number().min(10000).required(),
 		})
-		.strict(),
+		.strict().noUnknown(),
 };
 
 const AuthController = {
