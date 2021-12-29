@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { RowDataPacket } from 'mysql2';
-import * as yup from 'yup';
 import { PoliceModel } from '../models';
 import {
 	ApiResponse,
@@ -12,53 +11,7 @@ import {
 	UpdatePolicePayload,
 	UpdatePoliceResponse,
 } from '../types';
-import {
-	generateCountQuery,
-	generatePoliceJwtToken,
-	logger,
-	query,
-	removeFields,
-	validateEmail,
-} from '../utils';
-
-const PoliceRequest = {
-	update: yup
-		.object({
-			email: yup.string().test((email) => (email === undefined ? true : validateEmail(email))),
-			phone: yup.string().nullable(),
-			address: yup.string().nullable(),
-			designation: yup.string().nullable(),
-			name: yup.string(),
-			rank: yup.string(),
-		})
-		.strict()
-		.noUnknown(),
-	get: yup
-		.object({
-			filter: yup.object({
-				designation: yup.string(),
-				rank: yup.string(),
-			}),
-			sort: yup
-				.array()
-				.test(
-					(arr) =>
-						arr === undefined ||
-						(arr.length === 2 &&
-							arr[0].match(/^(designation|rank|name)$/) &&
-							(arr[1] === -1 || arr[1] === 1))
-				),
-			limit: yup.number(),
-		})
-		.strict()
-		.noUnknown(),
-	delete: yup
-		.object({
-			nid: yup.number().min(10000).required(),
-		})
-		.strict()
-		.noUnknown(),
-};
+import { generateCountQuery, generatePoliceJwtToken, logger, query, removeFields } from '../utils';
 
 const PoliceController = {
 	async update(
@@ -140,4 +93,4 @@ const PoliceController = {
 	},
 };
 
-export { PoliceRequest, PoliceController };
+export default PoliceController;

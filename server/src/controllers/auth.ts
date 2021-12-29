@@ -1,6 +1,5 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
-import * as yup from 'yup';
 import { AdminModel, PoliceModel } from '../models';
 import {
 	AdminJwtPayload,
@@ -13,42 +12,7 @@ import {
 	RegisterPolicePayload,
 	RegisterPoliceResponse,
 } from '../types';
-import {
-	checkForFields,
-	generatePoliceJwtToken,
-	removeFields,
-	signToken,
-	validateEmail,
-	validatePassword,
-	logger,
-} from '../utils';
-
-const AuthPayload = {
-	register: yup
-		.object({
-			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
-			phone: yup.string().nullable(),
-			address: yup.string().nullable(),
-			designation: yup.string().nullable(),
-			nid: yup.number().min(10000).required(),
-			name: yup.string().required(),
-			rank: yup.string().required(),
-			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
-		})
-		.strict().noUnknown(),
-	login: yup
-		.object({
-			password: yup.string().test((pass) => (pass === undefined ? false : validatePassword(pass))),
-			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
-			as: yup.string().oneOf(['police', 'admin']).default('police'),
-		})
-		.strict().noUnknown(),
-	delete: yup
-		.object({
-			nid: yup.number().min(10000).required(),
-		})
-		.strict().noUnknown(),
-};
+import { generatePoliceJwtToken, logger, removeFields, signToken } from '../utils';
 
 const AuthController = {
 	login: async (
@@ -57,87 +21,69 @@ const AuthController = {
 	) => {
 		try {
 			const payload = req.body;
-			const nonExistentFields = checkForFields(payload, ['as', 'email', 'password']);
-			if (nonExistentFields.length !== 0) {
-				res.json({
-					status: 'error',
-					message: `${nonExistentFields[0]} is required`,
+			if (payload.as === 'police') {
+				const [police] = await PoliceModel.find({
+					filter: { email: payload.email },
+					select: ['password'],
 				});
-			} else {
-				// Wrapping everything in try/catch block
-				// As an error might be thrown when using argon2 or jwt
 
-				if (req.body.as !== 'admin' && req.body.as !== 'police') {
+				if (!police) {
 					res.json({
 						status: 'error',
-						message: 'You can only login as admin or police',
+						message: 'No police exists with that email',
 					});
 				} else {
-					if (payload.as === 'police') {
-						const [police] = await PoliceModel.find({
-							filter: { email: payload.email },
-							select: ['password'],
+					const isCorrectPassword = await argon2.verify(police.password, payload.password);
+					if (!isCorrectPassword) {
+						res.json({
+							status: 'error',
+							message: 'Incorrect password',
 						});
-
-						if (!police) {
-							res.json({
-								status: 'error',
-								message: 'No police exists with that email',
-							});
-						} else {
-							const isCorrectPassword = await argon2.verify(police.password, payload.password);
-							if (!isCorrectPassword) {
-								res.json({
-									status: 'error',
-									message: 'Incorrect password',
-								});
-							} else {
-								const passwordRemovedPolice = removeFields<IPolice & { password: string }, IPolice>(
-									police,
-									['password']
-								);
-								res.json({
-									status: 'success',
-									data: {
-										...passwordRemovedPolice,
-										token: generatePoliceJwtToken(police),
-									},
-								});
-							}
-						}
-					} else if (payload.as === 'admin') {
-						const [admin] = await AdminModel.find({ email: payload.email });
-						if (!admin) {
-							res.json({
-								status: 'error',
-								message: 'No admin exists with that email',
-							});
-						} else {
-							const isCorrectPassword = await argon2.verify(admin.password, payload.password);
-							if (!isCorrectPassword) {
-								res.json({
-									status: 'error',
-									message: 'Incorrect password',
-								});
-							} else {
-								const passwordRemovedAdmin = removeFields<IAdmin & { password: string }, IAdmin>(
-									admin,
-									['password']
-								);
-								const adminJwtPayload: AdminJwtPayload = {
-									type: 'admin',
-									...passwordRemovedAdmin,
-								};
-								const jwtToken = signToken(adminJwtPayload);
-								res.json({
-									status: 'success',
-									data: {
-										...passwordRemovedAdmin,
-										token: jwtToken,
-									},
-								});
-							}
-						}
+					} else {
+						const passwordRemovedPolice = removeFields<IPolice & { password: string }, IPolice>(
+							police,
+							['password']
+						);
+						res.json({
+							status: 'success',
+							data: {
+								...passwordRemovedPolice,
+								token: generatePoliceJwtToken(police),
+							},
+						});
+					}
+				}
+			} else if (payload.as === 'admin') {
+				const [admin] = await AdminModel.find({ email: payload.email });
+				if (!admin) {
+					res.json({
+						status: 'error',
+						message: 'No admin exists with that email',
+					});
+				} else {
+					const isCorrectPassword = await argon2.verify(admin.password, payload.password);
+					if (!isCorrectPassword) {
+						res.json({
+							status: 'error',
+							message: 'Incorrect password',
+						});
+					} else {
+						const passwordRemovedAdmin = removeFields<IAdmin & { password: string }, IAdmin>(
+							admin,
+							['password']
+						);
+						const adminJwtPayload: AdminJwtPayload = {
+							type: 'admin',
+							...passwordRemovedAdmin,
+						};
+						const jwtToken = signToken(adminJwtPayload);
+						res.json({
+							status: 'success',
+							data: {
+								...passwordRemovedAdmin,
+								token: jwtToken,
+							},
+						});
 					}
 				}
 			}
@@ -155,49 +101,22 @@ const AuthController = {
 	) => {
 		try {
 			const payload = req.body;
-			const nonExistentFields = checkForFields(payload, [
-				'nid',
-				'address',
-				'designation',
-				'name',
-				'password',
-				'phone',
-				'rank',
-			]);
+			const hashedPassword = await argon2.hash(payload.password, {
+				hashLength: 100,
+				timeCost: 5,
+				salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
+			});
 
-			if (nonExistentFields.length !== 0) {
-				res.json({
-					status: 'error',
-					message: `${nonExistentFields[0]} is required`,
-				});
-			} else if (!validatePassword(payload.password)) {
-				res.json({
-					status: 'error',
-					message: 'Weak password',
-				});
-			} else if (!validateEmail(payload.email)) {
-				res.json({
-					status: 'error',
-					message: 'Invalid email',
-				});
-			} else {
-				const hashedPassword = await argon2.hash(payload.password, {
-					hashLength: 100,
-					timeCost: 5,
-					salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
-				});
+			await PoliceModel.create({
+				...payload,
+				password: hashedPassword,
+			});
 
-				await PoliceModel.create({
-					...payload,
-					password: hashedPassword,
-				});
-
-				res.json({
-					status: 'success',
-					// We should not return password to the client
-					data: removeFields(payload, ['password']),
-				});
-			}
+			res.json({
+				status: 'success',
+				// We should not return password to the client
+				data: removeFields(payload, ['password']),
+			});
 		} catch (err) {
 			logger.error(err);
 			// This error is thrown when unique constraint is violated
@@ -279,4 +198,4 @@ const AuthController = {
 	},
 };
 
-export { AuthController, AuthPayload };
+export default AuthController;

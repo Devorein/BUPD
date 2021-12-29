@@ -37,6 +37,5 @@
   ],
   "include": [
     "./src/**/*.ts",
-    "../validation/src/validate.ts",
   ]
 }

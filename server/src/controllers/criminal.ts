@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as yup from 'yup';
+import { CriminalModel } from '../models';
 import {
 	ApiResponse,
 	DeleteCriminalPayload,
@@ -7,26 +7,7 @@ import {
 	UpdateCriminalPayload,
 	UpdateCriminalResponse,
 } from '../shared.types';
-import { CriminalModel } from '../models';
-
 import { logger, removeFields } from '../utils';
-
-const CriminalPayload = {
-	update: yup
-		.object({
-			criminal_id: yup.number().required().strict(),
-			name: yup.string().strict(),
-			photo: yup.string().nullable().strict(),
-		})
-		.strict()
-		.noUnknown(),
-	delete: yup
-		.object({
-			criminal_id: yup.number().required().strict(),
-		})
-		.strict()
-		.noUnknown(),
-};
 
 const CriminalController = {
 	async update(
@@ -86,4 +67,4 @@ const CriminalController = {
 	},
 };
 
-export { CriminalController, CriminalPayload };
+export default CriminalController;

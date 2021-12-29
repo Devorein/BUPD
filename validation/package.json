@@ -1,0 +1,38 @@
+{
+  "name": "@bupd/validation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "del-cli ./dist",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc -w",
+    "lint": "npx eslint \"./src\" --ext tsx,ts \"./seeder\" --ext tsx,ts",
+    "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
+    "test": "npx jest --runInBand --config ./jest.config.js",
+    "format": "npx prettier ./src/**/*.{ts,js} --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.8.1",
+    "@typescript-eslint/parser": "^5.8.1",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.5.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.4.5",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.2",
+    "typescript": "^4.5.4"
+  }
+}
