@@ -20,9 +20,10 @@ import {
 	signToken,
 	validateEmail,
 	validatePassword,
+	logger,
 } from '../utils';
 
-const AuthRequest = {
+const AuthPayload = {
 	register: yup
 		.object()
 		.shape({
@@ -143,7 +144,8 @@ const AuthController = {
 					}
 				}
 			}
-		} catch (_) {
+		} catch (err) {
+			logger.error(err);
 			res.json({
 				status: 'error',
 				message: 'Something went wrong. Please try again.',
@@ -200,6 +202,7 @@ const AuthController = {
 				});
 			}
 		} catch (err) {
+			logger.error(err);
 			// This error is thrown when unique constraint is violated
 			// Since we are adding this constraint to both email and nid
 			// We should detect which field is violating this constraint
@@ -269,7 +272,8 @@ const AuthController = {
 					message: 'Invalid token used',
 				});
 			}
-		} catch (_) {
+		} catch (err) {
+			logger.error(err);
 			res.json({
 				status: 'error',
 				message: 'Something went wrong. Please try again.',
@@ -278,4 +282,4 @@ const AuthController = {
 	},
 };
 
-export { AuthController, AuthRequest };
+export { AuthController, AuthPayload };

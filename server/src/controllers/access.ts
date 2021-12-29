@@ -11,15 +11,17 @@ import {
 	IAccess,
 } from '../shared.types';
 import { ApiResponse, PoliceJwtPayload } from '../types';
-import { generateCountQuery, generateInsertQuery, query } from '../utils';
+import { generateCountQuery, generateInsertQuery, logger, query } from '../utils';
 
 const AccessPayload = {
 	get: yup.object().shape({
-		filter: yup.object({
-			approved: yup.number().min(0).max(1),
-			permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
-			type: yup.string().oneOf(['case', 'criminal']),
-		}),
+		filter: yup
+			.object({
+				approved: yup.number().min(0).max(1),
+				permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
+				type: yup.string().oneOf(['case', 'criminal']),
+			})
+			.strict(),
 		sort: yup
 			.array()
 			.test(
@@ -28,8 +30,9 @@ const AccessPayload = {
 					(arr.length === 2 &&
 						arr[0].match(/^(criminal_id|case_no|approved|permission)$/) &&
 						(arr[1] === -1 || arr[1] === 1))
-			),
-		limit: yup.number(),
+			)
+			.strict(),
+		limit: yup.number().strict(),
 	}),
 	create: yup
 		.object()
@@ -41,7 +44,8 @@ const AccessPayload = {
 		.test(
 			(obj) =>
 				(!obj.case_no && Boolean(obj.criminal_id)) || (!obj.criminal_id && Boolean(obj.case_no))
-		),
+		)
+		.strict(),
 };
 
 const AccessController = {
@@ -67,7 +71,7 @@ const AccessController = {
 				data: '',
 			});
 		} catch (err) {
-			console.log(err);
+			logger.error(err);
 			res.json({
 				status: 'error',
 				message: 'Something went wrong. Please try again.',

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AccessModel } from '../models';
 import { AccessPermission, ErrorApiResponse, TAccessType } from '../types';
-import { handleError } from '../utils';
+import { handleError, logger } from '../utils';
 
 const hasAccess =
 	(accessType: TAccessType, accessPermission: AccessPermission) =>
@@ -38,7 +38,8 @@ const hasAccess =
 				if (Object.keys(test[0]).length > 0) next();
 				else handleError(res, 403, 'Not Authorized');
 			}
-		} catch (_) {
+        } catch (err) {
+            logger.error(err);			
 			handleError(res, 403, 'Not Authorized');
 		}
 	};

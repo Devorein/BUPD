@@ -1,4 +1,4 @@
-import { AuthController, AuthRequest } from './auth';
+import { AuthController, AuthPayload } from './auth';
 import { CasefileController, CasefilePayload } from './casefile';
 import { PoliceController, PoliceRequest } from './police';
 import { AccessController, AccessPayload } from './access';
@@ -8,7 +8,7 @@ export {
 	CasefileController,
 	CasefilePayload,
 	AuthController,
-	AuthRequest,
+	AuthPayload,
 	PoliceController,
 	PoliceRequest,
 	AccessController,

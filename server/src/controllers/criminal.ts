@@ -8,7 +8,7 @@ import {
 } from '../shared.types';
 import { CriminalModel } from '../models';
 
-import { removeFields } from '../utils';
+import { logger, removeFields } from '../utils';
 
 const CriminalController = {
 	async update(
@@ -38,8 +38,8 @@ const CriminalController = {
 					},
 				});
 			}
-		} catch (err) {
-			console.log(err);
+        } catch (err) {
+            logger.error(err);
 			res.json({
 				status: 'error',
 				message: "Couldn't update the criminal",
