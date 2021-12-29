@@ -11,7 +11,7 @@ interface ButtonProps extends MuiButtonProps {
 
 export function Button(props: ButtonProps) {
   const { sx, content, classNames = {}, ...extraProps } = props;
-  return <MuiButton sx={sx} color="primary" variant="contained" className={`Button br-10px ${classNames.button ?? ''}`} {...extraProps}>
+  return <MuiButton sx={sx} color="primary" variant="contained" className={`Button ${classNames.button ?? ''}`} {...extraProps}>
     <div className={`Button-text ${classNames.typography ?? ''}`}>
       {content}
     </div>

@@ -1,15 +1,11 @@
 import { ApiResponse } from '@shared';
 import axios from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
+import { JWT_LS_KEY, SERVER_URL } from '../constants';
 
-export function useFunctionsQuery<
-	RequestData = any,
-	ResponseData = unknown,
-	ModifiedData = ResponseData
->(
+export function useApiQuery<ResponseData = unknown, ModifiedData = ResponseData>(
 	key: QueryKey,
 	endpoint: string,
-	payload?: RequestData | null,
 	useQueryOptions?: Omit<
 		UseQueryOptions<ApiResponse<ResponseData>, Error, ApiResponse<ModifiedData>>,
 		'queryFn'
@@ -19,10 +15,15 @@ export function useFunctionsQuery<
 		...useQueryOptions,
 		queryKey: useQueryOptions?.queryKey ?? key,
 		async queryFn() {
-			const response = await axios.post<ApiResponse<ResponseData>>(
-				`${process.env.BASE_URL!}/${endpoint}`,
-				payload
-			);
+			let jwtToken: null | string = null;
+			if (typeof window !== 'undefined') {
+				jwtToken = localStorage.getItem(JWT_LS_KEY);
+			}
+			const response = await axios.get<ApiResponse<ResponseData>>(`${SERVER_URL!}/${endpoint}`, {
+				headers: {
+					Authorization: jwtToken ? `Bearer ${jwtToken}` : '',
+				},
+			});
 
 			if (response.data.status === 'error') {
 				throw new Error(response.data.message);

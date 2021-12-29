@@ -80,6 +80,13 @@ export function generateTheme() {
 					},
 				},
 			},
+			MuiButton: {
+				styleOverrides: {
+					root: {
+						borderRadius: 0,
+					},
+				},
+			},
 			MuiFormHelperText: {
 				styleOverrides: {
 					root: {
