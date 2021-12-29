@@ -13,8 +13,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
+      - name: Lint, Build and
       - name: Lint, Build and Test Server
         run: |
+
           cd server
           # Install server dependencies
           npm install
