@@ -10,7 +10,7 @@ NC='\033[0m'
 echo $GITHUB_WORKSPACE
 
 for package in "${packages[@]}" ; do
-  package_name="@fauton/$package"
+  package_name="@bupd/$package"
   cd "${GITHUB_WORKSPACE}/$package"
   tsc="${GITHUB_WORKSPACE}/node_modules/.bin/tsc"
   jest="${GITHUB_WORKSPACE}/node_modules/.bin/jest"
@@ -44,10 +44,12 @@ for package in "${packages[@]}" ; do
     echo -e "${GREEN}Successfully build $package_name${NC}"
   fi
 
-  if ! (node $jest --runInBand) then
-    echo -e "${RED}Error testing $package_name${NC}"
-    exit 1
-  else
-    echo -e "${GREEN}Successfully tested $package_name${NC}"
+  if [ "${GITHUB_WORKSPACE}/$package/test" ] then
+    if ! (node $jest --runInBand) then
+      echo -e "${RED}Error testing $package_name${NC}"
+      exit 1
+    else
+      echo -e "${GREEN}Successfully tested $package_name${NC}"
+    fi
   fi
 done
