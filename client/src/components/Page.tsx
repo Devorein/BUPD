@@ -1,8 +1,10 @@
 import { Header } from "./Header"
 
 export const Page: React.FC<{}> = (props) => {
-  return <div className="p-5">
+  return <div className="Page p-5 w-full">
     <Header />
-    {props.children}
+    <div className="Body">
+      {props.children}
+    </div>
   </div>
 }

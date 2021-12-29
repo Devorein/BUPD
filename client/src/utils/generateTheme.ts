@@ -1,4 +1,4 @@
-import { grey, red } from '@mui/material/colors';
+import { blue, grey, red } from '@mui/material/colors';
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 export function generateTheme() {
@@ -27,6 +27,9 @@ export function generateTheme() {
 			},
 			primary: {
 				main: grey[900],
+			},
+			secondary: {
+				main: blue[900],
 			},
 		},
 		typography: {
