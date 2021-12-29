@@ -4,13 +4,18 @@ import { isAuthenticated, isAuthorized, validatePayload, hasAccess } from '../mi
 
 const CasefileRouter = express.Router();
 
-CasefileRouter.put('/', isAuthenticated, isAuthorized(['police']), CasefileController.update);
+CasefileRouter.put(
+	'/',
+	isAuthenticated,
+	isAuthorized(['police']),
+	hasAccess('case', 'update'),
+	CasefileController.update
+);
 CasefileRouter.post(
 	'/',
 	validatePayload(CasefilePayload.create),
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('case', 'update'),
 	CasefileController.create
 );
 CasefileRouter.delete(
