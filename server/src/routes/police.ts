@@ -1,5 +1,6 @@
+import { PoliceRequest } from '@bupd/validation';
 import express from 'express';
-import { PoliceController, PoliceRequest } from '../controllers';
+import { PoliceController } from '../controllers';
 import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const PoliceRouter = express.Router();

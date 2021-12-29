@@ -36,7 +36,6 @@
     "node_modules"
   ],
   "include": [
-    "./src/**/*.ts",
-    "../validation/src/validate.ts",
+    "./src/**/*.ts"
   ]
 }

@@ -1,5 +1,6 @@
+import { CasefilePayload } from '@bupd/validation';
 import express from 'express';
-import { CasefileController, CasefilePayload } from '../controllers';
+import { CasefileController } from '../controllers';
 import { hasAccess, isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const CasefileRouter = express.Router();

@@ -1,6 +1,7 @@
+import { CriminalPayload } from '@bupd/validation';
 import express from 'express';
-import { CriminalController, CriminalPayload } from '../controllers';
-import { isAuthenticated, isAuthorized, hasAccess, validatePayload } from '../middlewares';
+import { CriminalController } from '../controllers';
+import { hasAccess, isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const CriminalRouter = express.Router();
 
@@ -14,7 +15,6 @@ CriminalRouter.put(
 );
 CriminalRouter.delete(
 	'/',
-	validatePayload(CriminalPayload.delete),
 	isAuthenticated,
 	isAuthorized(['police']),
 	hasAccess('criminal', 'delete'),

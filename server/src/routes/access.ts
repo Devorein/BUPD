@@ -1,5 +1,6 @@
+import { AccessPayload } from '@bupd/validation';
 import express from 'express';
-import { AccessController, AccessPayload } from '../controllers';
+import { AccessController } from '../controllers';
 import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const AccessRouter = express.Router();

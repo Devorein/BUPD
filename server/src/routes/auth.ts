@@ -1,5 +1,6 @@
+import { AuthPayload } from '@bupd/validation';
 import express from 'express';
-import { AuthController, AuthPayload } from '../controllers';
+import { AuthController } from '../controllers';
 import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
 
 const AuthRouter = express.Router();
