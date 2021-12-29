@@ -13,11 +13,20 @@
     "build-types": "tsc --noEmit --pretty"
   },
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.6",
+    "@mui/styles": "^5.2.3",
+    "axios": "^0.24.0",
+    "formik": "^2.2.9",
     "next": "^12.0.2",
     "next-seo": "^4.28.1",
+    "notistack": "^2.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "styled-jsx-plugin-postcss": "^4.0.1"
+    "react-query": "^3.34.6",
+    "styled-jsx-plugin-postcss": "^4.0.1",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^12.0.2",

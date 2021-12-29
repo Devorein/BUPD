@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { BaseSchema } from 'yup';
-import { handleError } from '../utils';
 import { ErrorApiResponse } from '../types';
+import { handleError } from '../utils';
 
 const validatePayload =
 	(resourceSchema: BaseSchema) =>
@@ -12,6 +12,7 @@ const validatePayload =
 			req.body = validatedPayload;
 			next();
 		} catch (err) {
+			console.log(err.message);
 			handleError(res, 400, 'Bad Request');
 		}
 	};

@@ -1,21 +1,13 @@
 @tailwind base;
-
-a {
-  @apply text-blue-700;
-}
-
-a:hover {
-  @apply border-b-2 border-blue-700;
-}
-
 @tailwind components;
-
 @tailwind utilities;
 
-.content p {
-  @apply my-6;
+body {
+  height: 100vh;
+  width: 100vw;
 }
 
-.content ul {
-  @apply my-6;
+#__next {
+  width: 100%;
+  height: 100%;
 }
