@@ -1,0 +1,23 @@
+{
+  "name": "@bupd/validation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "del-cli ./dist",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc -w",
+    "lint": "npx eslint \"./src\" --ext tsx,ts \"./seeder\" --ext tsx,ts",
+    "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
+    "test": "npx jest --runInBand --config ./jest.config.js",
+    "format": "npx prettier ./src/**/*.{ts,js} --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {}
+}
