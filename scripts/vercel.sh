@@ -7,8 +7,8 @@ if [[ "$VERCEL_ENV" == "production" ]] ; then
   echo "✅ - Build can proceed"
   cd ../../
   npm install
-  npm install lerna -g
-  lerna bootstrap
+  npm run bootstrap
+  npm run build
   cd ./packages/client
   exit 1;
 else
