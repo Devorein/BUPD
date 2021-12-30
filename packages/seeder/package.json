@@ -13,17 +13,19 @@
     "lint:fix": "eslint \"./src\" --ext tsx,ts --fix",
     "test": "jest --runInBand --config ./jest.config.js",
     "format": "prettier ./src/**/*.{ts,js} --write",
-    "create-db": "node ./dist/createDbScript"
+    "create-db": "node ./dist/createDbScript",
+    "seeder": "node ./dist/seederScript"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "argon2": "^0.28.3",
     "axios": "^0.24.0",
     "colors": "^1.4.0",
     "dayjs": "^1.10.7",
-    "faker": "^5.5.3",
     "dotenv": "^10.0.0",
+    "faker": "^5.5.3",
     "mysql2": "^2.3.3"
   },
   "devDependencies": {

@@ -1,3 +1,4 @@
+import argon2 from 'argon2';
 import colors from 'colors';
 import mysql from 'mysql2/promise';
 
@@ -142,8 +143,14 @@ export default async function createDb(dbName: string) {
 		await connection.query(query);
 		console.log(colors.bold.blue(`Created access table`));
 
-		query = `INSERT INTO Admin(email, password) values("${process.env.ADMIN_EMAIL!}", "${process.env
-			.ADMIN_DB_PASS!}");`;
+		const hashedAdminPassword = await argon2.hash(process.env.ADMIN_PASSWORD!, {
+			hashLength: 100,
+			timeCost: 5,
+			salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
+		});
+
+		query = `INSERT INTO Admin(email, password) values("${process.env
+			.ADMIN_EMAIL!}", "${hashedAdminPassword!}");`;
 		await connection.query(query);
 		console.log(colors.bold.blue(`Inserted admin`));
 		console.log('All queries should be executed successfully now., closing connection...');
