@@ -13,5 +13,6 @@ Database seeder package for BUPD
 
 **We are assuming you ran the required [steps](../../readme.md#steps) at the root directory first.**
 
-1. Run `npm run start` to run the seeder
-2. Run `npm run create-db <db_name>` to create a database populated with tables
+1. Run `npm run build` to build the seeder
+2. Run `npm run start` to run the seeder
+3. Run `npm run create-db <db_name>` to create a database populated with tables

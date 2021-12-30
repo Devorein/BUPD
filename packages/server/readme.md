@@ -15,4 +15,5 @@ Node.js Express server for BUPD
 
 **We are assuming you ran the required [steps](../../readme.md#steps) at the root directory first.**
 
-1. Run `npm run start:watch` to start the server in watch mode
+1. Run `npm run build` to build the server
+2. Run `npm run start` to start the server
