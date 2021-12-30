@@ -1,7 +1,7 @@
 {
   "name": "@bupd/server",
   "version": "1.0.0",
-  "description": "BUPD Server",
+  "description": "Server package for BUPD",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "del-cli ./dist",
@@ -34,6 +34,7 @@
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
     "winston": "^3.3.3",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "@bupd/validation": "1.0.0"
   }
 }
