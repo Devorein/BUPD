@@ -40,7 +40,7 @@ export const AccessPayload = {
 		.object({
 			access_id: yup.number().required(),
 			permission: yup.string().oneOf(['read', 'write', 'update', 'delete']),
-			approved: yup.number().oneOf([1, 0]),
+			approved: yup.boolean(),
 			police_nid: yup.number().min(10000),
 			type: yup.string().oneOf(['case', 'criminal']),
 			criminal_id: yup.number().nullable(),

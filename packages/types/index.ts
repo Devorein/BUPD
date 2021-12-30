@@ -37,7 +37,7 @@ export type TAccessType = 'case' | 'criminal';
 export interface IAccess {
 	access_id: number;
 	permission: TAccessPermission;
-	approved: 0 | 1;
+	approved: Boolean;
 	police_nid: number;
 	type: TAccessType;
 	criminal_id: number | null;
