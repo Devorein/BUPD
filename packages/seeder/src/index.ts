@@ -1,23 +1,14 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { LoginPayload, LoginResponse } from '@bupd/types';
 import colors from 'colors';
-import dotenv from 'dotenv';
 import fs from 'fs';
 import mysql from 'mysql2';
 import path from 'path';
+import './config';
 import { createAccess } from './createAccess';
 import { createCasefile } from './createCasefile';
 import { createPolices } from './createPolices';
 import { loginPolices } from './loginPolices';
 import { handleRequest } from './utils';
-
-dotenv.config({
-	path: path.join(__dirname, '.env'),
-});
-
-dotenv.config({
-	path: path.join(__dirname, 'seeder.env'),
-});
 
 const connection = mysql.createConnection({
 	host: process.env.DATABASE_HOST,
