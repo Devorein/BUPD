@@ -1,4 +1,4 @@
-name: Lint, Build and Test Server
+name: Build
 
 on:
   pull_request:
@@ -13,25 +13,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - name: Lint, Build and Test Server
+      - name: Lint, Build and Test Packages
         run: |
-          cd server
-          # Install server dependencies
-          npm install
-          # Build server, required for seeder
-          npm run build
-
-          # Install @bupd/server globally
-          npm install -g
-          cd seeder
-          # Install seeder dependencies
-          npm install
-          # Linking @bupd/server
-          npm link @bupd/server
-          # Build seeder
-          npm run build
-
-          # Go back to server root
-          cd ../
-          npm run lint
-          npm run test
+          chmod +x ${GITHUB_WORKSPACE}/scripts/build.sh
+          bash ${GITHUB_WORKSPACE}/scripts/build.sh

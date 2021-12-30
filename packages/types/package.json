@@ -1,0 +1,14 @@
+{
+  "name": "@bupd/types",
+  "version": "1.0.0",
+  "description": "Typescript type definitions for BUPD",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc --sourceMap false --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
