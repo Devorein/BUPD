@@ -1,7 +1,7 @@
 {
   "name": "@bupd/types",
   "version": "1.0.0",
-  "description": "Typescript type definition package for BUPD",
+  "description": "Typescript type definitions for BUPD",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

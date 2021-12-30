@@ -1,7 +1,7 @@
 {
   "name": "@bupd/validation",
   "version": "1.0.0",
-  "description": "Validation package for BUPD",
+  "description": "Payload validation package for BUPD",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
