@@ -1,5 +1,5 @@
+import { RegisterPolicePayload } from '@bupd/types';
 import { Typography } from '@mui/material';
-import { RegisterPolicePayload } from '@shared';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';

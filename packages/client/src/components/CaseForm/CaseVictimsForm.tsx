@@ -1,6 +1,6 @@
+import { CreateCasefilePayload } from "@bupd/types";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { CreateCasefilePayload } from "@shared";
 import { useFormikContext } from "formik";
 import { svgIconSx } from '../../constants';
 import { FormikTextInput } from "../FormikTextInput";

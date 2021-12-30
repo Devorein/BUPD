@@ -1,4 +1,4 @@
-import { ApiResponse } from '@shared';
+import { ApiResponse } from '@bupd/types';
 import axios from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import { JWT_LS_KEY, SERVER_URL } from '../constants';

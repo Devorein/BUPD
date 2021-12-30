@@ -1,4 +1,4 @@
-import { CurrentUserResponse } from '@shared';
+import { CurrentUserResponse } from '@bupd/types';
 import React from 'react';
 
 export interface IRootContext {

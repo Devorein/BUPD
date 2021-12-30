@@ -1,4 +1,4 @@
-import { ApiResponse, PaginatedResponse } from '@shared';
+import { ApiResponse, PaginatedResponse } from '@bupd/types';
 import { InfiniteData, useQueryClient } from 'react-query';
 
 export type CacheHitFunction<ResponseData> = (

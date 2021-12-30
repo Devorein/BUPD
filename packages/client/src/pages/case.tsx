@@ -1,5 +1,5 @@
+import { CreateCasefilePayload, TCasefilePriority, TCasefileStatus } from "@bupd/types";
 import { Typography, useTheme } from "@mui/material";
-import { CreateCasefilePayload, TCasefilePriority, TCasefileStatus } from "@shared";
 import { Form, Formik } from "formik";
 import { useSnackbar } from "notistack";
 import { useCreateCasefileMutation } from "../api";

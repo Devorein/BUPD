@@ -4,8 +4,10 @@
   "description": "Bupd project",
   "scripts": {
     "build": "lerna run --ignore @bupd/client build",
+    "build:for-client": "lerna run --ignore @bupd/client --ignore @bupd/server --ignore @bupd/seeder build",
     "test": "lerna run --ignore @bupd/client --ignore @bupd/seeder test",
-    "lint": "lerna run --ignore @bupd/client lint"
+    "lint": "lerna run --ignore @bupd/client lint",
+    "bootstrap": "lerna bootstrap"
   },
   "repository": {
     "type": "git",
@@ -36,5 +38,6 @@
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.2",
     "typescript": "^4.5.4"
-  }
+  },
+  "dependencies": {}
 }

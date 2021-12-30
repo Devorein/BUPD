@@ -1,6 +1,3 @@
-logs
-dist
-coverage
+.github
+.vscode
 .env
-tests
-server/seeder

@@ -1,4 +1,4 @@
-import { ApiResponse, ErrorApiResponse } from '@shared';
+import { ApiResponse, ErrorApiResponse } from '@bupd/types';
 import axios, { AxiosError } from 'axios';
 import { useMutation, UseMutationOptions } from 'react-query';
 import { JWT_LS_KEY, SERVER_URL } from '../constants';
