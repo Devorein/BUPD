@@ -4,7 +4,6 @@ import {
 	CreateCasefileResponse,
 	DeleteCasefilePayload,
 	DeleteCasefileResponse,
-	ICasefile,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
@@ -15,8 +14,10 @@ import {
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
-import { CasefileModel } from '../models';
-import { generateInsertQuery, handleError, logger, pool, removeFields } from '../utils';
+import { CasefileModel, CrimeCategoryModel, CriminalModel, VictimModel } from '../models';
+import CasefileCriminalModel from '../models/CasefileCriminal';
+import CrimeWeaponModel from '../models/CrimeWeapon';
+import { handleError, logger, pool, removeFields } from '../utils';
 
 const CasefileController = {
 	async create(
@@ -65,75 +66,68 @@ const CasefileController = {
 
 			const maxCriminalId = maxCriminalIdQueryData[0][0].max_criminal_id ?? 0;
 
-			const casefile: ICasefile = {
-				case_no: maxCaseNo,
-				time: new Date(payload.time).toISOString().slice(0, 19).replace('T', ' '),
-				status: payload.status ?? 'open',
-				priority: payload.priority,
-				location: payload.location,
-				police_nid: jwtPayload.nid,
-			};
-			await connection.query(generateInsertQuery(casefile, 'Casefile'));
+			const casefile = await CasefileModel.create(
+				{
+					...payload,
+					case_no: maxCaseNo,
+					police_nid: jwtPayload.nid,
+				},
+				connection
+			);
 
 			for (let index = 0; index < payload.weapons.length; index += 1) {
-				const weapon: ICrimeWeapon = {
-					case_no: maxCaseNo,
-					weapon: payload.weapons[index],
-				};
+				const weapon = await CrimeWeaponModel.create(
+					{
+						case_no: maxCaseNo,
+						weapon: payload.weapons[index],
+					},
+					connection
+				);
 				weapons.push(weapon);
-
-				await connection.query(generateInsertQuery(weapon, 'Crime_Weapon'));
 			}
 
 			for (let index = 0; index < payload.categories.length; index += 1) {
-				const category: ICrimeCategory = {
-					case_no: maxCaseNo,
-					category: payload.categories[index],
-				};
+				const category = await CrimeCategoryModel.create(
+					{
+						case_no: maxCaseNo,
+						category: payload.categories[index],
+					},
+					connection
+				);
 				categories.push(category);
-
-				await connection.query(generateInsertQuery(category, 'Crime_Category'));
 			}
 
 			for (let index = 0; index < payload.victims.length; index += 1) {
-				const victimPayload = payload.victims[index];
-				const victim: IVictim = {
-					name: victimPayload.name,
-					age: victimPayload.age ?? null,
-					address: victimPayload.address ?? null,
-					phone_no: victimPayload.phone_no ?? null,
-					description: victimPayload.description ?? null,
-					case_no: maxCaseNo,
-				};
+				const victim = await VictimModel.create(
+					{
+						...payload.victims[index],
+						case_no: maxCaseNo,
+					},
+					connection
+				);
 				victims.push(victim);
-				await connection.query(generateInsertQuery(victim, 'Victim'));
 			}
 
 			for (let index = 0; index < newCriminalPayloads.length; index += 1) {
 				const newCriminal = newCriminalPayloads[index];
 				allCriminalIds.push(maxCriminalId + index + 1);
-				await connection.query(
-					generateInsertQuery(
-						{
-							criminal_id: maxCriminalId + index + 1,
-							name: newCriminal.name,
-							photo: newCriminal.photo ?? null,
-						},
-						'Criminal'
-					)
+				await CriminalModel.create(
+					{
+						...newCriminal,
+						criminal_id: maxCriminalId + index + 1,
+					},
+					connection
 				);
 			}
 
 			for (let index = 0; index < allCriminalIds.length; index += 1) {
 				const criminalId = allCriminalIds[index];
-				await connection.query(
-					generateInsertQuery(
-						{
-							case_no: maxCaseNo,
-							criminal_id: criminalId,
-						},
-						'Casefile_Criminal'
-					)
+				await CasefileCriminalModel.create(
+					{
+						case_no: maxCaseNo,
+						criminal_id: criminalId,
+					},
+					connection
 				);
 			}
 

@@ -1,12 +1,15 @@
 /* eslint-disable camelcase */
+
 import {
 	DeleteCriminalPayload,
 	ICriminal,
 	UpdateCriminalPayload,
 	WhereClauseQuery,
 } from '@bupd/types';
-import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
+import { PoolConnection } from 'mysql2/promise';
+import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
+import { useQuery } from './utils/useQuery';
 
 const CriminalModel = {
 	find(whereClauseQuery: WhereClauseQuery) {
@@ -19,6 +22,17 @@ const CriminalModel = {
 		);
 	},
 
+	async create(criminalData: ICriminal, connection?: PoolConnection) {
+		const criminal: ICriminal = {
+			criminal_id: criminalData.criminal_id,
+			name: criminalData.name,
+			photo: criminalData.photo ?? null,
+		};
+
+		await useQuery(generateInsertQuery(criminal, 'Criminal'), connection);
+		return criminal;
+	},
+
 	findByCriminalID(criminal_id: number) {
 		return find<ICriminal>(
 			{
@@ -27,6 +41,7 @@ const CriminalModel = {
 			'Criminal'
 		);
 	},
+
 	async update(filterQuery: Partial<ICriminal>, payload: UpdateCriminalPayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
@@ -37,6 +52,7 @@ const CriminalModel = {
 			return null;
 		}
 	},
+
 	async delete(payload: DeleteCriminalPayload) {
 		await query(generateDeleteQuery(payload, 'Criminal'));
 		return payload;

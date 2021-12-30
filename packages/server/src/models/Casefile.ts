@@ -2,11 +2,14 @@
 import {
 	DeleteCasefilePayload,
 	ICasefile,
+	TCasefileStatus,
 	UpdateCasefilePayload,
 	WhereClauseQuery,
 } from '@bupd/types';
-import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
+import { PoolConnection } from 'mysql2/promise';
+import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
+import { useQuery } from './utils/useQuery';
 
 const CasefileModel = {
 	find(whereClauseQuery: WhereClauseQuery) {
@@ -35,6 +38,26 @@ const CasefileModel = {
 			'Casefile'
 		);
 	},
+
+	async create(
+		casefileData: Omit<ICasefile, 'time' | 'status'> & {
+			time: number;
+			status?: TCasefileStatus | null;
+		},
+		connection?: PoolConnection
+	) {
+		const casefile: ICasefile = {
+			case_no: casefileData.case_no,
+			time: new Date(casefileData.time).toISOString().slice(0, 19).replace('T', ' '),
+			status: casefileData.status ?? 'open',
+			priority: casefileData.priority,
+			location: casefileData.location,
+			police_nid: casefileData.police_nid,
+		};
+		await useQuery(generateInsertQuery(casefile, 'Casefile'), connection);
+		return casefile;
+	},
+
 	async update(filterQuery: Partial<ICasefile>, payload: UpdateCasefilePayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {

@@ -1,14 +1,25 @@
 import { IVictim } from '@bupd/types';
+import { PoolConnection } from 'mysql2/promise';
 import { generateInsertQuery } from '../utils/generateQueries';
-import pool from '../utils/pool';
+import { useQuery } from './utils/useQuery';
 
-const VictimController = {
-	async create(payload: IVictim): Promise<IVictim> {
-		const connection = await pool.getConnection();
-		await connection.query(generateInsertQuery<IVictim>(payload, 'Victim'));
-		connection.release();
-		return payload;
+const VictimModel = {
+	async create(
+		victimData: Partial<IVictim> & { case_no: number; name: string },
+		connection?: PoolConnection
+	) {
+		const victim: IVictim = {
+			name: victimData.name,
+			age: victimData.age ?? null,
+			address: victimData.address ?? null,
+			phone_no: victimData.phone_no ?? null,
+			description: victimData.description ?? null,
+			case_no: victimData.case_no,
+		};
+
+		await useQuery(generateInsertQuery<IVictim>(victim, 'Victim'), connection);
+		return victim;
 	},
 };
 
-export default VictimController;
+export default VictimModel;
