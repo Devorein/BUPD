@@ -1,15 +1,5 @@
 import colors from 'colors';
-import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-import path from 'path';
-
-dotenv.config({
-	path: path.join(__dirname, '.env'),
-});
-
-dotenv.config({
-	path: path.join(__dirname, 'seeder.env'),
-});
 
 export default async function createDb(dbName: string) {
 	let connection: mysql.Connection | null = null;
