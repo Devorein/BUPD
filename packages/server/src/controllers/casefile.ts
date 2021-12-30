@@ -2,14 +2,12 @@ import {
 	ApiResponse,
 	CreateCasefilePayload,
 	CreateCasefileResponse,
-	DeleteCasefilePayload,
 	DeleteCasefileResponse,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
-	UpdateCasefilePayload,
 	UpdateCasefileResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
@@ -17,7 +15,7 @@ import { FieldPacket, RowDataPacket } from 'mysql2';
 import { CasefileModel, CrimeCategoryModel, CriminalModel, VictimModel } from '../models';
 import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
-import { handleError, logger, pool, removeFields } from '../utils';
+import { handleError, logger, pool } from '../utils';
 
 const CasefileController = {
 	async create(
@@ -163,62 +161,8 @@ const CasefileController = {
 			});
 		}
 	},
-	async update(
-		req: Request<any, any, UpdateCasefilePayload>,
-		res: Response<ApiResponse<UpdateCasefileResponse>>
-	) {
-		try {
-			const payload = req.body;
-			const [casefile] = await CasefileModel.find({ filter: { case_no: payload.case_no } });
-			if (!casefile) {
-				res.json({
-					status: 'error',
-					message: "Casefile doesn't exist",
-				});
-			} else {
-				await CasefileModel.update(
-					{
-						case_no: payload.case_no,
-					},
-					removeFields(payload, ['case_no'])
-				);
-				res.json({
-					status: 'success',
-					data: {
-						...casefile,
-						...payload,
-					},
-				});
-			}
-		} catch (err) {
-			logger.error(err);
-			res.json({
-				status: 'error',
-				message: "Couldn't update the casefile",
-			});
-		}
-	},
-	async delete(
-		req: Request<any, any, DeleteCasefilePayload>,
-		res: Response<DeleteCasefileResponse>
-	) {
-		const file = await CasefileModel.findByCaseNo(req.body.case_no);
-		if (file[0]) {
-			const result = await CasefileModel.delete(req.body);
-			if (result) {
-				res.json({
-					status: 'success',
-					data: file[0],
-				});
-			}
-		} else {
-			res.json({
-				status: 'error',
-				message: 'No valid case files given to delete',
-			});
-		}
-	},
-	async deleteOnCaseNo(req: Request<any, any, undefined>, res: Response<DeleteCasefileResponse>) {
+
+	async delete(req: Request<{ case_no: number }>, res: Response<DeleteCasefileResponse>) {
 		const file = await CasefileModel.findByCaseNo(req.params.case_no);
 		if (file[0]) {
 			const result = await CasefileModel.delete({ case_no: req.params.case_no });
@@ -232,8 +176,9 @@ const CasefileController = {
 			handleError(res, 404, 'No valid case files found to delete');
 		}
 	},
-	async updateOnCaseNo(
-		req: Request<any, any, UpdateCasefilePayload>,
+
+	async update(
+		req: Request<{ case_no: number }>,
 		res: Response<ApiResponse<UpdateCasefileResponse>>
 	) {
 		try {

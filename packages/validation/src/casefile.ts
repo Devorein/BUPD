@@ -38,15 +38,8 @@ export const CasefilePayload = {
 		})
 		.strict()
 		.noUnknown(),
-	delete: yup
-		.object({
-			case_no: yup.number().required().strict(),
-		})
-		.strict()
-		.noUnknown(),
 	update: yup
 		.object({
-			case_no: yup.number().required().strict(),
 			police_nid: yup.number().strict(),
 			time: yup.number().strict(),
 			status: yup.string().oneOf(['solved', 'open', 'closed']).nullable().strict(),

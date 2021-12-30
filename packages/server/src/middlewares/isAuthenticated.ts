@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { handleError, logger } from '../utils';
 
 export default function isAuthenticated(
-	req: Request,
+	req: Request<any, any, any>,
 	res: Response<ErrorApiResponse>,
 	next: NextFunction
 ) {
