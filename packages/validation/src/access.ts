@@ -36,4 +36,26 @@ export const AccessPayload = {
 		)
 		.strict()
 		.noUnknown(),
+	update: yup
+		.object({
+			access_id: yup.number().required(),
+			permission: yup.string().oneOf(['read', 'write', 'update', 'delete']),
+			approved: yup.boolean(),
+			police_nid: yup.number().min(10000),
+			type: yup.string().oneOf(['case', 'criminal']),
+			criminal_id: yup.number().nullable(),
+			case_no: yup.number().nullable(),
+		})
+		.strict()
+		.noUnknown()
+		.test((obj) => {
+			switch (obj.type) {
+				case 'criminal':
+					return !obj.case_no && Boolean(obj.criminal_id);
+				case 'case':
+					return !obj.criminal_id && Boolean(obj.case_no);
+				default:
+					return !obj.criminal_id && !obj.case_no;
+			}
+		}),
 };
