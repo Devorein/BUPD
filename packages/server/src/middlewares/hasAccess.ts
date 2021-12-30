@@ -20,7 +20,7 @@ const hasAccess =
 							police_nid: req.jwt_payload.nid,
 							type: accessType,
 							permission: accessPermission,
-							case_no: req.body.case_no,
+							case_no: req.params.case_no ? req.params.case_no : req.body.case_no,
 						};
 						break;
 					default:
@@ -29,7 +29,7 @@ const hasAccess =
 							police_nid: req.jwt_payload.nid,
 							type: accessType,
 							permission: accessPermission,
-							criminal_id: req.body.criminal_id,
+							criminal_id: req.params.criminal_id ? req.params.criminal_id : req.body.criminal_id,
 						};
 						break;
 				}

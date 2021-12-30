@@ -16,7 +16,7 @@ import {
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
 import { CasefileModel } from '../models';
-import { generateInsertQuery, logger, pool, removeFields } from '../utils';
+import { generateInsertQuery, handleError, logger, pool, removeFields } from '../utils';
 
 const CasefileController = {
 	async create(
@@ -222,6 +222,49 @@ const CasefileController = {
 				status: 'error',
 				message: 'No valid case files given to delete',
 			});
+		}
+	},
+	async deleteOnCaseNo(req: Request<any, any, undefined>, res: Response<DeleteCasefileResponse>) {
+		const file = await CasefileModel.findByCaseNo(req.params.case_no);
+		if (file[0]) {
+			const result = await CasefileModel.delete({ case_no: req.params.case_no });
+			if (result) {
+				res.json({
+					status: 'success',
+					data: file[0],
+				});
+			}
+		} else {
+			handleError(res, 404, 'No valid case files found to delete');
+		}
+	},
+	async updateOnCaseNo(
+		req: Request<any, any, UpdateCasefilePayload>,
+		res: Response<ApiResponse<UpdateCasefileResponse>>
+	) {
+		try {
+			const payload = req.body;
+			const [casefile] = await CasefileModel.find({ filter: { case_no: req.params.case_no } });
+			if (!casefile) {
+				handleError(res, 404, "Casefile doesn't exist");
+			} else {
+				await CasefileModel.update(
+					{
+						case_no: req.params.case_no,
+					},
+					payload
+				);
+				res.json({
+					status: 'success',
+					data: {
+						...casefile,
+						...payload,
+					},
+				});
+			}
+		} catch (err) {
+			logger.error(err);
+			handleError(res, 500, "Couldn't update the casefile");
 		}
 	},
 };

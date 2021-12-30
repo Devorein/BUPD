@@ -28,4 +28,19 @@ CasefileRouter.delete(
 	hasAccess('case', 'delete'),
 	CasefileController.delete
 );
+CasefileRouter.delete(
+	'/:case_no',
+	isAuthenticated,
+	isAuthorized(['police']),
+	hasAccess('case', 'delete'),
+	CasefileController.deleteOnCaseNo
+);
+CasefileRouter.put(
+	'/:case_no',
+	// TODO validatePayload(),
+	isAuthenticated,
+	isAuthorized(['police']),
+	hasAccess('case', 'update'),
+	CasefileController.updateOnCaseNo
+);
 export default CasefileRouter;
