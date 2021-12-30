@@ -1,6 +1,6 @@
+import { TCasefilePriority, TCasefileStatus } from '@bupd/types';
 import { Theme } from '@emotion/react';
 import { SxProps } from '@mui/material';
-import { TCasefilePriority, TCasefileStatus } from '@shared';
 
 export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? 'http://localhost:3000/v1';
 export const JWT_LS_KEY = 'bupd.jwt.token';

@@ -1,4 +1,4 @@
-import { LoginPayload, LoginResponse } from '@shared';
+import { LoginPayload, LoginResponse } from '@bupd/types';
 import { useApiMutation } from '../../hooks';
 
 export function useLoginMutation() {

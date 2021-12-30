@@ -1,4 +1,4 @@
-import { ApiResponse, CurrentUserResponse, LoginPayload, LoginResponse } from '@shared';
+import { ApiResponse, CurrentUserResponse, LoginPayload, LoginResponse } from '@bupd/types';
 import { Form, Formik } from 'formik';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';

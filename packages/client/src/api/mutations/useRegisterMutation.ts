@@ -1,4 +1,4 @@
-import { RegisterPolicePayload, RegisterPoliceResponse } from '@shared';
+import { RegisterPolicePayload, RegisterPoliceResponse } from '@bupd/types';
 import { useApiMutation } from '../../hooks';
 
 export function useRegisterMutation() {

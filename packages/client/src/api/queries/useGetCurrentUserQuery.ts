@@ -1,4 +1,4 @@
-import { CurrentUserResponse } from '@shared';
+import { CurrentUserResponse } from '@bupd/types';
 import { JWT_LS_KEY } from '../../constants';
 import { CacheHitFunction, useApiQuery, useQueryClientSetData } from '../../hooks';
 
