@@ -21,7 +21,6 @@ export const AuthPayload = {
 			email: yup.string().test((email) => (email === undefined ? false : validateEmail(email))),
 			as: yup.string().oneOf(['police', 'admin']).default('police'),
 		})
-		.strict()
 		.noUnknown(),
 	delete: yup
 		.object({
