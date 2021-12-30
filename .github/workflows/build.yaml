@@ -15,7 +15,5 @@ jobs:
           node-version: 14.x
       - name: Lint, Build and Test Packages
         run: |
-          npm install
-          npm install -g zx
-          chmod +x ${GITHUB_WORKSPACE}/scripts/build.js
-          zx ${GITHUB_WORKSPACE}/scripts/build.js
+          chmod +x ${GITHUB_WORKSPACE}/scripts/build.sh
+          bash ${GITHUB_WORKSPACE}/scripts/build.sh
