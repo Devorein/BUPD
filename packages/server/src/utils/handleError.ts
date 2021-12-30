@@ -1,5 +1,5 @@
+import { ErrorApiResponse } from '@bupd/types';
 import { Response } from 'express';
-import { ErrorApiResponse } from '../types';
 
 const handleError = (res: Response<ErrorApiResponse>, statusCode?: number, message?: string) => {
 	res.status(statusCode === undefined ? 404 : statusCode).json({

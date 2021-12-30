@@ -4,9 +4,15 @@
   "description": "Database seeder package for BUPD",
   "main": "./dist/index.js",
   "scripts": {
-    "build:watch": "tsc -w",
-    "build": "tsc",
+    "prebuild": "del-cli ./dist",
     "start": "node ./dist/index.js",
+    "start:watch": "nodemon dist/index.js",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc -w",
+    "lint": "npx eslint \"./src\" --ext tsx,ts",
+    "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
+    "test": "npx jest --runInBand --config ./jest.config.js",
+    "format": "npx prettier ./src/**/*.{ts,js} --write",
     "create-db": "node ./dist/createDbScript"
   },
   "keywords": [],
@@ -17,9 +23,11 @@
     "colors": "^1.4.0",
     "dayjs": "^1.10.7",
     "faker": "^5.5.3",
+    "dotenv": "^10.0.0",
     "mysql2": "^2.3.3"
   },
   "devDependencies": {
-    "@types/faker": "^5.5.9"
+    "@types/faker": "^5.5.9",
+    "@bupd/types": "1.0.0"
   }
 }

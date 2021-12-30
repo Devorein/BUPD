@@ -24,7 +24,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "incremental": false,
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "watch": false,
     "types": [
       "node",

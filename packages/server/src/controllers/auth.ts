@@ -1,6 +1,3 @@
-import argon2 from 'argon2';
-import { Request, Response } from 'express';
-import { AdminModel, PoliceModel } from '../models';
 import {
 	AdminJwtPayload,
 	ApiResponse,
@@ -11,7 +8,10 @@ import {
 	LoginResponse,
 	RegisterPolicePayload,
 	RegisterPoliceResponse,
-} from '../types';
+} from '@bupd/types';
+import argon2 from 'argon2';
+import { Request, Response } from 'express';
+import { AdminModel, PoliceModel } from '../models';
 import { generatePoliceJwtToken, logger, removeFields, signToken } from '../utils';
 
 const AuthController = {

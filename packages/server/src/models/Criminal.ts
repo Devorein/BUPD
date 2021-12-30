@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
-import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
 import {
 	DeleteCriminalPayload,
 	ICriminal,
 	UpdateCriminalPayload,
 	WhereClauseQuery,
-} from '../shared.types';
+} from '@bupd/types';
+import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
 const CriminalModel = {

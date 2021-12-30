@@ -1,4 +1,4 @@
-import { IVictim } from '../shared.types';
+import { IVictim } from '@bupd/types';
 import { generateInsertQuery } from '../utils/generateQueries';
 import pool from '../utils/pool';
 

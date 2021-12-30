@@ -4,7 +4,7 @@ import {
 	ICasefile,
 	UpdateCasefilePayload,
 	WhereClauseQuery,
-} from '../types';
+} from '@bupd/types';
 import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 

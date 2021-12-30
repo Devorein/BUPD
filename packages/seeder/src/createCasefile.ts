@@ -1,4 +1,4 @@
-import { CreateCasefilePayload, CreateCasefileResponse, TCasefilePriority } from '@bupd/server';
+import { CreateCasefilePayload, CreateCasefileResponse, TCasefilePriority } from '@bupd/types';
 import dayjs from 'dayjs';
 import faker from 'faker';
 import { handleRequest, sleep } from './utils';

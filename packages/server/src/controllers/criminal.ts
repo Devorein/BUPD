@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
-import { CriminalModel } from '../models';
 import {
 	ApiResponse,
 	DeleteCriminalPayload,
 	DeleteCriminalResponse,
 	UpdateCriminalPayload,
 	UpdateCriminalResponse,
-} from '../shared.types';
+} from '@bupd/types';
+import { Request, Response } from 'express';
+import { CriminalModel } from '../models';
 import { logger, removeFields } from '../utils';
 
 const CriminalController = {

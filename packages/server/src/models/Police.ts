@@ -4,7 +4,7 @@ import {
 	RegisterPolicePayload,
 	UpdatePolicePayload,
 	WhereClauseQuery,
-} from '../types';
+} from '@bupd/types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 

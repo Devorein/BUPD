@@ -5,8 +5,6 @@ import logger from './middlewares/logger';
 import RootRouter from './routes';
 import pool from './utils/pool';
 
-export * from './types';
-
 const app = express();
 app.use(
 	cors({

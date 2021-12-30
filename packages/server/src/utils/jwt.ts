@@ -1,5 +1,5 @@
+import { IPolice, PoliceJwtPayload } from '@bupd/types';
 import jwt from 'jsonwebtoken';
-import { IPolice, PoliceJwtPayload } from '../types';
 import removeFields from './removeFields';
 
 export function signToken(payload: Record<string, any>) {

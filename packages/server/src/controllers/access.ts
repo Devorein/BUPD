@@ -1,14 +1,15 @@
-import { Request, Response } from 'express';
-import { RowDataPacket } from 'mysql2';
-import AccessModel from '../models/Access';
 import {
+	ApiResponse,
 	CreateAccessPayload,
 	CreateAccessResponse,
 	GetAccessPayload,
 	GetAccessResponse,
 	IAccess,
-} from '../shared.types';
-import { ApiResponse, PoliceJwtPayload } from '../types';
+	PoliceJwtPayload,
+} from '@bupd/types';
+import { Request, Response } from 'express';
+import { RowDataPacket } from 'mysql2';
+import AccessModel from '../models/Access';
 import { generateCountQuery, generateInsertQuery, logger, query } from '../utils';
 
 const AccessController = {

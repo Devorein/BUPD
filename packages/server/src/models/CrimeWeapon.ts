@@ -1,4 +1,4 @@
-import { ICrimeWeapon } from '../shared.types';
+import { ICrimeWeapon } from '@bupd/types';
 import { generateInsertQuery } from '../utils';
 import query from '../utils/query';
 

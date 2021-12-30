@@ -1,6 +1,3 @@
-import { Request, Response } from 'express';
-import { FieldPacket, RowDataPacket } from 'mysql2';
-import { CasefileModel } from '../models';
 import {
 	ApiResponse,
 	CreateCasefilePayload,
@@ -15,7 +12,10 @@ import {
 	PoliceJwtPayload,
 	UpdateCasefilePayload,
 	UpdateCasefileResponse,
-} from '../shared.types';
+} from '@bupd/types';
+import { Request, Response } from 'express';
+import { FieldPacket, RowDataPacket } from 'mysql2';
+import { CasefileModel } from '../models';
 import { generateInsertQuery, logger, pool, removeFields } from '../utils';
 
 const CasefileController = {

@@ -1,6 +1,6 @@
+import { ErrorApiResponse, JwtPayload } from '@bupd/types';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { ErrorApiResponse, JwtPayload } from '../types';
 import { handleError, logger } from '../utils';
 
 export default function isAuthenticated(

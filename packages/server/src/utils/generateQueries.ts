@@ -1,5 +1,5 @@
+import { WhereClauseQuery } from '@bupd/types';
 import mysql from 'mysql2';
-import { WhereClauseQuery } from '../shared.types';
 
 /**
  * Generates a sql statement with fields and escaped values extracted from the given object

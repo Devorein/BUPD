@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { LoginPayload, LoginResponse } from '@bupd/server';
+import { LoginPayload, LoginResponse } from '@bupd/types';
 import colors from 'colors';
 import dotenv from 'dotenv';
 import fs from 'fs';

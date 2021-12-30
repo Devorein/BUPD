@@ -1,6 +1,6 @@
+import { AccessPermission, ErrorApiResponse, TAccessType } from '@bupd/types';
 import { NextFunction, Request, Response } from 'express';
 import { AccessModel } from '../models';
-import { AccessPermission, ErrorApiResponse, TAccessType } from '../types';
 import { handleError, logger } from '../utils';
 
 const hasAccess =

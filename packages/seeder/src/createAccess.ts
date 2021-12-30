@@ -1,4 +1,4 @@
-import { AccessPermission, CreateAccessPayload, CreateAccessResponse } from '@bupd/server';
+import { AccessPermission, CreateAccessPayload, CreateAccessResponse } from '@bupd/types';
 import faker from 'faker';
 import { handleRequest, promiseAll } from './utils';
 

@@ -1,4 +1,4 @@
-import { WhereClauseQuery } from '../../shared.types';
+import { WhereClauseQuery } from '@bupd/types';
 import { generateSelectQuery, pool } from '../../utils';
 
 export default async function find<Row>(

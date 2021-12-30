@@ -1,4 +1,4 @@
-import { IAdmin } from '../types';
+import { IAdmin } from '@bupd/types';
 import { find } from './utils';
 
 const AdminModel = {
