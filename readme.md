@@ -10,10 +10,12 @@
 </p>
 
 - [Packages](#packages)
+- [Requirements](#requirements)
 - [Steps](#steps)
   - [Environment Variables](#environment-variables)
 - [Workflow](#workflow)
 - [Deployments](#deployments)
+- [Shared dependencies](#shared-dependencies)
 - [Contributors](#contributors)
 
 ## Packages
@@ -25,6 +27,14 @@ This monorepo contains the following packages:-
 - **`@bupd/server`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/server) : Node.js Express server package for BUPD
 - **`@bupd/types`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/types) : Typescript type definition package for BUPD
 - **`@bupd/validation`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/validation) : Payload validation package for BUPD
+
+## Requirements
+
+1. Make sure you have at least node 14 install
+2. Run `node -v` and check the version
+3. If its less than `14` go [here](https://nodejs.org/en/download/) to download the required version
+4. You can also use [nvm](https://github.com/coreybutler/nvm-windows) to maintain multiple node versions in your system
+5. Check if `npm` is installed using `npm -v` (It should be installed along side node.js)
 
 ## Steps
 
@@ -76,10 +86,21 @@ We tried to maintain a specific git workflow in this project.
 
 ## Deployments
 
-- `server`: Our [server](`https://api.bupd.xyz`) is deployed on a digitalocean droplet
-- `client`: Our [client](`https://bupd.xyz`) is deployed on a vercel hobby plan project
+- `server`: Our [server](https://api.bupd.xyz) is deployed on a digitalocean droplet
+- `client`: Our [client](https://bupd.xyz) is deployed on a vercel hobby plan project
 
 **NOTE**: We are hosting our database on the same droplet as the server
+
+## Shared dependencies
+
+We are using a few shared dependencies across the monorepo to avoid installing same npm packages multiple times
+
+1. `tsc`: typescript compiler
+2. `jest`: Javascript test runner
+3. `eslint`: Javascript/Typescript linter
+4. `del-cli`: Package to delete directories
+5. `nodemon`: Package to automatically restart node process
+6. `lerna`: Javascript framework to maintain multi-package repositories (monorepo)
 
 ## Contributors
 
