@@ -8,7 +8,7 @@ if [[ "$VERCEL_ENV" == "production" ]] ; then
   cd ../../
   npm install
   npm run bootstrap
-  npm run build
+  npm run build:for-client
   cd ./packages/client
   exit 1;
 else
