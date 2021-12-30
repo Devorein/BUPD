@@ -4,7 +4,7 @@
   "description": "Bupd project",
   "scripts": {
     "build": "lerna run --ignore @bupd/client build",
-    "test": "lerna run --ignore @bupd/(client,seeder) test",
+    "test": "lerna run --ignore @bupd/client --ignore @bupd/seeder test",
     "lint": "lerna run --ignore @bupd/client lint"
   },
   "repository": {
