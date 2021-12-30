@@ -1,9 +1,8 @@
 {
-  "name": "@bupd/validation",
+  "name": "@bupd/seeder",
   "version": "1.0.0",
-  "description": "Validation package for BUPD",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Database seeder package for BUPD",
+  "main": "./dist/index.js",
   "scripts": {
     "prebuild": "del-cli ./dist",
     "start": "node ./dist/index.js",
@@ -13,13 +12,22 @@
     "lint": "npx eslint \"./src\" --ext tsx,ts",
     "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
     "test": "npx jest --runInBand --config ./jest.config.js",
-    "format": "npx prettier ./src/**/*.{ts,js} --write"
+    "format": "npx prettier ./src/**/*.{ts,js} --write",
+    "create-db": "node ./dist/createDbScript"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "yup": "^0.32.11"
+    "axios": "^0.24.0",
+    "colors": "^1.4.0",
+    "dayjs": "^1.10.7",
+    "faker": "^5.5.3",
+    "dotenv": "^10.0.0",
+    "mysql2": "^2.3.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/faker": "^5.5.9",
+    "@bupd/types": "1.0.0"
+  }
 }

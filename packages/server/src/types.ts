@@ -1,4 +1,4 @@
-import { AdminJwtPayload, PoliceJwtPayload } from './shared.types';
+import { AdminJwtPayload, PoliceJwtPayload } from '@bupd/types';
 
 // Augmenting express type definitions to contain parsed jwt_payload in req object
 declare module 'express' {
@@ -7,5 +7,3 @@ declare module 'express' {
 		jwt_payload?: PoliceJwtPayload | AdminJwtPayload;
 	}
 }
-
-export * from './shared.types';

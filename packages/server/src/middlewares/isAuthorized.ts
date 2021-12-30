@@ -1,6 +1,6 @@
+import { ErrorApiResponse } from '@bupd/types';
 import { NextFunction, Request, Response } from 'express';
 import { handleError } from '../utils';
-import { ErrorApiResponse } from '../types';
 
 export default function isAuthorized(roles: string[]) {
 	return (req: Request, res: Response<ErrorApiResponse>, next: NextFunction) => {

@@ -1,6 +1,3 @@
-import { Request, Response } from 'express';
-import { RowDataPacket } from 'mysql2';
-import { PoliceModel } from '../models';
 import {
 	ApiResponse,
 	DeletePolicePayload,
@@ -10,7 +7,10 @@ import {
 	PoliceJwtPayload,
 	UpdatePolicePayload,
 	UpdatePoliceResponse,
-} from '../types';
+} from '@bupd/types';
+import { Request, Response } from 'express';
+import { RowDataPacket } from 'mysql2';
+import { PoliceModel } from '../models';
 import { generateCountQuery, generatePoliceJwtToken, logger, query, removeFields } from '../utils';
 
 const PoliceController = {

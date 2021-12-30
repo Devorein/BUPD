@@ -1,4 +1,4 @@
-import { IAccess, WhereClauseQuery } from '../types';
+import { IAccess, WhereClauseQuery } from '@bupd/types';
 import { find } from './utils';
 
 const AccessModel = {

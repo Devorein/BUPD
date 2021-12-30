@@ -1,4 +1,4 @@
-import { ICrimeCategory } from '../shared.types';
+import { ICrimeCategory } from '@bupd/types';
 import { generateInsertQuery, query } from '../utils';
 
 const CrimeCategoryModel = {

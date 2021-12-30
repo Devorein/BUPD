@@ -1,6 +1,6 @@
+import { ErrorApiResponse } from '@bupd/types';
 import { NextFunction, Request, Response } from 'express';
 import { BaseSchema } from 'yup';
-import { ErrorApiResponse } from '../types';
 import { handleError, logger } from '../utils';
 
 const validatePayload =

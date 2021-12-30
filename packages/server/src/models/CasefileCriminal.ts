@@ -1,4 +1,4 @@
-import { ICasefileCriminal } from '../shared.types';
+import { ICasefileCriminal } from '@bupd/types';
 import { generateInsertQuery, query } from '../utils';
 
 const CasefileCriminalModel = {

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ApiResponse } from '@bupd/server';
+import { ApiResponse } from '@bupd/types';
 import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import colors from 'colors';
 
