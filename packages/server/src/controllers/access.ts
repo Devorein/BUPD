@@ -1,4 +1,5 @@
 import {
+	AdminJwtPayload,
 	ApiResponse,
 	CreateAccessPayload,
 	CreateAccessResponse,
@@ -6,11 +7,13 @@ import {
 	GetAccessResponse,
 	IAccess,
 	PoliceJwtPayload,
+	UpdateAccessPayload,
+	UpdateAccessResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { RowDataPacket } from 'mysql2';
 import AccessModel from '../models/Access';
-import { generateCountQuery, generateInsertQuery, logger, query } from '../utils';
+import { generateCountQuery, generateInsertQuery, logger, query, removeFields } from '../utils';
 
 const AccessController = {
 	create: async (
@@ -55,6 +58,47 @@ const AccessController = {
 				next: null,
 			},
 		});
+	},
+	async update(
+		req: Request<any, any, UpdateAccessPayload>,
+		res: Response<ApiResponse<UpdateAccessResponse>>
+	) {
+		try {
+			const decoded = req.jwt_payload as AdminJwtPayload;
+			const payload = req.body;
+			const [accessExist] = await AccessModel.find({ filter: { access_id: payload.access_id } });
+			console.log(accessExist);
+			if (!accessExist) {
+				res.json({
+					status: 'error',
+					message: "Access ID doesn't exist",
+				});
+			} else {
+				await AccessModel.update(
+					{
+						access_id: payload.access_id,
+					},
+					{
+						...removeFields(payload, ['access_id']),
+						admin_id: decoded.id,
+					}
+				);
+				res.json({
+					status: 'success',
+					data: {
+						...accessExist,
+						...payload,
+						admin_id: decoded.id,
+					},
+				});
+			}
+		} catch (err) {
+			logger.error(err);
+			res.json({
+				status: 'error',
+				message: "Couldn't update the access request",
+			});
+		}
 	},
 };
 

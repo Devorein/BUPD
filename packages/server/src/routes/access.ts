@@ -18,5 +18,6 @@ AccessRouter.get(
 	isAuthorized(['police']),
 	AccessController.find
 );
+AccessRouter.put('/', isAuthenticated, isAuthorized(['admin']), AccessController.update);
 
 export default AccessRouter;
