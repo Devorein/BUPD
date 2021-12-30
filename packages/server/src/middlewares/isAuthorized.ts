@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { handleError } from '../utils';
 
 export default function isAuthorized(roles: string[]) {
-	return (req: Request, res: Response<ErrorApiResponse>, next: NextFunction) => {
+	return (req: Request<any, any, any>, res: Response<ErrorApiResponse>, next: NextFunction) => {
 		if (!req.jwt_payload) {
 			handleError(res, 403, 'Not authorized');
 		} else {

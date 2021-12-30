@@ -5,7 +5,7 @@ import { handleError, logger } from '../utils';
 
 const hasAccess =
 	(accessType: TAccessType, accessPermission: AccessPermission) =>
-	async (req: Request, res: Response<ErrorApiResponse>, next: NextFunction) => {
+	async (req: Request<any, any, any>, res: Response<ErrorApiResponse>, next: NextFunction) => {
 		try {
 			if (!req.jwt_payload) {
 				handleError(res, 401, 'Not Authenticated');
