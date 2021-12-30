@@ -12,8 +12,9 @@ Next.js client package for BUPD
 
 ## Steps
 
-**We are assuming you ran the required steps at the root directory first.**
+**We are assuming you ran the required [steps](../../readme.md#steps) at the root directory first.**
 
 In order to run the client locally follow these steps:-
 
-1. Run `npm run dev`
+1. Start the server first
+2. Run `npm run dev`
