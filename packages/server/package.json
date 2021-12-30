@@ -1,7 +1,7 @@
 {
   "name": "@bupd/server",
   "version": "1.0.0",
-  "description": "Server package for BUPD",
+  "description": "Node.js Express server package for BUPD",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "del-cli ./dist",
