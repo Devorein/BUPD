@@ -83,11 +83,14 @@ export function generateDeleteQuery(filterQuery: Record<string, any>, table: str
 	return `DELETE FROM ${table} ${generateWhereClause(filterQuery)};`;
 }
 
-export function generatePaginationQuery(sqlClause: SqlClause & { next?: NextQuery }) {
+export function generatePaginationQuery(
+	sqlClause: SqlClause & { next?: NextQuery },
+	nextCursorProperty: string
+) {
 	const filter: SqlFilter = {};
 	if (sqlClause.next) {
 		const sortOrder = sqlClause.sort ? sqlClause.sort[1] : 1;
-		filter.access_id = [sortOrder === -1 ? '>' : '<', sqlClause.next.id];
+		filter[nextCursorProperty] = [sortOrder === -1 ? '>' : '<', sqlClause.next.id];
 	}
 
 	return {

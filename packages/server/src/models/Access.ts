@@ -5,7 +5,7 @@ import { find } from './utils';
 
 const AccessModel = {
 	find(sqlClause: SqlClause & { next?: NextQuery }) {
-		return find<IAccess>(generatePaginationQuery(sqlClause), 'access');
+		return find<IAccess>(generatePaginationQuery(sqlClause, 'access_id'), 'access');
 	},
 	async update(filterQuery: Partial<IAccess>, payload: UpdateAccessPayload) {
 		if (Object.keys(payload).length !== 0) {
