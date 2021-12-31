@@ -25,34 +25,24 @@ export function generateInsertQuery<Payload extends Record<string, any>>(
 	return `INSERT INTO ${table}(${fields.join(',')}) VALUES(${values.join(',')});`;
 }
 
-export function generateWhereClause(filterQuery?: Record<string, any>) {
-	if (filterQuery) {
-		const whereClauses: string[] = [];
+export function generateWhereClause(filterQuery: Record<string, any>) {
+	const whereClauses: string[] = [];
 
-		Object.entries(filterQuery).forEach(([field, value]) => {
-			if (value !== null) {
-				whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
-			}
-		});
-		return whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
-	} else {
-		return '';
-	}
+	Object.entries(filterQuery).forEach(([field, value]) => {
+		if (value !== null) {
+			whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
+		}
+	});
+	return whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 }
 
-export function generateOrderbyClause(sort?: [string, -1 | 1]) {
-	if (sort) {
-		const [attribute, order] = sort;
-		return `ORDER BY \`${attribute}\` ${order === -1 ? 'DESC' : 'ASC'}`;
-	}
-	return '';
+export function generateOrderbyClause(sort: [string, -1 | 1]) {
+	const [attribute, order] = sort;
+	return `ORDER BY \`${attribute}\` ${order === -1 ? 'DESC' : 'ASC'}`;
 }
 
-export function generateLimitClause(limit?: number) {
-	if (limit) {
-		return `LIMIT ${limit}`;
-	}
-	return '';
+export function generateLimitClause(limit: number) {
+	return `LIMIT ${limit}`;
 }
 
 export function generateSetClause(payload: Record<string, any>) {
@@ -63,16 +53,16 @@ export function generateSetClause(payload: Record<string, any>) {
 
 export function generateSelectQuery(sqlClause: SqlClause, table: string) {
 	const clauses: string[] = [];
-	clauses.push(generateWhereClause(sqlClause.filter));
-	clauses.push(generateOrderbyClause(sqlClause.sort));
-	clauses.push(generateLimitClause(sqlClause.limit));
+	if (sqlClause.filter) clauses.push(generateWhereClause(sqlClause.filter));
+	if (sqlClause.sort) clauses.push(generateOrderbyClause(sqlClause.sort));
+	if (sqlClause.limit) clauses.push(generateLimitClause(sqlClause.limit));
 	return `SELECT ${
 		sqlClause.select ? sqlClause.select.map((attribute) => `\`${attribute}\``).join(',') : '*'
 	} FROM ${table} ${clauses.join(' ')};`;
 }
 
-export function generateCountQuery(sqlClause: Pick<SqlClause, 'filter'>, table: string) {
-	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause(sqlClause.filter)};`;
+export function generateCountQuery(filterQuery: Record<string, any>, table: string) {
+	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause(filterQuery)};`;
 }
 
 export function generateUpdateQuery(
