@@ -48,9 +48,10 @@ const AccessController = {
 
 	find: async (req: Request<any, any, any, GetAccessPayload>, res: Response<GetAccessResponse>) => {
 		const requestQuery = req.query;
+		console.log({ requestQuery });
 		const accessRows = await AccessModel.find(requestQuery);
 		const accessRowsCount = (await query(
-			generateCountQuery({ filter: requestQuery?.filter }, 'Access')
+			generateCountQuery(requestQuery.filter ?? {}, 'Access')
 		)) as RowDataPacket[];
 
 		res.json({
