@@ -4,14 +4,15 @@ import {
 	DeletePoliceResponse,
 	GetPolicesPayload,
 	GetPolicesResponse,
+	IPolice,
 	PoliceJwtPayload,
 	UpdatePolicePayload,
 	UpdatePoliceResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
-import { RowDataPacket } from 'mysql2';
 import { PoliceModel } from '../models';
-import { generateCountQuery, generatePoliceJwtToken, logger, query, removeFields } from '../utils';
+import { paginate } from '../models/utils/paginate';
+import { generatePoliceJwtToken, logger, removeFields } from '../utils';
 
 const PoliceController = {
 	async update(
@@ -58,21 +59,18 @@ const PoliceController = {
 		}
 	},
 	async get(req: Request<any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
-		const polices = await PoliceModel.find(req.body);
-		const policeCount = (await query(
-			generateCountQuery(req.body?.filter, 'Police')
-		)) as RowDataPacket[];
-
-		if (polices) {
-			res.json({
-				status: 'success',
-				data: {
-					items: polices,
-					next: null,
-					total: policeCount[0][0]?.count,
+		res.json({
+			status: 'success',
+			data: await paginate<IPolice>(
+				{
+					...req.query,
+					// Custom select to remove password field
+					select: ['nid', 'name', 'email', 'address', 'designation', 'phone', 'rank'],
 				},
-			});
-		}
+				'Police',
+				'nid'
+			),
+		});
 	},
 	async delete(req: Request<any, any, DeletePolicePayload>, res: Response<DeletePoliceResponse>) {
 		const police = await PoliceModel.findByNid(req.body.nid);

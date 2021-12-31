@@ -2,6 +2,7 @@ import { PoliceRequest } from '@bupd/validation';
 import express from 'express';
 import { PoliceController } from '../controllers';
 import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
+import validateQuery from '../middlewares/validateQuery';
 
 const PoliceRouter = express.Router();
 
@@ -14,7 +15,7 @@ PoliceRouter.put(
 );
 PoliceRouter.get(
 	'/',
-	validatePayload(PoliceRequest.get),
+	validateQuery(PoliceRequest.get),
 	isAuthenticated,
 	isAuthorized(['admin', 'police']),
 	PoliceController.get

@@ -1,41 +1,19 @@
 import * as yup from 'yup';
+import { paginationSchema } from './utils/paginationSchema';
 
 export const AccessPayload = {
 	get: yup
 		.object({
 			filter: yup
 				.object({
-					approved: yup.number().min(0).max(1).required(),
-					permission: yup
-						.array()
-						.of(yup.string().oneOf(['read', 'write', 'update', 'delete']))
-						.required(),
-					type: yup.string().oneOf(['case', 'criminal']).required(),
+					approved: yup.number().min(0).max(1),
+					permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
+					type: yup.string().oneOf(['case', 'criminal']),
 				})
 				.strict()
 				.noUnknown(),
-			sort: yup
-				.array()
-				.nullable()
-				.test(
-					(arr) =>
-						arr === null ||
-						arr === undefined ||
-						(arr.length === 2 &&
-							arr[0].match(/^(criminal_id|case_no|approved|permission)$/) &&
-							(arr[1] === -1 || arr[1] === 1))
-				),
-			limit: yup.number(),
-			// Used for cursor based pagination
-			next: yup
-				.object({
-					id: yup.number().required(),
-				})
-				.noUnknown()
-				.nullable(),
 		})
-		.strict()
-		.noUnknown(),
+		.concat(paginationSchema(/^(criminal_id|case_no|approved|permission)$/)),
 	create: yup
 		.object({
 			case_no: yup.number().nullable(),

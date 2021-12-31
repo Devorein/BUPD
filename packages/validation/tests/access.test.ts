@@ -43,22 +43,6 @@ describe('.AccessPayload.get', () => {
 		).toThrow();
 	});
 
-	it(`Should throw error when approved is not present`, () => {
-		expect(() =>
-			AccessPayload.get.validateSyncAt('filter.approved', {
-				filter: {},
-			})
-		).toThrow();
-	});
-
-	it(`Should throw error when permission is not present`, () => {
-		expect(() =>
-			AccessPayload.get.validateSyncAt('filter.permission', {
-				filter: {},
-			})
-		).toThrow();
-	});
-
 	it(`Should throw error when permission is not an array`, () => {
 		expect(() =>
 			AccessPayload.get.validateSyncAt('filter.permission', {
@@ -75,14 +59,6 @@ describe('.AccessPayload.get', () => {
 				filter: {
 					permission: ['deleted'],
 				},
-			})
-		).toThrow();
-	});
-
-	it(`Should throw error when type is not present`, () => {
-		expect(() =>
-			AccessPayload.get.validateSyncAt('filter.type', {
-				filter: {},
 			})
 		).toThrow();
 	});

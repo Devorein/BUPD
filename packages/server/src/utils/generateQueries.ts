@@ -1,3 +1,4 @@
+import { NextQuery } from '@bupd/types';
 import mysql from 'mysql2';
 import { SqlClause, SqlFilter } from '../types';
 
@@ -80,4 +81,23 @@ export function generateUpdateQuery(
 
 export function generateDeleteQuery(filterQuery: Record<string, any>, table: string) {
 	return `DELETE FROM ${table} ${generateWhereClause(filterQuery)};`;
+}
+
+export function generatePaginationQuery(
+	sqlClause: SqlClause & { next?: NextQuery },
+	nextCursorProperty: string
+) {
+	const filter: SqlFilter = {};
+	if (sqlClause.next) {
+		const sortOrder = sqlClause.sort ? sqlClause.sort[1] : 1;
+		filter[nextCursorProperty] = [sortOrder === -1 ? '>' : '<', sqlClause.next.id];
+	}
+
+	return {
+		...sqlClause,
+		filter: {
+			...(sqlClause.filter ?? {}),
+			...filter,
+		},
+	} as Partial<SqlClause>;
 }
