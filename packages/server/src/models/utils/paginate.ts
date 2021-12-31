@@ -11,7 +11,7 @@ export async function paginate<Data>(
 ) {
 	// Generate the total counts first as sqlClause.filter will be mutated by generatePaginationQuery
 	const rowsCount = (await query(
-		generateCountQuery(sqlClause.filter ?? {}, 'Access')
+		generateCountQuery(sqlClause.filter ?? {}, table)
 	)) as RowDataPacket[];
 	const rows = await find<Data>(
 		generatePaginationQuery(sqlClause, nextCursorProperty as string),

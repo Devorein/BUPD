@@ -49,14 +49,7 @@ const AccessController = {
 	find: async (req: Request<any, any, any, GetAccessPayload>, res: Response<GetAccessResponse>) => {
 		res.json({
 			status: 'success',
-			data: await paginate<IAccess>(
-				{
-					...req.query,
-					next: req.query.next,
-				},
-				'Access',
-				'access_id'
-			),
+			data: await paginate<IAccess>(req.query, 'Access', 'access_id'),
 		});
 	},
 
