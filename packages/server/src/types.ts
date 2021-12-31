@@ -7,3 +7,10 @@ declare module 'express' {
 		jwt_payload?: PoliceJwtPayload | AdminJwtPayload;
 	}
 }
+
+export interface SqlClause {
+	filter?: Record<string, any>;
+	sort?: [string, -1 | 1];
+	limit?: number;
+	select?: string[];
+}

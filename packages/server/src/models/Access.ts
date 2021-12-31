@@ -1,10 +1,11 @@
-import { IAccess, UpdateAccessPayload, WhereClauseQuery } from '@bupd/types';
+import { IAccess, UpdateAccessPayload } from '@bupd/types';
+import { SqlClause } from '../types';
 import { generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
 const AccessModel = {
-	find(whereClauseQuery: WhereClauseQuery) {
-		return find<IAccess>(whereClauseQuery, 'access');
+	find(sqlClause: SqlClause) {
+		return find<IAccess>(sqlClause, 'access');
 	},
 	async update(filterQuery: Partial<IAccess>, payload: UpdateAccessPayload) {
 		if (Object.keys(payload).length !== 0) {

@@ -1,5 +1,5 @@
-import { WhereClauseQuery } from '@bupd/types';
 import mysql from 'mysql2';
+import { SqlClause } from '../types';
 
 /**
  * Generates a sql statement with fields and escaped values extracted from the given object
@@ -25,33 +25,34 @@ export function generateInsertQuery<Payload extends Record<string, any>>(
 	return `INSERT INTO ${table}(${fields.join(',')}) VALUES(${values.join(',')});`;
 }
 
-export function generateWhereClause(payload: WhereClauseQuery) {
-	const clauses: string[] = [];
-	let filterClause = '',
-		sortClause = '',
-		limitClause = '';
-	if (payload.filter) {
+export function generateWhereClause(filterQuery?: Record<string, any>) {
+	if (filterQuery) {
 		const whereClauses: string[] = [];
 
-		Object.entries(payload.filter).forEach(([field, value]) => {
+		Object.entries(filterQuery).forEach(([field, value]) => {
 			if (value !== null) {
 				whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
 			}
 		});
-		filterClause = whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
-		clauses.push(filterClause);
+		return whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+	} else {
+		return '';
 	}
-	if (payload.sort) {
-		const [attribute, order] = payload.sort;
-		sortClause = `ORDER BY \`${attribute}\` ${order === -1 ? 'DESC' : 'ASC'}`;
-		clauses.push(sortClause);
-	}
+}
 
-	if (payload.limit) {
-		limitClause = `LIMIT ${payload.limit}`;
-		clauses.push(limitClause);
+export function generateOrderbyClause(sort?: [string, -1 | 1]) {
+	if (sort) {
+		const [attribute, order] = sort;
+		return `ORDER BY \`${attribute}\` ${order === -1 ? 'DESC' : 'ASC'}`;
 	}
-	return clauses.join(' ');
+	return '';
+}
+
+export function generateLimitClause(limit?: number) {
+	if (limit) {
+		return `LIMIT ${limit}`;
+	}
+	return '';
 }
 
 export function generateSetClause(payload: Record<string, any>) {
@@ -60,21 +61,18 @@ export function generateSetClause(payload: Record<string, any>) {
 		.join(',')}`;
 }
 
-export function generateSelectQuery(whereClauseQuery: WhereClauseQuery, table: string) {
+export function generateSelectQuery(sqlClause: SqlClause, table: string) {
+	const clauses: string[] = [];
+	clauses.push(generateWhereClause(sqlClause.filter));
+	clauses.push(generateOrderbyClause(sqlClause.sort));
+	clauses.push(generateLimitClause(sqlClause.limit));
 	return `SELECT ${
-		whereClauseQuery.select
-			? whereClauseQuery.select.map((attribute) => `\`${attribute}\``).join(',')
-			: '*'
-	} FROM ${table} ${generateWhereClause(whereClauseQuery)};`;
+		sqlClause.select ? sqlClause.select.map((attribute) => `\`${attribute}\``).join(',') : '*'
+	} FROM ${table} ${clauses.join(' ')};`;
 }
 
-export function generateCountQuery(
-	whereClauseQuery: Pick<WhereClauseQuery, 'filter'>,
-	table: string
-) {
-	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause({
-		filter: whereClauseQuery.filter,
-	})};`;
+export function generateCountQuery(sqlClause: Pick<SqlClause, 'filter'>, table: string) {
+	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause(sqlClause.filter)};`;
 }
 
 export function generateUpdateQuery(
@@ -82,11 +80,9 @@ export function generateUpdateQuery(
 	payload: Record<string, any>,
 	table: string
 ) {
-	return `UPDATE ${table} ${generateSetClause(payload)} ${generateWhereClause({
-		filter: filterQuery,
-	})}`;
+	return `UPDATE ${table} ${generateSetClause(payload)} ${generateWhereClause(filterQuery)};`;
 }
 
-export function generateDeleteQuery(payload: Record<string, any>, table: string) {
-	return `DELETE FROM ${table} ${generateWhereClause({ filter: payload })};`;
+export function generateDeleteQuery(filterQuery: Record<string, any>, table: string) {
+	return `DELETE FROM ${table} ${generateWhereClause(filterQuery)};`;
 }

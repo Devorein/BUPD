@@ -45,20 +45,24 @@ const AccessController = {
 			});
 		}
 	},
-	find: async (req: Request<any, any, GetAccessPayload>, res: Response<GetAccessResponse>) => {
-		const access = await AccessModel.find(req.body);
-		const accessCount = (await query(
-			generateCountQuery({ filter: req.body?.filter }, 'Access')
+
+	find: async (req: Request<any, any, any, GetAccessPayload>, res: Response<GetAccessResponse>) => {
+		const requestQuery = req.query;
+		const accessRows = await AccessModel.find(requestQuery);
+		const accessRowsCount = (await query(
+			generateCountQuery({ filter: requestQuery?.filter }, 'Access')
 		)) as RowDataPacket[];
+
 		res.json({
 			status: 'success',
 			data: {
-				total: accessCount[0][0]?.count,
-				items: access,
+				total: accessRowsCount[0][0]?.count,
+				items: accessRows,
 				next: null,
 			},
 		});
 	},
+
 	async update(
 		req: Request<any, any, UpdateAccessPayload>,
 		res: Response<ApiResponse<UpdateAccessResponse>>
@@ -71,7 +75,7 @@ const AccessController = {
 			if (!accessExist) {
 				res.json({
 					status: 'error',
-					message: "Access ID doesn't exist",
+					message: "Access doesn't exist",
 				});
 			} else {
 				await AccessModel.update(
