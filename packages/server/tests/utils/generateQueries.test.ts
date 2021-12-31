@@ -6,6 +6,7 @@ import {
 	generateInsertQuery,
 	generateLimitClause,
 	generateOrderbyClause,
+	generatePaginationQuery,
 	generateSelectQuery,
 	generateSetClause,
 	generateUpdateQuery,
@@ -138,5 +139,30 @@ describe('.generateDeleteQuery', () => {
 		expect(generateDeleteQuery({ rank: 'Sergeant' }, 'police')).toBe(
 			"DELETE FROM police WHERE `rank`='Sergeant';"
 		);
+	});
+});
+
+describe('.generatePaginationQuery', () => {
+	it(`Should generate update filter if no filter and sort is present`, () => {
+		expect(generatePaginationQuery({ next: { id: 2 } }, 'access_id')).toMatchObject({
+			filter: {
+				access_id: ['<', 2],
+			},
+		});
+	});
+
+	it(`Should generate update filter if filter and sort is present`, () => {
+		expect(
+			generatePaginationQuery(
+				{ filter: { field1: 'value1' }, sort: ['field2', -1], next: { id: 2 } },
+				'access_id'
+			)
+		).toMatchObject({
+			filter: {
+				field1: 'value1',
+				access_id: ['>', 2],
+			},
+			sort: ['field2', -1],
+		});
 	});
 });
