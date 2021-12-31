@@ -21,6 +21,12 @@ export const AccessPayload = {
 							(arr[1] === -1 || arr[1] === 1))
 				),
 			limit: yup.number(),
+			// Used for cursor based pagination
+			next: yup
+				.object({
+					id: yup.number(),
+				})
+				.nullable(),
 		})
 		.strict()
 		.noUnknown(),

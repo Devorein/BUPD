@@ -3,6 +3,7 @@ import { AccessPayload } from '@bupd/validation';
 import express from 'express';
 import { AccessController } from '../controllers';
 import { isAuthenticated, isAuthorized, validatePayload } from '../middlewares';
+import validateQuery from '../middlewares/validateQuery';
 
 const AccessRouter = express.Router();
 AccessRouter.post(
@@ -13,7 +14,7 @@ AccessRouter.post(
 	AccessController.create
 ).get<any, any, any, GetAccessPayload>(
 	'/',
-	validatePayload(AccessPayload.get),
+	validateQuery(AccessPayload.get),
 	isAuthenticated,
 	isAuthorized(['police']),
 	AccessController.find

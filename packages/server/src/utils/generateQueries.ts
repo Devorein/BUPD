@@ -1,5 +1,5 @@
 import mysql from 'mysql2';
-import { SqlClause } from '../types';
+import { SqlClause, SqlFilter } from '../types';
 
 /**
  * Generates a sql statement with fields and escaped values extracted from the given object
@@ -25,12 +25,17 @@ export function generateInsertQuery<Payload extends Record<string, any>>(
 	return `INSERT INTO ${table}(${fields.join(',')}) VALUES(${values.join(',')});`;
 }
 
-export function generateWhereClause(filterQuery: Record<string, any>) {
+export function generateWhereClause(filterQuery: SqlFilter) {
 	const whereClauses: string[] = [];
 
 	Object.entries(filterQuery).forEach(([field, value]) => {
 		if (value !== null) {
-			whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
+			// Support for custom where operator
+			if (Array.isArray(value)) {
+				whereClauses.push(`\`${field}\`${value[0]}${mysql.escape(value[1])}`);
+			} else {
+				whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
+			}
 		}
 	});
 	return whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';

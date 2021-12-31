@@ -144,18 +144,20 @@ export type ErrorApiResponse = {
 	message: string;
 };
 
+export type NextQuery = null | {
+	id: number;
+};
+
 export type PaginatedResponse<Data> = {
 	total: number;
 	items: Data[];
-	next: null | {
-		id: number;
-	};
+	next: NextQuery;
 };
 
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 
 export interface IAccessFilter {
-	approved: boolean;
+	approved: 0 | 1;
 	permission: TAccessPermission[];
 	access_type: TAccessType;
 }
@@ -173,6 +175,7 @@ export interface IQuery<Filter, Sort> {
 	filter: Filter;
 	sort: Sort;
 	limit: number;
+	next: NextQuery;
 }
 
 export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}

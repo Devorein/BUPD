@@ -8,8 +8,9 @@ declare module 'express' {
 	}
 }
 
+export type SqlFilter = Record<string, any | [string, any]>;
 export interface SqlClause {
-	filter?: Record<string, any>;
+	filter?: SqlFilter;
 	sort?: [string, -1 | 1];
 	limit?: number;
 	select?: string[];
