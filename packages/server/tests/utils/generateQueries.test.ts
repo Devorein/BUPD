@@ -30,10 +30,10 @@ describe('.generateWhereClause', () => {
 			generateWhereClause({
 				filter1: 'value1',
 				filter2: 'value2',
-				rank: 'Nayak',
-				filter3: null,
+				filter3: ['>', 'value3'],
+				filter4: null,
 			})
-		).toBe("WHERE `filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak'");
+		).toBe("WHERE `filter1`='value1' AND `filter2`='value2' AND `filter3`>'value3'");
 	});
 
 	it(`Should work when we pass empty filter`, () => {

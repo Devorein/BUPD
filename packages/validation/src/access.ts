@@ -16,8 +16,10 @@ export const AccessPayload = {
 				.noUnknown(),
 			sort: yup
 				.array()
+				.nullable()
 				.test(
 					(arr) =>
+						arr === null ||
 						arr === undefined ||
 						(arr.length === 2 &&
 							arr[0].match(/^(criminal_id|case_no|approved|permission)$/) &&
@@ -27,8 +29,9 @@ export const AccessPayload = {
 			// Used for cursor based pagination
 			next: yup
 				.object({
-					id: yup.number(),
+					id: yup.number().required(),
 				})
+				.noUnknown()
 				.nullable(),
 		})
 		.strict()
@@ -47,7 +50,6 @@ export const AccessPayload = {
 		.noUnknown(),
 	update: yup
 		.object({
-			access_id: yup.number().required(),
 			permission: yup.string().oneOf(['read', 'write', 'update', 'delete']),
 			approved: yup.boolean(),
 			police_nid: yup.number().min(10000),
@@ -58,13 +60,10 @@ export const AccessPayload = {
 		.strict()
 		.noUnknown()
 		.test((obj) => {
-			switch (obj.type) {
-				case 'criminal':
-					return !obj.case_no && Boolean(obj.criminal_id);
-				case 'case':
-					return !obj.criminal_id && Boolean(obj.case_no);
-				default:
-					return !obj.criminal_id && !obj.case_no;
+			if (obj.type === 'criminal') {
+				return !obj.case_no && Boolean(obj.criminal_id);
+			} else {
+				return !obj.criminal_id && Boolean(obj.case_no);
 			}
 		}),
 };
