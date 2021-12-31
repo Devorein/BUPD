@@ -82,13 +82,6 @@ export interface ICasefilePopulated extends ICasefile {
 	police: IPolice;
 }
 
-export interface WhereClauseQuery {
-	filter?: Record<string, any>;
-	sort?: [string, -1 | 1];
-	limit?: number;
-	select?: string[];
-}
-
 // Api Endpoint type definitions
 export interface RegisterPolicePayload extends IPolice {}
 export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {}
@@ -151,18 +144,20 @@ export type ErrorApiResponse = {
 	message: string;
 };
 
+export type NextQuery = null | {
+	id: number;
+};
+
 export type PaginatedResponse<Data> = {
 	total: number;
 	items: Data[];
-	next: null | {
-		id: number;
-	};
+	next: NextQuery;
 };
 
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 
 export interface IAccessFilter {
-	approved: boolean;
+	approved: 0 | 1;
 	permission: TAccessPermission[];
 	access_type: TAccessType;
 }
@@ -180,6 +175,7 @@ export interface IQuery<Filter, Sort> {
 	filter: Filter;
 	sort: Sort;
 	limit: number;
+	next: NextQuery;
 }
 
 export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}
@@ -196,7 +192,7 @@ export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
 export type DeleteCasefileResponse = ApiResponse<ICasefile>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;
-export interface GetAccessPayload extends IQuery<IAccessFilter, IPoliceSort> {}
+export interface GetAccessPayload extends IQuery<IAccessFilter, IAccessSort> {}
 export type GetAccessResponse = ApiResponse<PaginatedResponse<IAccess>>;
 
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';

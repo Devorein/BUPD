@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import './config';
 import logger from './middlewares/logger';
+import { parseQueryTypes } from './middlewares/parseQueryTypes';
 import RootRouter from './routes';
 import pool from './utils/pool';
 
@@ -12,6 +13,7 @@ app.use(
 			process.env.NODE_ENV === 'production' ? `https://www.bupd.xyz` : `http://localhost:4000`,
 	})
 );
+app.use(parseQueryTypes());
 app.use(express.json());
 app.use(logger);
 app.use('/v1', RootRouter);

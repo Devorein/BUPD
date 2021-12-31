@@ -60,7 +60,7 @@ const PoliceController = {
 	async get(req: Request<any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
 		const polices = await PoliceModel.find(req.body);
 		const policeCount = (await query(
-			generateCountQuery({ filter: req.body?.filter }, 'Police')
+			generateCountQuery(req.body?.filter, 'Police')
 		)) as RowDataPacket[];
 
 		if (polices) {

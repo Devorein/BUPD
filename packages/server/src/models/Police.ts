@@ -3,8 +3,8 @@ import {
 	IPolice,
 	RegisterPolicePayload,
 	UpdatePolicePayload,
-	WhereClauseQuery,
 } from '@bupd/types';
+import { SqlClause } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
@@ -15,10 +15,10 @@ const PoliceModel = {
 		return payload;
 	},
 
-	find(whereClauseQuery: WhereClauseQuery) {
+	find(sqlClause: SqlClause) {
 		return find<IPolice>(
 			{
-				...whereClauseQuery,
+				...sqlClause,
 				select: [
 					'email',
 					'phone',
@@ -27,7 +27,7 @@ const PoliceModel = {
 					'rank',
 					'name',
 					'nid',
-					...(whereClauseQuery.select ?? []),
+					...(sqlClause.select ?? []),
 				],
 			},
 			'Police'

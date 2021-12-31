@@ -4,18 +4,18 @@ import {
 	ICasefile,
 	TCasefileStatus,
 	UpdateCasefilePayload,
-	WhereClauseQuery,
 } from '@bupd/types';
 import { PoolConnection } from 'mysql2/promise';
+import { SqlClause } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 import { useQuery } from './utils/useQuery';
 
 const CasefileModel = {
-	find(whereClauseQuery: WhereClauseQuery) {
+	find(sqlClause: SqlClause) {
 		return find<ICasefile>(
 			{
-				...whereClauseQuery,
+				...sqlClause,
 				select: [
 					'time',
 					'priority',
@@ -23,7 +23,7 @@ const CasefileModel = {
 					'location',
 					'case_no',
 					'police_nid',
-					...(whereClauseQuery.select ?? []),
+					...(sqlClause.select ?? []),
 				],
 			},
 			'CaseFile'

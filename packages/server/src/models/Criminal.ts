@@ -1,22 +1,18 @@
 /* eslint-disable camelcase */
 
-import {
-	DeleteCriminalPayload,
-	ICriminal,
-	UpdateCriminalPayload,
-	WhereClauseQuery,
-} from '@bupd/types';
+import { DeleteCriminalPayload, ICriminal, UpdateCriminalPayload } from '@bupd/types';
 import { PoolConnection } from 'mysql2/promise';
+import { SqlClause } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 import { useQuery } from './utils/useQuery';
 
 const CriminalModel = {
-	find(whereClauseQuery: WhereClauseQuery) {
+	find(sqlClause: SqlClause) {
 		return find<ICriminal>(
 			{
-				...whereClauseQuery,
-				select: ['criminal_id', 'name', 'photo', ...(whereClauseQuery.select ?? [])],
+				...sqlClause,
+				select: ['criminal_id', 'name', 'photo', ...(sqlClause.select ?? [])],
 			},
 			'Criminal'
 		);
