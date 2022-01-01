@@ -2,6 +2,7 @@ import {
 	ApiResponse,
 	DeletePolicePayload,
 	DeletePoliceResponse,
+	GetOnNidPoliceResponse,
 	GetPolicesPayload,
 	GetPolicesResponse,
 	IPolice,
@@ -89,7 +90,7 @@ const PoliceController = {
 			});
 		}
 	},
-	async getOnNid(req: Request<{ nid: number }>, res: Response<DeletePoliceResponse>) {
+	async getOnNid(req: Request<{ nid: number }>, res: Response<GetOnNidPoliceResponse>) {
 		const [police] = await PoliceModel.findByNid(req.params.nid);
 		if (police) {
 			res.json({
