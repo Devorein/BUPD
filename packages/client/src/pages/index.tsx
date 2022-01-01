@@ -1,13 +1,14 @@
-import { Page } from "../components";
+import { AdminHome, Page, PoliceHome } from "../components";
 import { useIsAuthenticated } from "../hooks";
 
 const Index = () => {
-  useIsAuthenticated();
+  const currentUser = useIsAuthenticated();
+  if (!currentUser) {
+    return null;
+  }
   return (
     <Page>
-      <div>
-        Hello World
-      </div>
+      {currentUser.type === "admin" ? <AdminHome /> : <PoliceHome />}
     </Page>
   );
 };

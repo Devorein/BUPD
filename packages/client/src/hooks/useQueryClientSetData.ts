@@ -10,9 +10,7 @@ export function useQueryClientSetData<ResponseData>() {
 	return (queryKey: string[], cacheHitCb: CacheHitFunction<ResponseData>) => {
 		queryClient.setQueriesData<ApiResponse<ResponseData> | null | undefined>(
 			queryKey,
-			(queryResponse) => {
-				return cacheHitCb(queryResponse);
-			}
+			(queryResponse) => cacheHitCb(queryResponse)
 		);
 	};
 }

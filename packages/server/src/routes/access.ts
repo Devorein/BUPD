@@ -1,4 +1,4 @@
-import { GetAccessPayload } from '@bupd/types';
+import { GetAccessesPayload } from '@bupd/types';
 import { AccessPayload } from '@bupd/validation';
 import express from 'express';
 import { AccessController } from '../controllers';
@@ -12,11 +12,11 @@ AccessRouter.post(
 	isAuthenticated,
 	isAuthorized(['police']),
 	AccessController.create
-).get<any, any, any, GetAccessPayload>(
+).get<any, any, any, GetAccessesPayload>(
 	'/',
 	validateQuery(AccessPayload.get),
 	isAuthenticated,
-	isAuthorized(['police']),
+	isAuthorized(['admin']),
 	AccessController.find
 );
 

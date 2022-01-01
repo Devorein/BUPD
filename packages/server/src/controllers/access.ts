@@ -3,8 +3,8 @@ import {
 	ApiResponse,
 	CreateAccessPayload,
 	CreateAccessResponse,
-	GetAccessPayload,
-	GetAccessResponse,
+	GetAccessesPayload,
+	GetAccessesResponse,
 	IAccess,
 	PoliceJwtPayload,
 	UpdateAccessPayload,
@@ -46,7 +46,10 @@ const AccessController = {
 		}
 	},
 
-	find: async (req: Request<any, any, any, GetAccessPayload>, res: Response<GetAccessResponse>) => {
+	find: async (
+		req: Request<any, any, any, GetAccessesPayload>,
+		res: Response<GetAccessesResponse>
+	) => {
 		res.json({
 			status: 'success',
 			data: await paginate<IAccess>(req.query, 'Access', 'access_id'),

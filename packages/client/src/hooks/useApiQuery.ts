@@ -3,15 +3,12 @@ import axios from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import { JWT_LS_KEY, SERVER_URL } from '../constants';
 
-export function useApiQuery<ResponseData = unknown, ModifiedData = ResponseData>(
+export function useApiQuery<ResponseData extends ApiResponse<any>, ModifiedData = ResponseData>(
 	key: QueryKey,
 	endpoint: string,
-	useQueryOptions?: Omit<
-		UseQueryOptions<ApiResponse<ResponseData>, Error, ApiResponse<ModifiedData>>,
-		'queryFn'
-	>
-): UseQueryResult<ApiResponse<ModifiedData>, Error> {
-	return useQuery<ApiResponse<ResponseData>, Error, ApiResponse<ModifiedData>>({
+	useQueryOptions?: Omit<UseQueryOptions<ResponseData, Error, ModifiedData>, 'queryFn'>
+): UseQueryResult<ModifiedData, Error> {
+	return useQuery<ResponseData, Error, ModifiedData>({
 		...useQueryOptions,
 		queryKey: useQueryOptions?.queryKey ?? key,
 		async queryFn() {
@@ -19,7 +16,7 @@ export function useApiQuery<ResponseData = unknown, ModifiedData = ResponseData>
 			if (typeof window !== 'undefined') {
 				jwtToken = localStorage.getItem(JWT_LS_KEY);
 			}
-			const response = await axios.get<ApiResponse<ResponseData>>(`${SERVER_URL!}/${endpoint}`, {
+			const response = await axios.get<ResponseData>(`${SERVER_URL!}/${endpoint}`, {
 				headers: {
 					Authorization: jwtToken ? `Bearer ${jwtToken}` : '',
 				},

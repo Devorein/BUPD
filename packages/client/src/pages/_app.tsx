@@ -2,6 +2,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { AppProps } from 'next/app';
 import Head from "next/head";
 import { SnackbarProvider } from "notistack";
+import React from "react";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { useGetCurrentUserQuery } from "../api";
@@ -25,8 +26,8 @@ const Index: React.FC<{}> = (props) => {
   </RootContext.Provider>
 }
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
-  return <ThemeProvider theme={generatedTheme}>
+const MyApp = ({ Component, pageProps }: AppProps) => (
+  <ThemeProvider theme={generatedTheme}>
     <Head>
       <title>BUPD</title>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,6 +47,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </SnackbarProvider>
     </QueryClientProvider>
   </ThemeProvider>
-};
+);
 
 export default MyApp;
