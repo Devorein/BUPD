@@ -19,6 +19,7 @@ export function LoadMoreButton(props: LoadMoreButtonProps) {
   return <div className="flex justify-center mt-5">
     {hasNextPage && !isQueryFetching && (
       <Button
+        color="secondary"
         sx={{
           paddingLeft: '10px',
           paddingRight: '5px'
