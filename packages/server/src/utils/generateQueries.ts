@@ -1,4 +1,4 @@
-import { NextQuery } from '@bupd/types';
+import { NextKey } from '@bupd/types';
 import mysql from 'mysql2';
 import { SqlClause, SqlFilter } from '../types';
 
@@ -84,7 +84,7 @@ export function generateDeleteQuery(filterQuery: Record<string, any>, table: str
 }
 
 export function generatePaginationQuery(
-	sqlClause: SqlClause & { next?: NextQuery },
+	sqlClause: SqlClause & { next?: NextKey },
 	nextCursorProperty: string
 ) {
 	const filter: SqlFilter = {};
