@@ -146,7 +146,7 @@ describe('.generatePaginationQuery', () => {
 	it(`Should generate update filter if no filter and sort is present`, () => {
 		expect(generatePaginationQuery({ next: { id: 2 } }, 'access_id')).toMatchObject({
 			filter: {
-				access_id: ['<', 2],
+				access_id: ['>', 2],
 			},
 		});
 	});
@@ -160,7 +160,7 @@ describe('.generatePaginationQuery', () => {
 		).toMatchObject({
 			filter: {
 				field1: 'value1',
-				access_id: ['>', 2],
+				access_id: ['<', 2],
 			},
 			sort: ['field2', -1],
 		});
