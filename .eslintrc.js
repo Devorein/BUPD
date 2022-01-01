@@ -10,7 +10,7 @@ module.exports = {
 		ecmaVersion: 12,
 		sourceType: 'module',
 	},
-	plugins: ['@typescript-eslint', 'prettier', 'import'],
+	plugins: ['@typescript-eslint', 'prettier', 'import', 'unused-imports'],
 	rules: {
 		'no-await-in-loop': 'off',
 		'import/prefer-default-export': 'off',

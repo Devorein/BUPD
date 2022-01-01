@@ -1,6 +1,8 @@
 import { Page } from "../components";
+import { useIsAuthenticated } from "../hooks";
 
 const Index = () => {
+  useIsAuthenticated();
   return (
     <Page>
       <div>
