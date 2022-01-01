@@ -27,7 +27,7 @@ describe('.AccessPayload.get', () => {
 		expect(() =>
 			AccessPayload.get.validateSyncAt('filter.approved', {
 				filter: {
-					approved: -1,
+					approved: [-1],
 				},
 			})
 		).toThrow();
@@ -37,20 +37,20 @@ describe('.AccessPayload.get', () => {
 		expect(() =>
 			AccessPayload.get.validateSyncAt('filter.approved', {
 				filter: {
-					approved: 2,
+					approved: [2],
 				},
 			})
 		).toThrow();
 	});
 
-	it(`Should throw error when permission is not an array`, () => {
+	it(`Should not throw error when filter approved is correct`, () => {
 		expect(() =>
-			AccessPayload.get.validateSyncAt('filter.permission', {
+			AccessPayload.get.validateSyncAt('filter.approved', {
 				filter: {
-					permission: 'string',
+					approved: [0, 1],
 				},
 			})
-		).toThrow();
+		).not.toThrow();
 	});
 
 	it(`Should throw error when permission is not one of read, write, update or delete`, () => {
@@ -63,24 +63,24 @@ describe('.AccessPayload.get', () => {
 		).toThrow();
 	});
 
-	it(`Should throw error when type is not a string`, () => {
+	it(`Should throw error when type is not one of case or criminal`, () => {
 		expect(() =>
 			AccessPayload.get.validateSyncAt('filter.type', {
 				filter: {
-					type: true,
+					type: ['police'],
 				},
 			})
 		).toThrow();
 	});
 
-	it(`Should throw error when type is not one of case or criminal`, () => {
+	it(`Should not throw error when type is one of case or criminal`, () => {
 		expect(() =>
 			AccessPayload.get.validateSyncAt('filter.type', {
 				filter: {
-					type: 'police',
+					type: ['case', 'criminal'],
 				},
 			})
-		).toThrow();
+		).not.toThrow();
 	});
 
 	it(`Should throw error when sort item value is greater than 2`, () => {
@@ -127,9 +127,9 @@ describe('.AccessPayload.get', () => {
 		expect(() =>
 			AccessPayload.get.validateSync({
 				filter: {
-					approved: 1,
-					permission: ['read'],
-					type: 'case',
+					approved: [1],
+					permission: ['read', 'update'],
+					type: ['case', 'criminal'],
 				},
 				limit: 2,
 				sort: ['criminal_id', -1],
