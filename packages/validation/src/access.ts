@@ -6,9 +6,9 @@ export const AccessPayload = {
 		.object({
 			filter: yup
 				.object({
-					approved: yup.number().min(0).max(1),
+					approved: yup.array().of(yup.number().min(0).max(1)),
 					permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
-					type: yup.string().oneOf(['case', 'criminal']),
+					type: yup.array().of(yup.string().oneOf(['case', 'criminal'])),
 				})
 				.strict()
 				.noUnknown(),

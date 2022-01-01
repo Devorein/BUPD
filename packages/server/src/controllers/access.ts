@@ -3,8 +3,8 @@ import {
 	ApiResponse,
 	CreateAccessPayload,
 	CreateAccessResponse,
-	GetAccessPayload,
-	GetAccessResponse,
+	GetAccessesPayload,
+	GetAccessesResponse,
 	IAccess,
 	PoliceJwtPayload,
 	UpdateAccessPayload,
@@ -25,7 +25,7 @@ const AccessController = {
 			const payload = req.body;
 			const access: Omit<IAccess, 'access_id'> = {
 				permission: payload.permission,
-				approved: false,
+				approved: 0,
 				police_nid: jwtPayload.nid,
 				type: payload.criminal_id !== null ? 'criminal' : 'case',
 				criminal_id: payload.criminal_id,
@@ -46,7 +46,10 @@ const AccessController = {
 		}
 	},
 
-	find: async (req: Request<any, any, any, GetAccessPayload>, res: Response<GetAccessResponse>) => {
+	find: async (
+		req: Request<any, any, any, GetAccessesPayload>,
+		res: Response<GetAccessesResponse>
+	) => {
 		res.json({
 			status: 'success',
 			data: await paginate<IAccess>(req.query, 'Access', 'access_id'),

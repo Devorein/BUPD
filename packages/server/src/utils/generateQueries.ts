@@ -90,7 +90,7 @@ export function generatePaginationQuery(
 	const filter: SqlFilter = {};
 	if (sqlClause.next) {
 		const sortOrder = sqlClause.sort ? sqlClause.sort[1] : 1;
-		filter[nextCursorProperty] = [sortOrder === -1 ? '>' : '<', sqlClause.next.id];
+		filter[nextCursorProperty] = [sortOrder === -1 ? '<' : '>', sqlClause.next.id];
 	}
 
 	return {

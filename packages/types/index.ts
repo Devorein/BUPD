@@ -37,7 +37,7 @@ export type TAccessType = 'case' | 'criminal';
 export interface IAccess {
 	access_id: number;
 	permission: TAccessPermission;
-	approved: Boolean;
+	approved: 1 | 0;
 	police_nid: number;
 	type: TAccessType;
 	criminal_id: number | null;
@@ -157,9 +157,9 @@ export type PaginatedResponse<Data> = {
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 
 export interface IAccessFilter {
-	approved: 0 | 1;
+	approved: (0 | 1)[];
 	permission: TAccessPermission[];
-	access_type: TAccessType;
+	access_type: TAccessType[];
 }
 
 export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];
@@ -194,8 +194,8 @@ export type GetOnNidPoliceResponse = ApiResponse<Exclude<IPolice, 'password'>>;
 export type DeleteCasefileResponse = ApiResponse<ICasefile>;
 export type GetOnCasenoCasefileResponse = ApiResponse<ICasefile>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;
-export interface GetAccessPayload extends IQuery<IAccessFilter, IAccessSort> {}
-export type GetAccessResponse = ApiResponse<PaginatedResponse<IAccess>>;
+export interface GetAccessesPayload extends IQuery<IAccessFilter, IAccessSort> {}
+export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccess>>;
 
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
 

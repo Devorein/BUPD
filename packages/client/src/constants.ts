@@ -1,4 +1,4 @@
-import { TCasefilePriority, TCasefileStatus } from '@bupd/types';
+import { IAccessSort, TCasefilePriority, TCasefileStatus } from '@bupd/types';
 import { Theme } from '@emotion/react';
 import { SxProps } from '@mui/material';
 
@@ -28,3 +28,12 @@ export const svgIconSx: SxProps<Theme> = {
 		transition: 'transform 150ms ease-in-out',
 	},
 };
+
+export const accessSortLabelRecord: Record<`${IAccessSort[0]}.${IAccessSort[1]}`, string> = {
+	'approved.-1': 'Approved first',
+	'approved.1': 'Non approved first',
+	'case_no.-1': 'Case first',
+	'criminal_id.-1': 'Criminal first',
+	'permission.-1': 'Permission desc',
+	'permission.1': 'Permission asc',
+} as any;
