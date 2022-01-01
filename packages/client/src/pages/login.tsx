@@ -1,15 +1,15 @@
-import { ApiResponse, CurrentUserResponse, LoginPayload, LoginResponse } from '@bupd/types';
+import { ApiResponse, GetCurrentUserResponse, LoginPayload, LoginResponse } from '@bupd/types';
 import { Form, Formik } from 'formik';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useContext } from 'react';
+import qs from 'qs';
 import { UseMutationResult } from 'react-query';
 import * as Yup from 'yup';
 import { useGetCurrentUserQueryData } from '../api';
 import { useLoginMutation } from '../api/mutations';
 import { Button, FormikTextInput, MultiTabs, Page } from '../components';
 import { JWT_LS_KEY } from '../constants';
-import { RootContext } from '../contexts';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 
 const loginInputInitialValue: Omit<LoginPayload, 'as'> = {
   email: '',
@@ -49,15 +49,13 @@ function FormikForm(props: FormikFormProps) {
               if (response.status === "success") {
                 localStorage.setItem(JWT_LS_KEY, response.data.token);
                 // Logging the current user
-                getCurrentUserQueryData(() => {
-                  return {
-                    status: "success",
-                    data: {
-                      type: as,
-                      ...response.data
-                    } as CurrentUserResponse
-                  }
-                })
+                getCurrentUserQueryData(() => ({
+                  status: "success",
+                  data: {
+                    type: as,
+                    ...response.data
+                  } as unknown as GetCurrentUserResponse
+                }))
                 enqueueSnackbar(`Successfully logged in`, { variant: 'success' });
               }
             },
@@ -103,10 +101,10 @@ function FormikForm(props: FormikFormProps) {
 
 export default function Login() {
   const loginMutation = useLoginMutation();
-  const { currentUser } = useContext(RootContext);
+  const currentUser = useCurrentUser();
 
   if (currentUser) {
-    router.push('/')
+    router.push({ pathname: '/', query: qs.stringify({ sort: ["approved", 1], limit: 10 }) })
   }
   return (
     <Page>

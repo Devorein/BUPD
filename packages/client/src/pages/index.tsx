@@ -3,12 +3,17 @@ import { useIsAuthenticated } from "../hooks";
 
 const Index = () => {
   const currentUser = useIsAuthenticated();
-  if (!currentUser) {
-    return null;
+
+  function render() {
+    if (!currentUser) {
+      return null;
+    }
+    return currentUser.type === "admin" ? <AdminHome /> : <PoliceHome />
   }
+
   return (
     <Page>
-      {currentUser.type === "admin" ? <AdminHome /> : <PoliceHome />}
+      {render()}
     </Page>
   );
 };
