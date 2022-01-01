@@ -7,7 +7,7 @@ const AccessModel = {
 	find(sqlClause: SqlClause & { next?: NextKey }) {
 		return find<IAccess>(generatePaginationQuery(sqlClause, 'access_id'), 'access');
 	},
-	async update(filterQuery: Partial<IAccess>, payload: UpdateAccessPayload) {
+	async update(filterQuery: Partial<IAccess>, payload: UpdateAccessPayload & { admin_id: number }) {
 		if (Object.keys(payload).length !== 0) {
 			await query(generateUpdateQuery(filterQuery, payload, 'Access'));
 			return payload as Partial<IAccess>;

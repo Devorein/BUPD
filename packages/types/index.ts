@@ -131,7 +131,7 @@ export interface UpdateCasefileResponse extends ICasefile {}
 
 export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police'> {}
 
-export type UpdateAccessPayload = Omit<IAccess, 'access_id'>;
+export type UpdateAccessPayload = Pick<IAccess, 'approved'>;
 export interface UpdateAccessResponse extends IAccess {}
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
