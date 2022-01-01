@@ -12,8 +12,7 @@ CriminalRouter.put(
 	isAuthorized(['police']),
 	hasAccess('criminal', ['update', 'delete']),
 	CriminalController.update
-);
-CriminalRouter.delete(
+).delete(
 	'/:criminal_id',
 	isAuthenticated,
 	isAuthorized(['police']),
