@@ -2,7 +2,8 @@ const path = require('path');
 const eslintConfig = require('../../.eslintrc');
 
 eslintConfig.extends.push('next');
-
+eslintConfig.globals.React = true;
+eslintConfig.globals.JSX = true;
 eslintConfig.parserOptions.project = [path.join(__dirname, './tsconfig.json')];
 eslintConfig.rules = {
 	...eslintConfig.rules,

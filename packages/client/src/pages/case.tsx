@@ -9,18 +9,16 @@ import { CaseVictimsForm } from "../components/CaseForm/CaseVictimsForm";
 import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS } from "../constants";
 import { useIsAuthenticated, useIsAuthorized } from "../hooks";
 
-const createCasefileInitialPayload = (): CreateCasefilePayload => {
-  return {
-    categories: [],
-    criminals: [],
-    location: "",
-    priority: "low",
-    time: Date.now(),
-    victims: [],
-    weapons: [],
-    status: "open"
-  }
-};
+const createCasefileInitialPayload = (): CreateCasefilePayload => ({
+  categories: [],
+  criminals: [],
+  location: "",
+  priority: "low",
+  time: Date.now(),
+  victims: [],
+  weapons: [],
+  status: "open"
+});
 
 function Tags(props: { values: string[] }) {
   const theme = useTheme();
