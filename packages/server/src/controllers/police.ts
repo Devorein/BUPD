@@ -12,7 +12,7 @@ import {
 import { Request, Response } from 'express';
 import { PoliceModel } from '../models';
 import { paginate } from '../models/utils/paginate';
-import { generatePoliceJwtToken, logger, removeFields } from '../utils';
+import { generatePoliceJwtToken, handleError, logger, removeFields } from '../utils';
 
 const PoliceController = {
 	async update(
@@ -87,6 +87,17 @@ const PoliceController = {
 				status: 'error',
 				message: 'No valid polices given to delete',
 			});
+		}
+	},
+	async getOnNid(req: Request<{ nid: number }>, res: Response<DeletePoliceResponse>) {
+		const [police] = await PoliceModel.findByNid(req.params.nid);
+		if (police) {
+			res.json({
+				status: 'success',
+				data: removeFields(police, ['password']),
+			});
+		} else {
+			handleError(res, 404, `No police with nid, ${req.params.nid} found`);
 		}
 	},
 };
