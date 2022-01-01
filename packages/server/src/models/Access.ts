@@ -1,10 +1,10 @@
-import { IAccess, NextQuery, UpdateAccessPayload } from '@bupd/types';
+import { IAccess, NextKey, UpdateAccessPayload } from '@bupd/types';
 import { SqlClause } from '../types';
 import { generatePaginationQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
 const AccessModel = {
-	find(sqlClause: SqlClause & { next?: NextQuery }) {
+	find(sqlClause: SqlClause & { next?: NextKey }) {
 		return find<IAccess>(generatePaginationQuery(sqlClause, 'access_id'), 'access');
 	},
 	async update(filterQuery: Partial<IAccess>, payload: UpdateAccessPayload) {

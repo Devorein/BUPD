@@ -1,11 +1,11 @@
-import { NextQuery, PaginatedResponse } from '@bupd/types';
+import { NextKey, PaginatedResponse } from '@bupd/types';
 import { RowDataPacket } from 'mysql2';
 import { SqlClause } from '../../types';
 import { generateCountQuery, generatePaginationQuery, query } from '../../utils';
 import find from './find';
 
 export async function paginate<Data>(
-	sqlClause: SqlClause & { next?: NextQuery },
+	sqlClause: SqlClause & { next?: NextKey },
 	table: string,
 	nextCursorProperty: keyof Data
 ) {

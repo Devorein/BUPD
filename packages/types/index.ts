@@ -144,14 +144,14 @@ export type ErrorApiResponse = {
 	message: string;
 };
 
-export type NextQuery = null | {
+export type NextKey = null | {
 	id: number;
 };
 
 export type PaginatedResponse<Data> = {
 	total: number;
 	items: Data[];
-	next: NextQuery;
+	next: NextKey;
 };
 
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
@@ -175,7 +175,7 @@ export interface IQuery<Filter, Sort> {
 	filter: Filter;
 	sort: Sort;
 	limit: number;
-	next: NextQuery;
+	next: NextKey;
 }
 
 export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}
