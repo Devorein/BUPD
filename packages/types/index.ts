@@ -82,6 +82,29 @@ export interface ICasefilePopulated extends ICasefile {
 	police: IPolice;
 }
 
+// All of our api endpoint will return either a success or error response
+export type SuccessApiResponse<Data> = {
+	status: 'success';
+	data: Data;
+};
+
+export type ErrorApiResponse = {
+	status: 'error';
+	message: string;
+};
+
+export type NextKey = null | {
+	id: number;
+};
+
+export type PaginatedResponse<Data> = {
+	total: number;
+	items: Data[];
+	next: NextKey;
+};
+
+export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
+
 // Api Endpoint type definitions
 export interface RegisterPolicePayload extends IPolice {}
 export interface RegisterPoliceResponse extends Omit<IPolice, 'password'> {}
@@ -94,10 +117,9 @@ export interface UpdatePoliceResponse extends Omit<IPolice, 'password'> {
 	token: string;
 }
 
-export type CurrentUserResponse =
-	| (IAdmin & { type: 'admin' })
-	| (IPolice & { type: 'police' })
-	| null;
+export type GetCurrentUserResponse = ApiResponse<
+	(IAdmin & { type: 'admin' }) | (IPolice & { type: 'police' }) | null
+>;
 
 export interface LoginPayload {
 	email: string;
@@ -133,28 +155,6 @@ export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police
 
 export type UpdateAccessPayload = Pick<IAccess, 'approved'>;
 export interface UpdateAccessResponse extends IAccess {}
-// All of our api endpoint will return either a success or error response
-export type SuccessApiResponse<Data> = {
-	status: 'success';
-	data: Data;
-};
-
-export type ErrorApiResponse = {
-	status: 'error';
-	message: string;
-};
-
-export type NextKey = null | {
-	id: number;
-};
-
-export type PaginatedResponse<Data> = {
-	total: number;
-	items: Data[];
-	next: NextKey;
-};
-
-export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 
 export interface IAccessFilter {
 	approved: (0 | 1)[];

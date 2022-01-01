@@ -1,7 +1,7 @@
 import {
 	AdminJwtPayload,
 	ApiResponse,
-	CurrentUserResponse,
+	GetCurrentUserResponse,
 	IAdmin,
 	IPolice,
 	LoginPayload,
@@ -139,7 +139,7 @@ const AuthController = {
 	},
 	async currentUser(
 		req: Request<any, any, RegisterPolicePayload>,
-		res: Response<ApiResponse<CurrentUserResponse>>
+		res: Response<ApiResponse<GetCurrentUserResponse>>
 	) {
 		try {
 			const jwtPayload = req.jwt_payload!;

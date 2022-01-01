@@ -1,13 +1,13 @@
 import router from "next/router";
-import { useContext } from "react";
 import { useGetCurrentUserQueryData } from "../api";
 import { JWT_LS_KEY } from "../constants";
-import { RootContext } from "../contexts";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import Logo from "../svg/logo";
 import { Button } from "./Button";
 
 export function Header() {
-  const { currentUser } = useContext(RootContext);
+  const currentUser = useCurrentUser();
+
   // Find the user name from the current logged in entity
   const getCurrentUserQueryData = useGetCurrentUserQueryData()
   let currentUserName: string | null = null;
@@ -36,12 +36,10 @@ export function Header() {
       {!currentUser ? <Button content="Login" onClick={() => {
         router.push(`/login`)
       }} /> : <Button content="Logout" onClick={() => {
-        getCurrentUserQueryData(() => {
-          return {
-            status: "success",
-            data: null
-          }
-        });
+        getCurrentUserQueryData(() => ({
+          status: "error",
+          message: "Logged out"
+        }));
         if (typeof window !== "undefined") {
           localStorage.removeItem(JWT_LS_KEY);
         }
