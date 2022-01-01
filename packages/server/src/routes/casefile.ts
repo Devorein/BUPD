@@ -5,7 +5,14 @@ import { hasAccess, isAuthenticated, isAuthorized, validatePayload } from '../mi
 
 const CasefileRouter = express.Router();
 
-CasefileRouter.post(
+CasefileRouter.get(
+	'/',
+	// validatePayload(CasefilePayload.get),
+	isAuthenticated,
+	isAuthorized(['police']),
+	// hasAccess([read,update,delete],)
+	CasefileController.create
+).post(
 	'/',
 	validatePayload(CasefilePayload.create),
 	isAuthenticated,
@@ -17,14 +24,14 @@ CasefileRouter.delete<{ case_no: number }>(
 	'/:case_no',
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('case', 'delete'),
+	hasAccess('case', ['delete']),
 	CasefileController.delete
 ).put(
 	'/:case_no',
 	validatePayload(CasefilePayload.update),
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('case', 'update'),
+	hasAccess('case', ['update', 'delete']),
 	CasefileController.update
 );
 
