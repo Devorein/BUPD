@@ -17,15 +17,24 @@ CasefileRouter.delete<{ case_no: number }>(
 	'/:case_no',
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('case', 'delete'),
+	hasAccess('case', ['delete']),
 	CasefileController.delete
-).put(
-	'/:case_no',
-	validatePayload(CasefilePayload.update),
-	isAuthenticated,
-	isAuthorized(['police']),
-	hasAccess('case', 'update'),
-	CasefileController.update
-);
+)
+	.put(
+		'/:case_no',
+		validatePayload(CasefilePayload.update),
+		isAuthenticated,
+		isAuthorized(['police']),
+		hasAccess('case', ['update', 'delete']),
+		CasefileController.update
+	)
+	.get(
+		'/:case_no',
+		// validatePayload(CasefilePayload.get),
+		isAuthenticated,
+		isAuthorized(['police']),
+		hasAccess('case', ['read', 'write', 'update', 'delete']),
+		CasefileController.get
+	);
 
 export default CasefileRouter;

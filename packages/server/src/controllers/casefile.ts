@@ -3,6 +3,7 @@ import {
 	CreateCasefilePayload,
 	CreateCasefileResponse,
 	DeleteCasefileResponse,
+	GetOnCasenoCasefileResponse,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
@@ -204,6 +205,17 @@ const CasefileController = {
 		} catch (err) {
 			logger.error(err);
 			handleError(res, 500, "Couldn't update the casefile");
+		}
+	},
+	async get(req: Request<{ case_no: number }>, res: Response<GetOnCasenoCasefileResponse>) {
+		const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
+		if (file) {
+			res.json({
+				status: 'success',
+				data: file,
+			});
+		} else {
+			handleError(res, 404, `No casefile with id, ${req.params.case_no} found`);
 		}
 	},
 };

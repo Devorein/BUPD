@@ -10,14 +10,14 @@ CriminalRouter.put(
 	validatePayload(CriminalPayload.update),
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('criminal', 'update'),
+	hasAccess('criminal', ['update', 'delete']),
 	CriminalController.update
 );
 CriminalRouter.delete(
 	'/',
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('criminal', 'delete'),
+	hasAccess('criminal', ['delete']),
 	CriminalController.delete
 );
 CriminalRouter.put(
@@ -25,14 +25,14 @@ CriminalRouter.put(
 	// TODO validatePayload(),
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('criminal', 'update'),
+	hasAccess('criminal', ['update', 'delete']),
 	CriminalController.updateOnCriminalId
 );
 CriminalRouter.delete(
 	'/:criminal_id',
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('criminal', 'delete'),
+	hasAccess('criminal', ['delete']),
 	CriminalController.deleteOnCriminalId
 );
 

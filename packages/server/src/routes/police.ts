@@ -27,5 +27,12 @@ PoliceRouter.delete(
 	isAuthorized(['admin']),
 	PoliceController.delete
 );
+PoliceRouter.get(
+	'/:nid',
+	validateQuery(PoliceRequest.get),
+	isAuthenticated,
+	isAuthorized(['admin', 'police']),
+	PoliceController.getOnNid
+);
 
 export default PoliceRouter;
