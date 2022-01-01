@@ -93,7 +93,7 @@ const AccessController = {
 			logger.error(err);
 			res.json({
 				status: 'error',
-				message: "Couldn't update the access request",
+				message: "Couldn't update access",
 			});
 		}
 	},
