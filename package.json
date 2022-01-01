@@ -6,7 +6,7 @@
     "build": "lerna run --ignore @bupd/client build",
     "build:for-client": "lerna run --ignore @bupd/client --ignore @bupd/server --ignore @bupd/seeder build",
     "test": "lerna run --ignore @bupd/client --ignore @bupd/seeder test",
-    "lint": "lerna run --ignore @bupd/client lint",
+    "lint": "lerna run lint",
     "build:watch": "lerna run --ignore @bupd/client build:watch --parallel",
     "bootstrap": "lerna bootstrap"
   },
