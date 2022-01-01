@@ -1,7 +1,6 @@
 import { ApiResponse } from '@bupd/types';
-import axios from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { JWT_LS_KEY, SERVER_URL } from '../constants';
+import { apiRequest } from '../utils/apiRequest';
 
 export function useApiQuery<ResponseData extends ApiResponse<any>, ModifiedData = ResponseData>(
 	key: QueryKey,
@@ -12,20 +11,7 @@ export function useApiQuery<ResponseData extends ApiResponse<any>, ModifiedData 
 		...useQueryOptions,
 		queryKey: useQueryOptions?.queryKey ?? key,
 		async queryFn() {
-			let jwtToken: null | string = null;
-			if (typeof window !== 'undefined') {
-				jwtToken = localStorage.getItem(JWT_LS_KEY);
-			}
-			const response = await axios.get<ResponseData>(`${SERVER_URL!}/${endpoint}`, {
-				headers: {
-					Authorization: jwtToken ? `Bearer ${jwtToken}` : '',
-				},
-			});
-
-			if (response.data.status === 'error') {
-				throw new Error(response.data.message);
-			}
-			return response.data;
+			return apiRequest<ResponseData>(endpoint);
 		},
 	});
 }
