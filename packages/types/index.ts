@@ -190,7 +190,9 @@ export interface DeleteCriminalPayload {
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
+export type GetOnNidPoliceResponse = ApiResponse<Exclude<IPolice, 'password'>>;
 export type DeleteCasefileResponse = ApiResponse<ICasefile>;
+export type GetOnCasenoCasefileResponse = ApiResponse<ICasefile>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;
 export interface GetAccessPayload extends IQuery<IAccessFilter, IAccessSort> {}
 export type GetAccessResponse = ApiResponse<PaginatedResponse<IAccess>>;
