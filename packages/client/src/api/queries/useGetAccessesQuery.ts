@@ -1,13 +1,13 @@
-import { GetAccessesPayload, GetAccessesResponse, IAccess } from '@bupd/types';
+import { GetAccessesPayload, IAccess, PaginatedResponse } from '@bupd/types';
 import qs from 'qs';
 import { useContext } from 'react';
 import { RootContext } from '../../contexts';
-import { CacheHitFunction, useQueryClientSetData } from '../../hooks';
+import { CacheHitFunction, useQueryClientSetInfiniteData } from '../../hooks';
 import { useApiInfiniteQuery } from '../../hooks/useApiInfiniteQuery';
 
 export function useGetAccessesQueryData() {
-	const queryClientSetData = useQueryClientSetData<GetAccessesResponse>();
-	return (cacheHitCb: CacheHitFunction<GetAccessesResponse>) => {
+	const queryClientSetData = useQueryClientSetInfiniteData<PaginatedResponse<IAccess>>();
+	return (cacheHitCb: CacheHitFunction<PaginatedResponse<IAccess>>) => {
 		queryClientSetData(['access'], cacheHitCb);
 	};
 }

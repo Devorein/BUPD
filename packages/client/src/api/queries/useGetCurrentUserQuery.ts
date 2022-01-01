@@ -1,5 +1,4 @@
-import { CurrentUserResponse } from '@bupd/types';
-import { JWT_LS_KEY } from '../../constants';
+import { ApiResponse, CurrentUserResponse } from '@bupd/types';
 import { CacheHitFunction, useApiQuery, useQueryClientSetData } from '../../hooks';
 
 export function useGetCurrentUserQueryData() {
@@ -10,11 +9,5 @@ export function useGetCurrentUserQueryData() {
 }
 
 export function useGetCurrentUserQuery() {
-	let jwtToken: null | string = null;
-	if (typeof window !== 'undefined') {
-		jwtToken = localStorage.getItem(JWT_LS_KEY);
-	}
-	return useApiQuery<null, CurrentUserResponse>(['currentUser'], 'auth/currentUser', {
-		enabled: Boolean(jwtToken),
-	});
+	return useApiQuery<ApiResponse<CurrentUserResponse>>(['currentUser'], 'auth/currentUser');
 }

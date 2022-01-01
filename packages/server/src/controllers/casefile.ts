@@ -3,7 +3,7 @@ import {
 	CreateCasefilePayload,
 	CreateCasefileResponse,
 	DeleteCasefileResponse,
-	GetOnCasenoCasefileResponse,
+	GetCasefileResponse,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
@@ -207,7 +207,7 @@ const CasefileController = {
 			handleError(res, 500, "Couldn't update the casefile");
 		}
 	},
-	async get(req: Request<{ case_no: number }>, res: Response<GetOnCasenoCasefileResponse>) {
+	async get(req: Request<{ case_no: number }>, res: Response<GetCasefileResponse>) {
 		const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
 		if (file) {
 			res.json({

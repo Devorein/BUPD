@@ -1,11 +1,12 @@
 import { ApiResponse, ErrorApiResponse } from '@bupd/types';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, Method } from 'axios';
 import { useMutation, UseMutationOptions } from 'react-query';
 import { JWT_LS_KEY, SERVER_URL } from '../constants';
 
 export function useApiMutation<R, P>(
 	keys: string[],
 	endpoint: string,
+	method?: Method,
 	options?: UseMutationOptions<ApiResponse<R>, string, P>
 ) {
 	return useMutation<ApiResponse<R>, string, P>(
@@ -16,15 +17,14 @@ export function useApiMutation<R, P>(
 				if (typeof window !== 'undefined') {
 					jwtToken = localStorage.getItem(JWT_LS_KEY);
 				}
-				const { data: response } = await axios.post<ApiResponse<R>>(
-					`${SERVER_URL!}/${endpoint}`,
-					payload,
-					{
-						headers: {
-							Authorization: jwtToken ? `Bearer ${jwtToken}` : '',
-						},
-					}
-				);
+				const { data: response } = await axios.request<ApiResponse<R>>({
+					url: `${SERVER_URL!}/${endpoint}`,
+					data: payload,
+					headers: {
+						Authorization: jwtToken ? `Bearer ${jwtToken}` : '',
+					},
+					method: method ?? 'post',
+				});
 				if (response.status === 'error') {
 					throw new Error(response.message);
 				}

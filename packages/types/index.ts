@@ -84,13 +84,13 @@ export interface ICasefilePopulated extends ICasefile {
 
 // Api Endpoint type definitions
 export interface RegisterPolicePayload extends IPolice {}
-export interface RegisterPoliceResponse extends Exclude<IPolice, 'password'> {}
+export interface RegisterPoliceResponse extends Omit<IPolice, 'password'> {}
 // You shouldn't be able to update police password using this endpoint
 // there should be a separate endpoint for that as you need to provide your current password if you want to update it
-export interface UpdatePolicePayload extends Exclude<IPolice, 'password'> {}
-export interface UpdateCriminalPayload extends Exclude<ICriminal, 'criminal_id'> {}
+export interface UpdatePolicePayload extends Omit<IPolice, 'password'> {}
+export interface UpdateCriminalPayload extends Omit<ICriminal, 'criminal_id'> {}
 export interface UpdateCriminalResponse extends ICriminal {}
-export interface UpdatePoliceResponse extends Exclude<IPolice, 'password'> {
+export interface UpdatePoliceResponse extends Omit<IPolice, 'password'> {
 	token: string;
 }
 
@@ -126,12 +126,12 @@ export interface CreateCasefilePayload {
 		description?: string | null;
 	}[];
 }
-export interface UpdateCasefilePayload extends Exclude<ICasefile, 'case_no'> {}
+export interface UpdateCasefilePayload extends Omit<ICasefile, 'case_no'> {}
 export interface UpdateCasefileResponse extends ICasefile {}
 
 export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police'> {}
 
-export interface UpdateAccessPayload extends Exclude<IAccess, 'access_id'> {}
+export type UpdateAccessPayload = Pick<IAccess, 'approved'>;
 export interface UpdateAccessResponse extends IAccess {}
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
@@ -190,9 +190,9 @@ export interface DeleteCriminalPayload {
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
-export type GetOnNidPoliceResponse = ApiResponse<Exclude<IPolice, 'password'>>;
+export type GetOnNidPoliceResponse = ApiResponse<Omit<IPolice, 'password'>>;
 export type DeleteCasefileResponse = ApiResponse<ICasefile>;
-export type GetOnCasenoCasefileResponse = ApiResponse<ICasefile>;
+export type GetCasefileResponse = ApiResponse<ICasefile>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;
 export interface GetAccessesPayload extends IQuery<IAccessFilter, IAccessSort> {}
 export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccess>>;
@@ -207,11 +207,11 @@ export interface CreateAccessPayload {
 export interface CreateAccessResponse {}
 
 // Removing confidential information from jwt payload
-export interface AdminJwtPayload extends Exclude<IAdmin, 'password'> {
+export interface AdminJwtPayload extends Omit<IAdmin, 'password'> {
 	type: 'admin';
 }
 export interface PoliceJwtPayload
-	extends Exclude<IPolice, 'password' | 'address' | 'designation' | 'name' | 'phone'> {
+	extends Omit<IPolice, 'password' | 'address' | 'designation' | 'name' | 'phone'> {
 	type: 'police';
 }
 
