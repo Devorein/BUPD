@@ -128,6 +128,14 @@ export function generateTheme() {
 					},
 				},
 			},
+			MuiCheckbox: {
+				styleOverrides: {
+					root: {
+						padding: 0,
+						marginRight: '5px',
+					},
+				},
+			},
 		},
 	};
 

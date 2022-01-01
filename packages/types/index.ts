@@ -157,9 +157,9 @@ export type PaginatedResponse<Data> = {
 export type ApiResponse<Data> = SuccessApiResponse<Data> | ErrorApiResponse;
 
 export interface IAccessFilter {
-	approved: 0 | 1;
+	approved: (0 | 1)[];
 	permission: TAccessPermission[];
-	access_type: TAccessType;
+	access_type: TAccessType[];
 }
 
 export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];
