@@ -1,6 +1,20 @@
 import { NextKey } from '@bupd/types';
 import mysql from 'mysql2';
-import { SqlClause, SqlFilter, SqlFilterOperators } from '../types';
+import {
+	PrimitiveValues,
+	SqlClause,
+	SqlFilter,
+	SqlFilterAnd,
+	SqlFilterEqOperator,
+	SqlFilterGteOperator,
+	SqlFilterGtOperator,
+	SqlFilterInOperator,
+	SqlFilterLteOperator,
+	SqlFilterLtOperator,
+	SqlFilterNeqOperator,
+	SqlFilterOperators,
+	SqlFilterOr,
+} from '../types';
 
 /**
  * Generates a sql statement with fields and escaped values extracted from the given object
@@ -26,20 +40,73 @@ export function generateInsertQuery<Payload extends Record<string, any>>(
 	return `INSERT INTO ${table}(${fields.join(',')}) VALUES(${values.join(',')});`;
 }
 
-export function generateWhereClause(filterQuery: SqlFilter) {
-	const whereClauses: string[] = [];
-
-	Object.entries(filterQuery).forEach(([field, value]) => {
-		if (value !== null) {
-			// Support for custom where operator
-			if (Array.isArray(value)) {
-				whereClauses.push(`\`${field}\`${value[0]}${mysql.escape(value[1])}`);
-			} else {
-				whereClauses.push(`\`${field}\`=${mysql.escape(value)}`);
-			}
+function generateScalarClauses(andFilters: Record<string, PrimitiveValues | SqlFilterOperators>) {
+	const innerWhereClauses: string[] = [];
+	Object.entries(andFilters).forEach(([key, value]) => {
+		if ((value as SqlFilterInOperator).$in) {
+			innerWhereClauses.push(
+				`\`${key}\` IN(${(value as SqlFilterInOperator).$in
+					.map((operand) => mysql.escape(operand))
+					.join(',')})`
+			);
+		} else if ((value as SqlFilterLtOperator).$lt) {
+			innerWhereClauses.push(`\`${key}\` < ${mysql.escape(value as SqlFilterLtOperator)}`);
+		} else if ((value as SqlFilterLteOperator).$lte) {
+			innerWhereClauses.push(`\`${key}\` <= ${mysql.escape(value as SqlFilterLteOperator)}`);
+		} else if ((value as SqlFilterGteOperator).$gte) {
+			innerWhereClauses.push(`\`${key}\` >= ${mysql.escape(value as SqlFilterGteOperator)}`);
+		} else if ((value as SqlFilterGtOperator).$gt) {
+			innerWhereClauses.push(`\`${key}\` > ${mysql.escape(value as SqlFilterGtOperator)}`);
+		} else if ((value as SqlFilterEqOperator).$eq) {
+			innerWhereClauses.push(`\`${key}\` = ${mysql.escape(value as SqlFilterEqOperator)}`);
+		} else if ((value as SqlFilterNeqOperator).$neq) {
+			innerWhereClauses.push(`\`${key}\` != ${mysql.escape(value as SqlFilterNeqOperator)}`);
+		} else {
+			innerWhereClauses.push(`\`${key}\` = ${mysql.escape(value)}`);
 		}
 	});
-	return whereClauses.length !== 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+	return innerWhereClauses.length !== 0 ? `(${innerWhereClauses.join(' AND ')})` : '';
+}
+
+function generateLogicalOperationClauses(
+	andFilters: SqlFilter | SqlFilter[0],
+	logicalOperator: 'OR' | 'AND'
+) {
+	const clauses: string[] = [];
+	if (Array.isArray(andFilters)) {
+		andFilters.forEach((andFilter) => {
+			if ((andFilter as SqlFilterOr).$or) {
+				clauses.push(generateLogicalOperationClauses((andFilter as SqlFilterOr).$or, 'OR'));
+			} else if ((andFilter as SqlFilterAnd).$and) {
+				const andClauses = generateLogicalOperationClauses((andFilter as SqlFilterAnd).$and, 'AND');
+				if (andClauses) {
+					clauses.push(andClauses);
+				}
+			} else {
+				const scalarClauses = generateScalarClauses(
+					andFilter as Record<string, PrimitiveValues | SqlFilterOperators>
+				);
+				if (scalarClauses) {
+					clauses.push(scalarClauses);
+				}
+			}
+		});
+	} else {
+		const scalarClauses = generateScalarClauses(
+			andFilters as Record<string, PrimitiveValues | SqlFilterOperators>
+		);
+		if (scalarClauses) {
+			clauses.push(scalarClauses);
+		}
+	}
+
+	return clauses.length !== 0 ? `(${clauses.join(` ${logicalOperator} `)})` : '';
+}
+
+function generateWhereClause(sqlFilters: SqlFilter) {
+	const whereClauses = generateLogicalOperationClauses(sqlFilters, 'AND');
+	return whereClauses.length !== 0 ? `WHERE ${whereClauses}` : '';
 }
 
 export function generateOrderbyClause(sort: [string, -1 | 1]) {
