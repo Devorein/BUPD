@@ -4,7 +4,6 @@ import router from "next/router";
 import qs from "qs";
 import { FetchNextPageOptions, InfiniteQueryObserverResult } from 'react-query';
 import { Button } from "./Button";
-import { Loader } from "./Loader";
 
 interface LoadMoreButtonProps {
   hasNextPage?: boolean
@@ -17,7 +16,7 @@ export function LoadMoreButton(props: LoadMoreButtonProps) {
   const { fetchNextPage, hasNextPage, isQueryFetching, lastFetchedPage } = props;
   const query = qs.parse(router.asPath.slice(2)) as unknown as IQuery<any, any>;
 
-  return <div className="flex justify-center mt-10">
+  return <div className="flex justify-center mt-5">
     {hasNextPage && !isQueryFetching && (
       <Button
         sx={{
@@ -41,9 +40,6 @@ export function LoadMoreButton(props: LoadMoreButtonProps) {
           </span>
         }
       />
-    )}
-    {isQueryFetching && (
-      <Loader classNames={{ container: "mt-10" }} size="large" />
     )}
   </div>
 }

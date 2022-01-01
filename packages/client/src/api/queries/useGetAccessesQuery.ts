@@ -1,5 +1,4 @@
-import { GetAccessesResponse, IAccess, IQuery } from '@bupd/types';
-import router from 'next/router';
+import { GetAccessesPayload, GetAccessesResponse, IAccess } from '@bupd/types';
 import qs from 'qs';
 import { useContext } from 'react';
 import { RootContext } from '../../contexts';
@@ -13,14 +12,8 @@ export function useGetAccessesQueryData() {
 	};
 }
 
-export function useGetAccessesQuery() {
+export function useGetAccessesQuery(query: Partial<GetAccessesPayload>) {
 	const { currentUser } = useContext(RootContext);
-	const query = qs.parse(router.asPath.slice(2)) as unknown as Partial<IQuery<any, any>>;
-	// Next should not be part of query key
-	if (query) {
-		delete query.next;
-	}
-
 	return useApiInfiniteQuery<IAccess>(['access', qs.stringify(query)], `access`, {
 		enabled: currentUser?.type === 'admin',
 	});
