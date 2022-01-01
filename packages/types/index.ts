@@ -190,7 +190,7 @@ export interface DeleteCriminalPayload {
 }
 export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
-export type GetOnNidPoliceResponse = ApiResponse<Omit<IPolice, 'password'>>;
+export type GetPoliceResponse = ApiResponse<Omit<IPolice, 'password'>>;
 export type DeleteCasefileResponse = ApiResponse<ICasefile>;
 export type GetCasefileResponse = ApiResponse<ICasefile>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;

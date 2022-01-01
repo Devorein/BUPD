@@ -8,7 +8,37 @@ declare module 'express' {
 	}
 }
 
-export type SqlFilter = Record<string, any | [string, any]>;
+type PrimitiveValues = string | number | boolean;
+
+export type SqlFilterOperators =
+	| {
+			$in: PrimitiveValues[];
+	  }
+	| {
+			$eq: PrimitiveValues;
+	  }
+	| {
+			$neq: PrimitiveValues;
+	  }
+	| {
+			$gte: PrimitiveValues;
+	  }
+	| {
+			$gt: PrimitiveValues;
+	  }
+	| {
+			$lt: PrimitiveValues;
+	  }
+	| {
+			$lte: PrimitiveValues;
+	  };
+
+export type SqlFilter = (
+	| Record<string, PrimitiveValues | SqlFilterOperators>
+	| { $or: SqlFilter }
+	| { $and: SqlFilter }
+)[];
+
 export interface SqlClause {
 	filter?: SqlFilter;
 	sort?: [string, -1 | 1];

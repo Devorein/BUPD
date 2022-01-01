@@ -52,6 +52,7 @@ const AccessController = {
 	) => {
 		res.json({
 			status: 'success',
+			// TODO: Convert client query to sql filter
 			data: await paginate<IAccess>(req.query, 'Access', 'access_id'),
 		});
 	},
@@ -64,7 +65,7 @@ const AccessController = {
 			const accessId = req.params.access_id;
 			const decoded = req.jwt_payload as AdminJwtPayload;
 			const payload = req.body;
-			const [access] = await AccessModel.find({ filter: { access_id: accessId } });
+			const [access] = await AccessModel.find({ filter: [{ access_id: accessId }] });
 			if (!access) {
 				res.json({
 					status: 'error',
@@ -72,9 +73,11 @@ const AccessController = {
 				});
 			} else {
 				await AccessModel.update(
-					{
-						access_id: accessId,
-					},
+					[
+						{
+							access_id: accessId,
+						},
+					],
 					{
 						...payload,
 						admin_id: decoded.id,

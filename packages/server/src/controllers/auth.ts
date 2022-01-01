@@ -23,7 +23,7 @@ const AuthController = {
 			const payload = req.body;
 			if (payload.as === 'police') {
 				const [police] = await PoliceModel.find({
-					filter: { email: payload.email },
+					filter: [{ email: payload.email }],
 					select: ['password'],
 				});
 
@@ -54,7 +54,7 @@ const AuthController = {
 					}
 				}
 			} else if (payload.as === 'admin') {
-				const [admin] = await AdminModel.find({ email: payload.email });
+				const [admin] = await AdminModel.find([{ email: payload.email }]);
 				if (!admin) {
 					res.json({
 						status: 'error',
@@ -139,14 +139,16 @@ const AuthController = {
 	},
 	async currentUser(
 		req: Request<any, any, RegisterPolicePayload>,
-		res: Response<ApiResponse<GetCurrentUserResponse>>
+		res: Response<GetCurrentUserResponse>
 	) {
 		try {
 			const jwtPayload = req.jwt_payload!;
 			if (jwtPayload.type === 'admin') {
-				const [admin] = await AdminModel.find({
-					email: jwtPayload.email,
-				});
+				const [admin] = await AdminModel.find([
+					{
+						email: jwtPayload.email,
+					},
+				]);
 				if (!admin) {
 					res.json({
 						status: 'error',
@@ -163,10 +165,12 @@ const AuthController = {
 				}
 			} else if (jwtPayload.type === 'police') {
 				const [police] = await PoliceModel.find({
-					filter: {
-						email: jwtPayload.email,
-						nid: jwtPayload.nid,
-					},
+					filter: [
+						{
+							email: jwtPayload.email,
+							nid: jwtPayload.nid,
+						},
+					],
 				});
 				if (!police) {
 					res.json({

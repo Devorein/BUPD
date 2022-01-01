@@ -1,6 +1,6 @@
 import { NextKey } from '@bupd/types';
 import mysql from 'mysql2';
-import { SqlClause, SqlFilter } from '../types';
+import { SqlClause, SqlFilter, SqlFilterOperators } from '../types';
 
 /**
  * Generates a sql statement with fields and escaped values extracted from the given object
@@ -67,19 +67,19 @@ export function generateSelectQuery(sqlClause: SqlClause, table: string) {
 	} FROM ${table} ${clauses.join(' ')};`;
 }
 
-export function generateCountQuery(filterQuery: Record<string, any>, table: string) {
+export function generateCountQuery(filterQuery: SqlFilter, table: string) {
 	return `SELECT COUNT(*) as count FROM ${table} ${generateWhereClause(filterQuery)};`;
 }
 
 export function generateUpdateQuery(
-	filterQuery: Record<string, any>,
+	filterQuery: SqlFilter,
 	payload: Record<string, any>,
 	table: string
 ) {
 	return `UPDATE ${table} ${generateSetClause(payload)} ${generateWhereClause(filterQuery)};`;
 }
 
-export function generateDeleteQuery(filterQuery: Record<string, any>, table: string) {
+export function generateDeleteQuery(filterQuery: SqlFilter, table: string) {
 	return `DELETE FROM ${table} ${generateWhereClause(filterQuery)};`;
 }
 
@@ -87,17 +87,18 @@ export function generatePaginationQuery(
 	sqlClause: SqlClause & { next?: NextKey },
 	nextCursorProperty: string
 ) {
-	const filter: SqlFilter = {};
+	const filter: SqlFilter = [];
 	if (sqlClause.next) {
 		const sortOrder = sqlClause.sort ? sqlClause.sort[1] : 1;
-		filter[nextCursorProperty] = [sortOrder === -1 ? '<' : '>', sqlClause.next.id];
+		filter.push({
+			[nextCursorProperty]: {
+				[sortOrder === -1 ? '$gt' : ('$lt' as keyof SqlFilterOperators)]: sqlClause.next.id,
+			},
+		});
 	}
 
 	return {
 		...sqlClause,
-		filter: {
-			...(sqlClause.filter ?? {}),
-			...filter,
-		},
+		filter: [...(sqlClause.filter ?? []), ...filter],
 	} as Partial<SqlClause>;
 }

@@ -16,7 +16,7 @@ const CriminalController = {
 		try {
 			const criminalId = req.params.criminal_id;
 			const payload = req.body;
-			const [criminal] = await CriminalModel.find({ filter: { criminal_id: criminalId } });
+			const [criminal] = await CriminalModel.find({ filter: [{ criminal_id: criminalId }] });
 			if (!criminal) {
 				res.json({
 					status: 'error',
@@ -24,9 +24,11 @@ const CriminalController = {
 				});
 			} else {
 				await CriminalModel.update(
-					{
-						criminal_id: criminalId,
-					},
+					[
+						{
+							criminal_id: criminalId,
+						},
+					],
 					payload
 				);
 				res.json({
@@ -51,7 +53,7 @@ const CriminalController = {
 	) {
 		const criminal = await CriminalModel.findByCriminalID(req.params.criminal_id);
 		if (criminal[0]) {
-			const result = await CriminalModel.delete({ criminal_id: req.params.criminal_id });
+			const result = await CriminalModel.delete(req.params.criminal_id);
 			if (result) {
 				res.json({
 					status: 'success',

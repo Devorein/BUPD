@@ -18,13 +18,15 @@ const hasAccess =
 					case 'case':
 						for (let index = 0; index < accessPermissions.length; index += 1) {
 							const accessPermission = accessPermissions[index];
-							filter = {
-								approved: 1,
-								police_nid: req.jwt_payload.nid,
-								type: accessType,
-								permission: accessPermission,
-								case_no: req.params.case_no ? req.params.case_no : req.body.case_no,
-							};
+							filter = [
+								{
+									approved: 1,
+									police_nid: req.jwt_payload.nid,
+									type: accessType,
+									permission: accessPermission,
+									case_no: req.params.case_no ? req.params.case_no : req.body.case_no,
+								},
+							];
 							test = test.concat(await AccessModel.find({ filter }));
 							if (test[0] && Object.keys(test[0]).length > 0) next();
 						}
@@ -32,13 +34,15 @@ const hasAccess =
 					case 'criminal':
 						for (let index = 0; index < accessPermissions.length; index += 1) {
 							const accessPermission = accessPermissions[index];
-							filter = {
-								approved: 1,
-								police_nid: req.jwt_payload.nid,
-								type: accessType,
-								permission: accessPermission,
-								criminal_id: req.params.criminal_id ?? req.body.criminal_id,
-							};
+							filter = [
+								{
+									approved: 1,
+									police_nid: req.jwt_payload.nid,
+									type: accessType,
+									permission: accessPermission,
+									criminal_id: req.params.criminal_id ?? req.body.criminal_id,
+								},
+							];
 							test = test.concat(await AccessModel.find({ filter }));
 							if (test[0] && Object.keys(test[0]).length > 0) next();
 						}
