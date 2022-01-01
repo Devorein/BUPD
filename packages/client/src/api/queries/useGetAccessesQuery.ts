@@ -1,7 +1,10 @@
-import { GetAccessesResponse } from '@bupd/types';
+import { GetAccessesResponse, IAccess, IQuery } from '@bupd/types';
+import router from 'next/router';
+import qs from 'qs';
 import { useContext } from 'react';
 import { RootContext } from '../../contexts';
-import { CacheHitFunction, useApiQuery, useQueryClientSetData } from '../../hooks';
+import { CacheHitFunction, useQueryClientSetData } from '../../hooks';
+import { useApiInfiniteQuery } from '../../hooks/useApiInfiniteQuery';
 
 export function useGetAccessesQueryData() {
 	const queryClientSetData = useQueryClientSetData<GetAccessesResponse>();
@@ -10,9 +13,15 @@ export function useGetAccessesQueryData() {
 	};
 }
 
-export function useGetAccessesQuery(query: string) {
+export function useGetAccessesQuery() {
 	const { currentUser } = useContext(RootContext);
-	return useApiQuery<GetAccessesResponse>(['access', query], `access?${query}`, {
+	const query = qs.parse(router.asPath.slice(2)) as unknown as Partial<IQuery<any, any>>;
+	// Next should not be part of query key
+	if (query) {
+		delete query.next;
+	}
+
+	return useApiInfiniteQuery<IAccess>(['access', qs.stringify(query)], `access`, {
 		enabled: currentUser?.type === 'admin',
 	});
 }

@@ -1,11 +1,11 @@
-import { ApiResponse, IQuery, PaginatedResponse } from '@bupd/types';
+import { ApiResponse, PaginatedResponse } from '@bupd/types';
+import router from 'next/router';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from 'react-query';
 import { apiRequest } from '../utils';
 
-export function useInfiniteQueryApi<Item, Query extends IQuery<any, any>>(
+export function useApiInfiniteQuery<Item>(
 	keys: string[],
 	endpoint: string,
-	query?: Query | null,
 	options?: UseInfiniteQueryOptions<
 		ApiResponse<PaginatedResponse<Item>>,
 		Error,
@@ -19,11 +19,18 @@ export function useInfiniteQueryApi<Item, Query extends IQuery<any, any>>(
 		Error,
 		ApiResponse<PaginatedResponse<Item>>,
 		string[]
-	>(keys, async () => apiRequest<ApiResponse<PaginatedResponse<Item>>>(endpoint), {
-		...options,
-		getNextPageParam: (lastPage) =>
-			!lastPage || (lastPage?.status === 'success' && lastPage?.data?.next),
-	});
+	>(
+		keys,
+		async ({ pageParam }) =>
+			apiRequest<ApiResponse<PaginatedResponse<Item>>>(
+				`${endpoint}?${pageParam ?? router.asPath.slice(2)}`
+			),
+		{
+			...options,
+			getNextPageParam: (lastPage) =>
+				!lastPage || (lastPage?.status === 'success' && lastPage?.data?.next),
+		}
+	);
 
 	const totalItems =
 		infiniteQuery.data && infiniteQuery.data.pages[0]?.status === 'success'
