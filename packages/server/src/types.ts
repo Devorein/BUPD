@@ -62,9 +62,11 @@ export type SqlFilter = (
 	| SqlFilterAnd
 )[];
 
+export type SqlSort = Array<[string, -1 | 1]>;
+
 export interface SqlClause {
 	filter?: SqlFilter;
-	sort?: [string, -1 | 1];
+	sort?: SqlSort;
 	limit?: number;
 	select?: string[];
 }

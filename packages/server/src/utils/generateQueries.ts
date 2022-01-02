@@ -122,9 +122,12 @@ export function generateWhereClause(sqlFilters: SqlFilter) {
 	return whereClauses.length !== 0 ? `WHERE ${whereClauses}` : '';
 }
 
-export function generateOrderbyClause(sort: [string, -1 | 1]) {
-	const [attribute, order] = sort;
-	return `ORDER BY \`${attribute}\` ${order === -1 ? 'DESC' : 'ASC'}`;
+export function generateOrderbyClause(sorts: SqlClause['sort']) {
+	const sortClauses: string[] = [];
+	sorts?.forEach(([sortKey, sortOrder]) => {
+		sortClauses.push(`\`${sortKey}\` ${sortOrder === -1 ? 'DESC' : 'ASC'}`);
+	});
+	return sortClauses.length !== 0 ? `ORDER BY ${sortClauses.join(', ')}` : '';
 }
 
 export function generateLimitClause(limit: number) {
@@ -168,11 +171,11 @@ export function generatePaginationQuery(
 	nextCursorProperty: string
 ) {
 	const filter: SqlFilter = [];
-	const sortField = sqlClause.sort?.[0];
-	const sortOrder = sqlClause.sort?.[1];
-	const sortOperator = sqlClause.sort && sortOrder === 1 ? '$gt' : '$lt';
 
 	if (sqlClause.next) {
+		const sortField = sqlClause.sort?.[0]?.[0];
+		const sortOrder = sqlClause.sort?.[0]?.[1];
+		const sortOperator = sqlClause.sort && sortOrder === 1 ? '$gt' : '$lt';
 		if (sortField && sortOrder) {
 			filter.push({
 				$or: [
@@ -184,7 +187,7 @@ export function generatePaginationQuery(
 					{
 						[sortField]: sqlClause.next[sortField],
 						[nextCursorProperty]: {
-							[sortOperator]: sqlClause.next.id,
+							[sortOperator === '$gt' ? '$lt' : '$gt']: sqlClause.next.id,
 						},
 					},
 				],
@@ -198,8 +201,11 @@ export function generatePaginationQuery(
 		}
 	}
 
+	const sort: SqlClause['sort'] = [...(sqlClause.sort ?? []), [nextCursorProperty, -1]];
+
 	return {
 		...sqlClause,
+		sort,
 		filter: [...(sqlClause.filter ?? []), ...filter],
 	} as Partial<SqlClause>;
 }

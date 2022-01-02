@@ -58,7 +58,7 @@ const AccessController = {
 				{
 					filter: convertClientQuery(req.query.filter),
 					limit: req.query.limit,
-					sort: req.query.sort,
+					sort: [req.query.sort],
 					next: req.query.next,
 				},
 				'Access',

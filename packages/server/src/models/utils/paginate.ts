@@ -19,7 +19,7 @@ export async function paginate<Data>(
 
 	const rows = await find<Data>(paginationQuery, table);
 
-	const sortField = sqlClause.sort?.[0];
+	const sortField = sqlClause.sort?.[0]?.[0];
 
 	let next: PaginatedResponse<any>['next'] = null;
 	// Get the last row
