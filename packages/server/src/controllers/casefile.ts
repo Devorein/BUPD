@@ -16,10 +16,10 @@ import {
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
-import { paginate } from '../models/utils/paginate';
 import { CasefileModel, CrimeCategoryModel, CriminalModel, VictimModel } from '../models';
 import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
+import { paginate } from '../models/utils/paginate';
 import { handleError, logger, pool } from '../utils';
 import { convertCaseFilter } from '../utils/convertClientQuery';
 import Logger from '../utils/logger';
