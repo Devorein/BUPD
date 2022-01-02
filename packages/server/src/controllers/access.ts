@@ -6,6 +6,7 @@ import {
 	GetAccessesPayload,
 	GetAccessesResponse,
 	IAccess,
+	IAccessPopulated,
 	PoliceJwtPayload,
 	UpdateAccessPayload,
 	UpdateAccessResponse,
@@ -15,6 +16,13 @@ import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
 import { generateInsertQuery, logger, query } from '../utils';
 import { convertClientQuery } from '../utils/convertClientQuery';
+import {
+	getAccessAttributes,
+	getCasefileAttributes,
+	getCriminalAttributes,
+	getPoliceAttributes,
+} from '../utils/generateAttributes';
+import { inflateObject } from '../utils/inflateObject';
 
 const AccessController = {
 	create: async (
@@ -53,15 +61,37 @@ const AccessController = {
 	) => {
 		res.json({
 			status: 'success',
-			data: await paginate<IAccess>(
+			data: await paginate<IAccessPopulated>(
 				{
 					filter: convertClientQuery(req.query.filter),
 					limit: req.query.limit,
 					sort: [req.query.sort],
+					select: [
+						...getPoliceAttributes('Police', ['password']),
+						...getAccessAttributes('Access'),
+						...getCasefileAttributes('Casefile'),
+						...getCriminalAttributes('Criminal'),
+					],
 					next: req.query.next,
+					joins: [
+						['Access', 'Police', 'police_nid', 'nid'],
+						['Access', 'Criminal', 'criminal_id', 'criminal_id', 'LEFT'],
+						['Access', 'Casefile', 'case_no', 'case_no', 'LEFT'],
+					],
 				},
 				'Access',
-				'access_id'
+				'access_id',
+				(rows) =>
+					rows.map((row) => {
+						const inflatedObject = inflateObject(row, 'Access') as IAccessPopulated;
+						inflatedObject.casefile = inflatedObject.casefile?.case_no
+							? inflatedObject.casefile
+							: null;
+						inflatedObject.criminal = inflatedObject.criminal?.criminal_id
+							? inflatedObject.criminal
+							: null;
+						return inflatedObject;
+					})
 			),
 		});
 	},
