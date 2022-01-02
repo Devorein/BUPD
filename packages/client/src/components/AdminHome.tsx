@@ -2,8 +2,10 @@ import { IAccessSort, IQuery } from "@bupd/types";
 import { Typography } from "@mui/material";
 import router from "next/router";
 import qs from "qs";
+import { useState } from "react";
 import { useGetAccessesQuery } from "../api";
 import { accessSortLabelRecord } from "../constants";
+import { AccessDetails, AccessDetailsProps } from "./AccessDetails";
 import { AccessFilterForm } from "./AccessFilterForm";
 import { AccessList } from "./AccessList";
 import { LoadMoreButton } from "./LoadMoreButton";
@@ -16,6 +18,8 @@ export function AdminHome() {
     delete query.next;
   }
   const { hasNextPage, lastFetchedPage, fetchNextPage, data: getAccessesQueryData, totalItems, allItems: allAccessesItems, isFetching } = useGetAccessesQuery(query);
+
+  const [currentDetail, setAccessDetail] = useState<AccessDetailsProps["data"]>(null)
 
   let sortKey: IAccessSort = ["permission", -1];
   if (query.sort) {
@@ -49,12 +53,12 @@ export function AdminHome() {
               height: 400,
               flexGrow: 1
             }}>
-              <AccessList accesses={allAccessesItems} />
+              <AccessList accesses={allAccessesItems} setAccessDetail={setAccessDetail} />
             </div>
           </div>
           <LoadMoreButton fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allAccessesItems.length !== totalItems} />
         </div>
-
+        <AccessDetails data={currentDetail} />
       </div>;
     }
     return null;

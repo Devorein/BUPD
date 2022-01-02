@@ -39,12 +39,15 @@ export function AccessFilterForm() {
       ['update', <div key="update">Update</div>],
       ['delete', <div key="delete">Delete</div>]
     ]} label="Permission" setState={setQuery} state={query} stateKey="permission" />
-    <div className="mt-3">
+    <div className="mt-3 flex gap-3">
       <Button color="secondary" content="Apply" onClick={() => {
         router.push({
           pathname: "/",
           query: qs.stringify({ ...(qs.parse(router.asPath.slice(2))), filter: query })
         })
+      }} />
+      <Button content="Reset" onClick={() => {
+        setQuery(accessFilterInitialValue())
       }} />
     </div>
   </div>

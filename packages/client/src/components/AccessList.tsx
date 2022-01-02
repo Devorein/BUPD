@@ -1,4 +1,4 @@
-import { IAccess, TAccessPermission } from "@bupd/types";
+import { IAccess, IAccessPopulated, TAccessPermission } from "@bupd/types";
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,11 +9,14 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import WorkIcon from '@mui/icons-material/Work';
 import { green, red } from "@mui/material/colors";
+import { Dispatch, SetStateAction } from "react";
 import { useUpdateAccessMutation, useUpdateAccessMutationCache } from "../api/mutations/useUpdateAccessMutation";
 import { svgIconSx } from "../constants";
+import { AccessDetailsProps } from "./AccessDetails";
 
 interface AccessListProps {
-  accesses: IAccess[]
+  accesses: IAccessPopulated[]
+  setAccessDetail: Dispatch<SetStateAction<AccessDetailsProps["data"]>>
 }
 
 const PermissionIconRecord: Record<TAccessPermission, JSX.Element> = {
@@ -61,7 +64,7 @@ function ApprovalIcons(props: ApprovalIconsProps) {
       approvalIcons = <>
         <ThumbDownOutlinedIcon onClick={() => {
           updateAccessMutation.mutate({
-            approved: 1
+            approved: 0
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
           fill: red[500],
@@ -103,21 +106,33 @@ function ApprovalIcons(props: ApprovalIconsProps) {
   return <div className="flex gap-2 items-center">{approvalIcons}</div>
 }
 
-function AccessListItem(props: { access: IAccess }) {
-  const { access } = props;
-  return <div className="hover:scale-[1.015] transition-transform duration-300 items-center flex gap-3 border-2 shadow-md p-5 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
-    <div className="text-lg font-semibold hover:underline cursor-pointer">{access.police_nid}</div>
-    <div className="flex gap-3">
-      <div className="flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
-      <div className="flex items-center gap-2">to <span className="flex items-center gap-1 uppercase font-bold hover:underline cursor-pointer text-sm">{access.type === "criminal" ? <AccountBoxIcon fontSize="small" /> : <WorkIcon fontSize="small" />} {access.type === "case" ? access.case_no : access.criminal_id}</span></div>
-    </div>
-    <ApprovalIcons accessId={access.access_id} approved={access.approved} />
-  </div>
-}
-
 export function AccessList(props: AccessListProps) {
-  const { accesses } = props;
+  const { accesses, setAccessDetail } = props;
   return <div className="flex gap-5 px-5 flex-col overflow-hidden">{
-    accesses.map(access => <AccessListItem access={access} key={access.access_id} />)
+    accesses.map(access => <div key={access.access_id} className="hover:scale-[1.015] transition-transform duration-300 items-center flex gap-3 border-2 shadow-md p-5 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
+      <div className="text-lg font-semibold hover:underline cursor-pointer" onClick={() => {
+        setAccessDetail({
+          type: "police",
+          ...access.police
+        })
+      }}>{access.police_nid}</div>
+      <div className="flex gap-3">
+        <div className="flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
+        <div className="flex items-center gap-2">to <span onClick={() => {
+          if (access.type === "criminal") {
+            setAccessDetail({
+              type: "criminal",
+              ...access.criminal!
+            })
+          } else if (access.type === "case") {
+            setAccessDetail({
+              type: "casefile",
+              ...access.casefile!
+            })
+          }
+        }} className="flex items-center gap-1 uppercase font-bold hover:underline cursor-pointer text-sm">{access.type === "criminal" ? <AccountBoxIcon fontSize="small" /> : <WorkIcon fontSize="small" />} {access.type === "case" ? access.case_no : access.criminal_id}</span></div>
+      </div>
+      <ApprovalIcons accessId={access.access_id} approved={access.approved} />
+    </div>)
   }</div>
 }
