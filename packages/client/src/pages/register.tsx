@@ -1,7 +1,6 @@
 import { RegisterPolicePayload } from '@bupd/types';
 import { Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
 import { useRegisterMutation } from '../api/mutations';
@@ -34,7 +33,6 @@ export default function Register() {
   useIsAuthenticated();
   useIsAuthorized(["admin"])
 
-  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const registerMutation = useRegisterMutation();
   return (
@@ -50,7 +48,6 @@ export default function Register() {
                 values,
                 {
                   onSuccess() {
-                    router.push('/');
                     enqueueSnackbar(`Successfully registered as ${values.name}`, { variant: 'success' });
                   },
                   onError(response) {
@@ -65,7 +62,7 @@ export default function Register() {
         >
           {({ isSubmitting, isValid }) => (
             <Form>
-              <div className="my-5 text-center">
+              <div className="my-5 text-center uppercase">
                 <Typography variant="h4">Register a police</Typography>
               </div>
               <div className="flex flex-col min-w-[450px] max-h-[500px] overflow-auto pr-5">

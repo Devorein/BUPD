@@ -15,8 +15,6 @@ export async function paginate<Data>(
 	)) as RowDataPacket[];
 	const paginationQuery = generatePaginationQuery(sqlClause, nextCursorProperty as string);
 
-	// Logger.info(JSON.stringify(paginationQuery, null, 2));
-
 	const rows = await find<Data>(paginationQuery, table);
 
 	const sortField = sqlClause.sort?.[0]?.[0];
