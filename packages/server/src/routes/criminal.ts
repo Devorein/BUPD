@@ -19,5 +19,10 @@ CriminalRouter.put(
 	hasAccess('criminal', ['delete']),
 	CriminalController.delete
 );
-
+CriminalRouter.get(
+	'/',
+	isAuthenticated,
+	isAuthorized(['police', 'admin']),
+	CriminalController.find
+);
 export default CriminalRouter;

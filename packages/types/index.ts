@@ -172,8 +172,9 @@ export interface ICasefileFilter {
 	status: ICasefile['status'][];
 	priority: ICasefile['priority'][];
 }
-
+export interface ICriminalFilter {}
 export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];
+export type ICriminalSort = ['criminal_id' | 'name', -1 | 1];
 export type ICasefileSort = ['case_no' | 'priority' | 'status' | 'time', -1 | 1];
 export interface IPoliceFilter {
 	designation?: string;
@@ -209,6 +210,8 @@ export interface GetAccessesPayload extends IQuery<IAccessFilter, IAccessSort> {
 export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccessPopulated>>;
 export type GetCasefilesResponse = ApiResponse<PaginatedResponse<ICasefile>>;
 export type GetCasefilesPayload = IQuery<ICasefileFilter, ICasefileSort>;
+export type GetCriminalPayload = IQuery<ICriminalFilter, ICriminalSort>;
+export type GetCriminalResponse = ApiResponse<PaginatedResponse<ICriminal>>;
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
 
 export interface CreateAccessPayload {
