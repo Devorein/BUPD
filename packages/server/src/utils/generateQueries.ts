@@ -142,14 +142,29 @@ export function generateSetClause(payload: Record<string, any>) {
 }
 
 export function generateJoinClause(joins: SqlJoins) {
+	const tablesSet: Set<string> = new Set();
+
 	return joins.length !== 0
 		? joins
-				.map(
-					([leftTable, rightTable, leftTableAttribute, rightTableAttribute, joinType]) =>
-						`${leftTable} as ${leftTable} ${
-							joinType ?? 'INNER JOIN'
-						} ${rightTable} as ${rightTable} on ${leftTable}.${leftTableAttribute} = ${rightTable}.${rightTableAttribute}`
-				)
+				.map(([leftTable, rightTable, leftTableAttribute, rightTableAttribute, joinType]) => {
+					const joinClauseChunks: string[] = [];
+					if (!tablesSet.has(leftTable)) {
+						joinClauseChunks.push(`${leftTable} as ${leftTable}`);
+					}
+
+					joinClauseChunks.push(joinType ? `${joinType} JOIN` : 'INNER JOIN');
+					joinClauseChunks.push(rightTable);
+					if (!tablesSet.has(rightTable)) {
+						joinClauseChunks.push(`as ${rightTable}`);
+					}
+
+					joinClauseChunks.push(
+						` on ${leftTable}.${leftTableAttribute} = ${rightTable}.${rightTableAttribute}`
+					);
+					tablesSet.add(leftTable);
+					tablesSet.add(rightTable);
+					return joinClauseChunks.join(' ');
+				})
 				.join(' ')
 		: '';
 }

@@ -16,6 +16,12 @@ import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
 import { generateInsertQuery, logger, query } from '../utils';
 import { convertClientQuery } from '../utils/convertClientQuery';
+import {
+	getAccessAttributes,
+	getCasefileAttributes,
+	getCriminalAttributes,
+	getPoliceAttributes,
+} from '../utils/generateAttributes';
 import { inflateObject } from '../utils/inflateObject';
 
 const AccessController = {
@@ -60,24 +66,18 @@ const AccessController = {
 					filter: convertClientQuery(req.query.filter),
 					limit: req.query.limit,
 					sort: [req.query.sort],
-					next: req.query.next,
 					select: [
-						'Access.permission',
-						'Access.access_id',
-						'Access.police_nid',
-						'Access.type',
-						'Access.criminal_id',
-						'Access.case_no',
-						'Access.admin_id',
-						'Police.email',
-						'Police.phone',
-						'Police.address',
-						'Police.designation',
-						'Police.nid',
-						'Police.name',
-						'Police.rank',
+						...getPoliceAttributes('Police', ['password']),
+						...getAccessAttributes('Access'),
+						...getCasefileAttributes('Casefile'),
+						...getCriminalAttributes('Criminal'),
 					],
-					joins: [['Access', 'Police', 'police_nid', 'nid']],
+					next: req.query.next,
+					joins: [
+						['Access', 'Police', 'police_nid', 'nid'],
+						['Access', 'Criminal', 'criminal_id', 'criminal_id', 'LEFT'],
+						['Access', 'Casefile', 'case_no', 'case_no', 'LEFT'],
+					],
 				},
 				'Access',
 				'access_id',

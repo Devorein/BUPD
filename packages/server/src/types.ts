@@ -64,6 +64,7 @@ export type SqlFilter = (
 
 export type SqlSort = Array<[string, -1 | 1]>;
 
+// Left table, right table, Left table join attribute, right table join attribute, join type
 export type SqlJoins = [string, string, string, string, ('LEFT' | 'RIGHT' | 'INNER')?][];
 
 export interface SqlClause {
@@ -71,6 +72,5 @@ export interface SqlClause {
 	sort?: SqlSort;
 	limit?: number;
 	select?: string[];
-	// Left table, right table, Left table join attribute, right table join attribute, join type
 	joins?: SqlJoins;
 }
