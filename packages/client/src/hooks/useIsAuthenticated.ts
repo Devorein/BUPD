@@ -16,7 +16,7 @@ export function useIsAuthenticated() {
 				!queryState.isFetching &&
 				(queryState.data === undefined || queryState.data?.status === 'error')
 			) {
-				router.push('/login');
+				router.push({ pathname: '/login' });
 			}
 		}
 	}, [currentUser, queryClient]);
