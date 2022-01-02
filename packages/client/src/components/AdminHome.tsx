@@ -45,7 +45,7 @@ export function AdminHome() {
                 Total: <span className="font-bold">{allAccessesItems.length}/{totalItems}</span>
               </div>
             </div>
-            <div className="overflow-auto pr-5 w-full" style={{
+            <div className="overflow-auto w-full" style={{
               height: 400,
               flexGrow: 1
             }}>
