@@ -14,6 +14,7 @@ import { Request, Response } from 'express';
 import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
 import { generateInsertQuery, logger, query } from '../utils';
+import { convertClientQuery } from '../utils/convertClientQuery';
 
 const AccessController = {
 	create: async (
@@ -53,7 +54,16 @@ const AccessController = {
 		res.json({
 			status: 'success',
 			// TODO: Convert client query to sql filter
-			data: await paginate<IAccess>(req.query, 'Access', 'access_id'),
+			data: await paginate<IAccess>(
+				{
+					filter: convertClientQuery(req.query.filter),
+					limit: req.query.limit,
+					sort: req.query.sort,
+					next: req.query.next,
+				},
+				'Access',
+				'access_id'
+			),
 		});
 	},
 
