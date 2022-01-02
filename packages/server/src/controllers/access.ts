@@ -26,7 +26,7 @@ const AccessController = {
 			const payload = req.body;
 			const access: Omit<IAccess, 'access_id'> = {
 				permission: payload.permission,
-				approved: 0,
+				approved: 2,
 				police_nid: jwtPayload.nid,
 				type: payload.criminal_id !== null ? 'criminal' : 'case',
 				criminal_id: payload.criminal_id,

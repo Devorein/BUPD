@@ -30,8 +30,8 @@ export const svgIconSx: SxProps<Theme> = {
 };
 
 export const accessSortLabelRecord: Record<`${IAccessSort[0]}.${IAccessSort[1]}`, string> = {
-	'approved.-1': 'Approved first',
-	'approved.1': 'Non approved first',
+	'approved.-1': 'Unapproved first',
+	'approved.1': 'Disapproved first',
 	'case_no.-1': 'Case first',
 	'criminal_id.-1': 'Criminal first',
 	'permission.-1': 'Permission desc',
