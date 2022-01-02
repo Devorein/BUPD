@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 
-import { DeleteCriminalPayload, ICriminal, UpdateCriminalPayload } from '@bupd/types';
+import { ICriminal, UpdateCriminalPayload } from '@bupd/types';
 import { PoolConnection } from 'mysql2/promise';
-import { SqlClause } from '../types';
+import { SqlClause, SqlFilter } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 import { useQuery } from './utils/useQuery';
@@ -32,13 +32,13 @@ const CriminalModel = {
 	findByCriminalID(criminal_id: number) {
 		return find<ICriminal>(
 			{
-				filter: { criminal_id },
+				filter: [{ criminal_id }],
 			},
 			'Criminal'
 		);
 	},
 
-	async update(filterQuery: Partial<ICriminal>, payload: UpdateCriminalPayload) {
+	async update(filterQuery: SqlFilter, payload: UpdateCriminalPayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
 			await query(generateUpdateQuery(filterQuery, payload, 'Criminal'));
@@ -49,9 +49,9 @@ const CriminalModel = {
 		}
 	},
 
-	async delete(payload: DeleteCriminalPayload) {
-		await query(generateDeleteQuery(payload, 'Criminal'));
-		return payload;
+	async delete(criminalId: number) {
+		await query(generateDeleteQuery([{ criminal_id: criminalId }], 'Criminal'));
+		return true;
 	},
 };
 

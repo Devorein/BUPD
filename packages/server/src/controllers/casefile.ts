@@ -166,7 +166,7 @@ const CasefileController = {
 	async delete(req: Request<{ case_no: number }>, res: Response<DeleteCasefileResponse>) {
 		const file = await CasefileModel.findByCaseNo(req.params.case_no);
 		if (file[0]) {
-			const result = await CasefileModel.delete({ case_no: req.params.case_no });
+			const result = await CasefileModel.delete(req.params.case_no);
 			if (result) {
 				res.json({
 					status: 'success',
@@ -184,14 +184,16 @@ const CasefileController = {
 	) {
 		try {
 			const payload = req.body;
-			const [casefile] = await CasefileModel.find({ filter: { case_no: req.params.case_no } });
+			const [casefile] = await CasefileModel.find({ filter: [{ case_no: req.params.case_no }] });
 			if (!casefile) {
 				handleError(res, 404, "Casefile doesn't exist");
 			} else {
 				await CasefileModel.update(
-					{
-						case_no: req.params.case_no,
-					},
+					[
+						{
+							case_no: req.params.case_no,
+						},
+					],
 					payload
 				);
 				res.json({

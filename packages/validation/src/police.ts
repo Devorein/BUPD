@@ -22,10 +22,4 @@ export const PoliceRequest = {
 			}),
 		})
 		.concat(paginationSchema(/^(designation|rank|name)$/)),
-	delete: yup
-		.object({
-			nid: yup.number().min(10000).required(),
-		})
-		.strict()
-		.noUnknown(),
 };

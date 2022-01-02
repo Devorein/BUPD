@@ -11,12 +11,9 @@ export function useIsAuthenticated() {
 	useEffect(() => {
 		if (!currentUser) {
 			const queryState = queryClient.getQueryState<GetCurrentUserResponse>(['currentUser']);
-			if (
-				queryState &&
-				!queryState.isFetching &&
-				(queryState.data === undefined || queryState.data?.status === 'error')
-			) {
-				router.push('/login');
+
+			if (queryState && !queryState.isFetching && queryState.data?.status === 'error') {
+				router.push({ pathname: '/login' });
 			}
 		}
 	}, [currentUser, queryClient]);

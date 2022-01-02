@@ -7,7 +7,7 @@ export function useIsAuthorized(allowedEntities: ('admin' | 'police')[]) {
 
 	useEffect(() => {
 		if (currentUser?.type && !allowedEntities.includes(currentUser.type)) {
-			router.push('/login');
+			router.push({ pathname: '/login' });
 		}
 		// eslint-disable-next-line
 	}, [currentUser]);
