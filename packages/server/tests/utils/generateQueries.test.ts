@@ -4,6 +4,7 @@ import {
 	generateCountQuery,
 	generateDeleteQuery,
 	generateInsertQuery,
+	generateJoinClause,
 	generateLimitClause,
 	generateLogicalOperationClauses,
 	generateOrderbyClause,
@@ -144,6 +145,10 @@ describe('.generateOrderbyClause', () => {
 		).toBe('ORDER BY `rank` DESC, `key` DESC');
 	});
 
+	it(`Should work when we pass undefined sort`, () => {
+		expect(generateOrderbyClause(undefined)).toBe('');
+	});
+
 	it(`Should work when we pass only sort for ASC`, () => {
 		expect(generateOrderbyClause([['rank', 1]])).toBe('ORDER BY `rank` ASC');
 	});
@@ -185,7 +190,7 @@ describe('.generateSelectQuery', () => {
 		expect(generateSelectQuery({}, 'Police')).toBe('SELECT * FROM Police ;');
 	});
 
-	it(`Should work when we Select specific attributes in SQL`, () => {
+	it(`Should work when we select specific attributes have filter and sort`, () => {
 		expect(
 			generateSelectQuery(
 				{
@@ -196,6 +201,7 @@ describe('.generateSelectQuery', () => {
 							rank: 'Nayak',
 						},
 					],
+					joins: [],
 					sort: [['rank', -1]],
 					limit: 10,
 					select: ['attribute1'],
@@ -204,6 +210,29 @@ describe('.generateSelectQuery', () => {
 			)
 		).toBe(
 			"SELECT `attribute1` FROM Police WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') ORDER BY `rank` DESC LIMIT 10;"
+		);
+	});
+
+	it(`Should work when we have join in select query`, () => {
+		expect(
+			generateSelectQuery(
+				{
+					filter: [
+						{
+							filter1: 'value1',
+							filter2: 'value2',
+							rank: 'Nayak',
+						},
+					],
+					joins: [['Police', 'Criminal', 'nid', 'criminal_nid']],
+					sort: [['rank', -1]],
+					limit: 10,
+					select: ['Police.attribute1'],
+				},
+				'Police'
+			)
+		).toBe(
+			"SELECT Police.attribute1 as `Police.attribute1` FROM Police as Police INNER JOIN Criminal as Criminal on Police.nid = Criminal.criminal_nid WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') ORDER BY `rank` DESC LIMIT 10;"
 		);
 	});
 });
@@ -289,5 +318,22 @@ describe('.generatePaginationQuery', () => {
 			],
 			next: { id: 2 },
 		});
+	});
+});
+
+describe('.generateJoinClause', () => {
+	it(`Should work when joins is empty`, () => {
+		expect(generateJoinClause([])).toBe('');
+	});
+
+	it(`Should work when joins is empty`, () => {
+		expect(
+			generateJoinClause([
+				['Access', 'Police', 'police_nid', 'nid', 'LEFT'],
+				['Access', 'Criminal', 'criminal_id', 'criminal_id'],
+			])
+		).toBe(
+			`Access as Access LEFT JOIN Police as Police on Access.police_nid = Police.nid INNER JOIN Criminal as Criminal on Access.criminal_id = Criminal.criminal_id`
+		);
 	});
 });

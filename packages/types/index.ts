@@ -82,6 +82,12 @@ export interface ICasefilePopulated extends ICasefile {
 	police: IPolice;
 }
 
+export interface IAccessPopulated extends IAccess {
+	police: Omit<IPolice, 'password'>;
+	casefile: null | ICasefile;
+	criminal: null | ICriminal;
+}
+
 // All of our api endpoint will return either a success or error response
 export type SuccessApiResponse<Data> = {
 	status: 'success';
@@ -196,7 +202,7 @@ export type DeleteCasefileResponse = ApiResponse<ICasefile>;
 export type GetCasefileResponse = ApiResponse<ICasefile>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;
 export interface GetAccessesPayload extends IQuery<IAccessFilter, IAccessSort> {}
-export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccess>>;
+export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccessPopulated>>;
 
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
 
