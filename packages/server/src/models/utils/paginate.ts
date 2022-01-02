@@ -1,7 +1,8 @@
 import { NextKey, PaginatedResponse } from '@bupd/types';
 import { RowDataPacket } from 'mysql2';
 import { SqlClause } from '../../types';
-import { generateCountQuery, generatePaginationQuery, query } from '../../utils';
+import { generateCountQuery, query } from '../../utils';
+import { generatePaginationQuery } from '../../utils/generatePaginationQuery';
 import find from './find';
 
 export async function paginate<Data>(
