@@ -1,4 +1,5 @@
 import router from "next/router";
+import qs from "qs";
 import { useGetCurrentUserQueryData } from "../api";
 import { JWT_LS_KEY } from "../constants";
 import { useCurrentUser } from "../hooks/useCurrentUser";
@@ -19,7 +20,9 @@ export function Header() {
     }
   }
   return <div className="flex gap-3 items-center justify-between shadow-md p-3">
-    <div className="flex gap-1 items-center">
+    <div onClick={() => {
+      router.push({ pathname: '/', query: qs.stringify({ sort: ["approved", 1], limit: 10 }) })
+    }} className="flex gap-1 items-center cursor-pointer">
       <Logo />
       <span className="font-bold text-xl">
         BUPD

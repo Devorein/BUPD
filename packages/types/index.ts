@@ -160,7 +160,7 @@ export interface UpdateAccessResponse extends IAccess {}
 export interface IAccessFilter {
 	approved: (0 | 1)[];
 	permission: TAccessPermission[];
-	access_type: TAccessType[];
+	type: TAccessType[];
 }
 
 export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];

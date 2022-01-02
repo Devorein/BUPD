@@ -34,9 +34,8 @@ function AccessListItem(props: { access: IAccess }) {
     }} />
   </div>
 }
+
 export function AccessList(props: AccessListProps) {
-
-
   const { accesses } = props;
   return <div className="flex gap-5 flex-col">{
     accesses.map(access => <AccessListItem access={access} key={access.access_id} />)

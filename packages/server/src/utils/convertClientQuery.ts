@@ -3,15 +3,15 @@ import { SqlFilter } from '../types';
 
 export function convertClientQuery(clientFilter: GetAccessesPayload['filter']) {
 	const filter: SqlFilter = [];
-	if (clientFilter?.access_type) {
+	if (clientFilter?.type && clientFilter.type.length !== 0) {
 		filter.push({
-			access_type: {
-				$in: clientFilter.access_type,
+			type: {
+				$in: clientFilter.type,
 			},
 		});
 	}
 
-	if (clientFilter?.approved) {
+	if (clientFilter?.approved && clientFilter.approved.length !== 0) {
 		filter.push({
 			approved: {
 				$in: clientFilter.approved,
@@ -19,7 +19,7 @@ export function convertClientQuery(clientFilter: GetAccessesPayload['filter']) {
 		});
 	}
 
-	if (clientFilter?.permission) {
+	if (clientFilter?.permission && clientFilter.permission.length !== 0) {
 		filter.push({
 			permission: {
 				$in: clientFilter.permission,
