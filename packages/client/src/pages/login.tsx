@@ -2,13 +2,14 @@ import { ApiResponse, GetCurrentUserResponse, LoginPayload, LoginResponse } from
 import { Form, Formik } from 'formik';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
+import { useContext } from 'react';
 import { UseMutationResult } from 'react-query';
 import * as Yup from 'yup';
 import { useGetCurrentUserQueryData } from '../api';
 import { useLoginMutation } from '../api/mutations';
 import { Button, FormikTextInput, MultiTabs, Page } from '../components';
 import { JWT_LS_KEY } from '../constants';
-import { useCurrentUser } from '../hooks/useCurrentUser';
+import { RootContext } from '../contexts';
 
 const loginInputInitialValue: Omit<LoginPayload, 'as'> = {
   email: '',
@@ -100,7 +101,7 @@ function FormikForm(props: FormikFormProps) {
 
 export default function Login() {
   const loginMutation = useLoginMutation();
-  const currentUser = useCurrentUser();
+  const { currentUser } = useContext(RootContext);
 
   if (currentUser) {
     router.push({ pathname: '/' })

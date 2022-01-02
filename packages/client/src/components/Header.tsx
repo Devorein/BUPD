@@ -1,12 +1,13 @@
 import router from "next/router";
+import { useContext } from "react";
 import { useGetCurrentUserQueryData } from "../api";
 import { JWT_LS_KEY } from "../constants";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { RootContext } from "../contexts";
 import Logo from "../svg/logo";
 import { Button } from "./Button";
 
 export function Header() {
-  const currentUser = useCurrentUser();
+  const { currentUser } = useContext(RootContext);
 
   // Find the user name from the current logged in entity
   const getCurrentUserQueryData = useGetCurrentUserQueryData()

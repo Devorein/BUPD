@@ -1,8 +1,9 @@
 import { GetAccessesPayload, IAccessPopulated, PaginatedResponse } from '@bupd/types';
 import qs from 'qs';
+import { useContext } from 'react';
+import { RootContext } from '../../contexts';
 import { CacheHitFunction, useQueryClientSetInfiniteData } from '../../hooks';
 import { useApiInfiniteQuery } from '../../hooks/useApiInfiniteQuery';
-import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 export function useGetAccessesQueryData() {
 	const queryClientSetData = useQueryClientSetInfiniteData<PaginatedResponse<IAccessPopulated>>();
@@ -12,7 +13,7 @@ export function useGetAccessesQueryData() {
 }
 
 export function useGetAccessesQuery(query: GetAccessesPayload) {
-	const currentUser = useCurrentUser();
+	const { currentUser } = useContext(RootContext);
 	return useApiInfiniteQuery<IAccessPopulated, GetAccessesPayload>(
 		['access', qs.stringify(query)],
 		`access`,
