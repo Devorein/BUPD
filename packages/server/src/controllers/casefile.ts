@@ -51,7 +51,7 @@ const CasefileController = {
         SELECT
           MAX(case_no) + 1 as max_case_no
         from
-          casefile;
+          Casefile;
       `)) as RowDataPacket[];
 
 			const maxCaseNo = maxCaseNoQueryData[0][0].max_case_no ?? 1;
@@ -60,7 +60,7 @@ const CasefileController = {
         SELECT
           MAX(criminal_id) as max_criminal_id
         from
-          criminal;
+          Criminal;
       `)) as RowDataPacket[];
 
 			const maxCriminalId = maxCriminalIdQueryData[0][0].max_criminal_id ?? 0;
@@ -136,9 +136,9 @@ const CasefileController = {
           CR.photo,
           CR.criminal_id
         from
-          casefile as CF
-          left join casefile_criminal as CFC on CFC.case_no = ${maxCaseNo}
-          left join criminal as CR on CR.criminal_id = CFC.criminal_id
+          Casefile as CF
+          left join Casefile_Criminal as CFC on CFC.case_no = ${maxCaseNo}
+          left join Criminal as CR on CR.criminal_id = CFC.criminal_id
         where
           CF.case_no = ${maxCaseNo};
       `)) as [RowDataPacket[], FieldPacket[]];
