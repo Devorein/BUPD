@@ -1,6 +1,7 @@
 import { IAccess, NextKey, UpdateAccessPayload } from '@bupd/types';
 import { SqlClause, SqlFilter } from '../types';
-import { generatePaginationQuery, generateUpdateQuery, query } from '../utils';
+import { generateUpdateQuery, query } from '../utils';
+import { generatePaginationQuery } from '../utils/generatePaginationQuery';
 import { find } from './utils';
 
 const AccessModel = {

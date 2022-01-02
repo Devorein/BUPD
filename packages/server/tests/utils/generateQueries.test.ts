@@ -8,7 +8,6 @@ import {
 	generateLimitClause,
 	generateLogicalOperationClauses,
 	generateOrderbyClause,
-	generatePaginationQuery,
 	generateScalarClauses,
 	generateSelectQuery,
 	generateSetClause,
@@ -260,64 +259,6 @@ describe('.generateDeleteQuery', () => {
 		expect(generateDeleteQuery([{ rank: 'Sergeant' }], 'police')).toBe(
 			"DELETE FROM police WHERE (`rank`='Sergeant');"
 		);
-	});
-});
-
-describe('.generatePaginationQuery', () => {
-	it(`Should generate update filter if no filter and sort is present`, () => {
-		expect(generatePaginationQuery({ next: { id: 2 } }, 'access_id')).toMatchObject({
-			filter: [
-				{
-					access_id: {
-						$gt: 2,
-					},
-				},
-			],
-		});
-	});
-
-	it(`Should generate update filter if filter and sort(descending) is present`, () => {
-		expect(
-			generatePaginationQuery(
-				{ filter: [{ field1: 'value1' }], sort: [['field2', -1]], next: { id: 2 } },
-				'access_id'
-			)
-		).toMatchObject({
-			filter: [{ field1: 'value1' }, { $or: [{ field2: {} }, { access_id: { $lt: 2 } }] }],
-			sort: [
-				['field2', -1],
-				['access_id', -1],
-			],
-			next: { id: 2 },
-		});
-	});
-
-	it(`Should generate update filter if filter and sort(ascending) is present`, () => {
-		expect(
-			generatePaginationQuery(
-				{ filter: [{ field1: 'value1' }], sort: [['field2', 1]], next: { id: 2, field2: 2 } },
-				'access_id'
-			)
-		).toMatchObject({
-			filter: [
-				{ field1: 'value1' },
-				{
-					$or: [
-						{
-							field2: {
-								$gt: 2,
-							},
-						},
-						{ access_id: { $gt: 2 } },
-					],
-				},
-			],
-			sort: [
-				['field2', 1],
-				['access_id', 1],
-			],
-			next: { id: 2 },
-		});
 	});
 });
 

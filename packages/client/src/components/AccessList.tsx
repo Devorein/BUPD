@@ -109,13 +109,16 @@ function ApprovalIcons(props: ApprovalIconsProps) {
 export function AccessList(props: AccessListProps) {
   const { accesses, setAccessDetail } = props;
   return <div className="flex gap-5 px-5 flex-col overflow-hidden">{
-    accesses.map(access => <div key={access.access_id} className="hover:scale-[1.015] transition-transform duration-300 items-center flex gap-3 border-2 shadow-md p-5 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
-      <div className="text-lg font-semibold hover:underline cursor-pointer" onClick={() => {
-        setAccessDetail({
-          type: "police",
-          ...access.police
-        })
-      }}>{access.police_nid}</div>
+    accesses.map((access, accessIndex) => <div key={access.access_id} className="hover:scale-[1.015] transition-transform duration-300 items-center flex gap-3 border-2 shadow-md p-5 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
+      <div className="flex gap-3 items-center">
+        <div className="font-bold">{accessIndex + 1}.</div>
+        <div className="text-lg font-semibold hover:underline cursor-pointer" onClick={() => {
+          setAccessDetail({
+            type: "police",
+            ...access.police
+          })
+        }}>{access.police_nid}</div>
+      </div>
       <div className="flex gap-3">
         <div className="flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
         <div className="flex items-center gap-2">to <span onClick={() => {
