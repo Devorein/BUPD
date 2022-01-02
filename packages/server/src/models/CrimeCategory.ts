@@ -1,10 +1,17 @@
 import { ICrimeCategory } from '@bupd/types';
-import { generateInsertQuery, query } from '../utils';
+import { PoolConnection } from 'mysql2/promise';
+import { generateInsertQuery } from '../utils';
+import { useQuery } from './utils/useQuery';
 
 const CrimeCategoryModel = {
-	async create(payload: ICrimeCategory) {
-		await query(generateInsertQuery(payload, 'CrimeCategory'));
-		return payload;
+	async create(crimeCategoryData: ICrimeCategory, connection?: PoolConnection) {
+		const crimeCategory: ICrimeCategory = {
+			case_no: crimeCategoryData.case_no,
+			category: crimeCategoryData.category,
+		};
+
+		await useQuery(generateInsertQuery(crimeCategory, 'Crime_Category'), connection);
+		return crimeCategory;
 	},
 };
 

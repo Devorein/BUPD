@@ -1,13 +1,13 @@
 import router from 'next/router';
-import { useContext, useEffect } from 'react';
-import { RootContext } from '../contexts';
+import { useEffect } from 'react';
+import { useCurrentUser } from './useCurrentUser';
 
 export function useIsAuthorized(allowedEntities: ('admin' | 'police')[]) {
-	const { currentUser } = useContext(RootContext);
+	const currentUser = useCurrentUser();
 
 	useEffect(() => {
 		if (currentUser?.type && !allowedEntities.includes(currentUser.type)) {
-			router.push('/login');
+			router.push({ pathname: '/login' });
 		}
 		// eslint-disable-next-line
 	}, [currentUser]);

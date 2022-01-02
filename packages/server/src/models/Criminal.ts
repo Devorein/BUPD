@@ -1,33 +1,44 @@
 /* eslint-disable camelcase */
-import {
-	DeleteCriminalPayload,
-	ICriminal,
-	UpdateCriminalPayload,
-	WhereClauseQuery,
-} from '@bupd/types';
-import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
+
+import { ICriminal, UpdateCriminalPayload } from '@bupd/types';
+import { PoolConnection } from 'mysql2/promise';
+import { SqlClause, SqlFilter } from '../types';
+import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
+import { useQuery } from './utils/useQuery';
 
 const CriminalModel = {
-	find(whereClauseQuery: WhereClauseQuery) {
+	find(sqlClause: SqlClause) {
 		return find<ICriminal>(
 			{
-				...whereClauseQuery,
-				select: ['criminal_id', 'name', 'photo', ...(whereClauseQuery.select ?? [])],
+				...sqlClause,
+				select: ['criminal_id', 'name', 'photo', ...(sqlClause.select ?? [])],
 			},
 			'Criminal'
 		);
+	},
+
+	async create(criminalData: ICriminal, connection?: PoolConnection) {
+		const criminal: ICriminal = {
+			criminal_id: criminalData.criminal_id,
+			name: criminalData.name,
+			photo: criminalData.photo ?? null,
+		};
+
+		await useQuery(generateInsertQuery(criminal, 'Criminal'), connection);
+		return criminal;
 	},
 
 	findByCriminalID(criminal_id: number) {
 		return find<ICriminal>(
 			{
-				filter: { criminal_id },
+				filter: [{ criminal_id }],
 			},
 			'Criminal'
 		);
 	},
-	async update(filterQuery: Partial<ICriminal>, payload: UpdateCriminalPayload) {
+
+	async update(filterQuery: SqlFilter, payload: UpdateCriminalPayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
 			await query(generateUpdateQuery(filterQuery, payload, 'Criminal'));
@@ -37,9 +48,10 @@ const CriminalModel = {
 			return null;
 		}
 	},
-	async delete(payload: DeleteCriminalPayload) {
-		await query(generateDeleteQuery(payload, 'Criminal'));
-		return payload;
+
+	async delete(criminalId: number) {
+		await query(generateDeleteQuery([{ criminal_id: criminalId }], 'Criminal'));
+		return true;
 	},
 };
 

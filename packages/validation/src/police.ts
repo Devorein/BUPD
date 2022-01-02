@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import { paginationSchema } from './utils/paginationSchema';
 import { validateEmail } from './validate';
 
 export const PoliceRequest = {
@@ -19,23 +20,6 @@ export const PoliceRequest = {
 				designation: yup.string(),
 				rank: yup.string(),
 			}),
-			sort: yup
-				.array()
-				.test(
-					(arr) =>
-						arr === undefined ||
-						(arr.length === 2 &&
-							arr[0].match(/^(designation|rank|name)$/) &&
-							(arr[1] === -1 || arr[1] === 1))
-				),
-			limit: yup.number(),
 		})
-		.strict()
-		.noUnknown(),
-	delete: yup
-		.object({
-			nid: yup.number().min(10000).required(),
-		})
-		.strict()
-		.noUnknown(),
+		.concat(paginationSchema(/^(designation|rank|name)$/)),
 };

@@ -5,14 +5,6 @@ import { hasAccess, isAuthenticated, isAuthorized, validatePayload } from '../mi
 
 const CasefileRouter = express.Router();
 
-CasefileRouter.put(
-	'/',
-	isAuthenticated,
-	validatePayload(CasefilePayload.update),
-	isAuthorized(['police']),
-	hasAccess('case', 'update'),
-	CasefileController.update
-);
 CasefileRouter.post(
 	'/',
 	validatePayload(CasefilePayload.create),
@@ -20,27 +12,29 @@ CasefileRouter.post(
 	isAuthorized(['police']),
 	CasefileController.create
 );
-CasefileRouter.delete(
-	'/',
+
+CasefileRouter.delete<{ case_no: number }>(
+	'/:case_no',
 	isAuthenticated,
-	validatePayload(CasefilePayload.delete),
 	isAuthorized(['police']),
-	hasAccess('case', 'delete'),
+	hasAccess('case', ['delete']),
 	CasefileController.delete
-);
-CasefileRouter.delete(
-	'/:case_no',
-	isAuthenticated,
-	isAuthorized(['police']),
-	hasAccess('case', 'delete'),
-	CasefileController.deleteOnCaseNo
-);
-CasefileRouter.put(
-	'/:case_no',
-	// TODO validatePayload(),
-	isAuthenticated,
-	isAuthorized(['police']),
-	hasAccess('case', 'update'),
-	CasefileController.updateOnCaseNo
-);
+)
+	.put(
+		'/:case_no',
+		validatePayload(CasefilePayload.update),
+		isAuthenticated,
+		isAuthorized(['police']),
+		hasAccess('case', ['update', 'delete']),
+		CasefileController.update
+	)
+	.get(
+		'/:case_no',
+		// validatePayload(CasefilePayload.get),
+		isAuthenticated,
+		isAuthorized(['police']),
+		hasAccess('case', ['read', 'write', 'update', 'delete']),
+		CasefileController.get
+	);
+
 export default CasefileRouter;

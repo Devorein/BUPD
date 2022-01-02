@@ -6,34 +6,18 @@ import { hasAccess, isAuthenticated, isAuthorized, validatePayload } from '../mi
 const CriminalRouter = express.Router();
 
 CriminalRouter.put(
-	'/',
+	'/:criminal_id',
 	validatePayload(CriminalPayload.update),
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('criminal', 'update'),
+	hasAccess('criminal', ['update', 'delete']),
 	CriminalController.update
-);
-CriminalRouter.delete(
-	'/',
+).delete(
+	'/:criminal_id',
 	isAuthenticated,
 	isAuthorized(['police']),
-	hasAccess('criminal', 'delete'),
+	hasAccess('criminal', ['delete']),
 	CriminalController.delete
-);
-CriminalRouter.put(
-	'/:criminal_id',
-	// TODO validatePayload(),
-	isAuthenticated,
-	isAuthorized(['police']),
-	hasAccess('criminal', 'update'),
-	CriminalController.updateOnCriminalId
-);
-CriminalRouter.delete(
-	'/:criminal_id',
-	isAuthenticated,
-	isAuthorized(['police']),
-	hasAccess('criminal', 'delete'),
-	CriminalController.deleteOnCriminalId
 );
 
 export default CriminalRouter;

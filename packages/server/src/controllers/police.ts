@@ -2,16 +2,18 @@ import {
 	ApiResponse,
 	DeletePolicePayload,
 	DeletePoliceResponse,
+	GetPoliceResponse,
 	GetPolicesPayload,
 	GetPolicesResponse,
+	IPolice,
 	PoliceJwtPayload,
 	UpdatePolicePayload,
 	UpdatePoliceResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
-import { RowDataPacket } from 'mysql2';
 import { PoliceModel } from '../models';
-import { generateCountQuery, generatePoliceJwtToken, logger, query, removeFields } from '../utils';
+import { paginate } from '../models/utils/paginate';
+import { generatePoliceJwtToken, handleError, logger, removeFields } from '../utils';
 
 const PoliceController = {
 	async update(
@@ -21,7 +23,7 @@ const PoliceController = {
 		try {
 			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
 			const payload = req.body;
-			const [police] = await PoliceModel.find({ filter: { email: jwtPayload.email } });
+			const [police] = await PoliceModel.find({ filter: [{ email: jwtPayload.email }] });
 			if (!police) {
 				res.json({
 					status: 'error',
@@ -29,10 +31,12 @@ const PoliceController = {
 				});
 			} else {
 				await PoliceModel.update(
-					{
-						nid: jwtPayload.nid,
-						email: jwtPayload.email,
-					},
+					[
+						{
+							nid: jwtPayload.nid,
+							email: jwtPayload.email,
+						},
+					],
 					payload
 				);
 				res.json({
@@ -58,30 +62,27 @@ const PoliceController = {
 		}
 	},
 	async get(req: Request<any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
-		const polices = await PoliceModel.find(req.body);
-		const policeCount = (await query(
-			generateCountQuery({ filter: req.body?.filter }, 'Police')
-		)) as RowDataPacket[];
-
-		if (polices) {
-			res.json({
-				status: 'success',
-				data: {
-					items: polices,
-					next: null,
-					total: policeCount[0][0]?.count,
+		res.json({
+			status: 'success',
+			data: await paginate<IPolice>(
+				{
+					...req.query,
+					// Custom select to remove password field
+					select: ['nid', 'name', 'email', 'address', 'designation', 'phone', 'rank'],
 				},
-			});
-		}
+				'Police',
+				'nid'
+			),
+		});
 	},
-	async delete(req: Request<any, any, DeletePolicePayload>, res: Response<DeletePoliceResponse>) {
-		const police = await PoliceModel.findByNid(req.body.nid);
-		if (police[0]) {
-			const result = await PoliceModel.delete(req.body);
+	async delete(req: Request<DeletePolicePayload, any>, res: Response<DeletePoliceResponse>) {
+		const police = await PoliceModel.findByNid(req.params.nid);
+		if (police) {
+			const result = await PoliceModel.delete(req.params.nid);
 			if (result) {
 				res.json({
 					status: 'success',
-					data: police[0], // need to change it to ipolice
+					data: police,
 				});
 			}
 		} else {
@@ -89,6 +90,17 @@ const PoliceController = {
 				status: 'error',
 				message: 'No valid polices given to delete',
 			});
+		}
+	},
+	async getOnNid(req: Request<{ nid: number }>, res: Response<GetPoliceResponse>) {
+		const police = await PoliceModel.findByNid(req.params.nid);
+		if (police) {
+			res.json({
+				status: 'success',
+				data: removeFields(police, ['password']),
+			});
+		} else {
+			handleError(res, 404, `No police with nid, ${req.params.nid} found`);
 		}
 	},
 };

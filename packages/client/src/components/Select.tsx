@@ -14,19 +14,16 @@ export function Select<Value>(props: SelectProps<Value>) {
     {...restProps}
     value={value}
     defaultValue={defaultValue}
-    className={`bold rounded-sm ${className}`}
+    className={`bold rounded-sm shadow-md ${className}`}
     renderValue={(valueToRender) =>
     (
-      <div className="SelectRenderedValue font-semibold capitalize rounded-md">
-        {renderValue ? renderValue(valueToRender) : valueToRender}
-      </div>
+      renderValue ? renderValue(valueToRender) : valueToRender
     )
     }
     sx={{
       "& .MuiSvgIcon-root": {
         fill: `black`,
-        fontSize: 30
-      },
+      }
     }}
     onChange={onChange}
   >

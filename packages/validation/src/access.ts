@@ -1,29 +1,19 @@
 import * as yup from 'yup';
+import { paginationSchema } from './utils/paginationSchema';
 
 export const AccessPayload = {
 	get: yup
 		.object({
 			filter: yup
 				.object({
-					approved: yup.number().min(0).max(1),
+					approved: yup.array().of(yup.number().min(0).max(1)),
 					permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
-					type: yup.string().oneOf(['case', 'criminal']),
+					type: yup.array().of(yup.string().oneOf(['case', 'criminal'])),
 				})
 				.strict()
 				.noUnknown(),
-			sort: yup
-				.array()
-				.test(
-					(arr) =>
-						arr === undefined ||
-						(arr.length === 2 &&
-							arr[0].match(/^(criminal_id|case_no|approved|permission)$/) &&
-							(arr[1] === -1 || arr[1] === 1))
-				),
-			limit: yup.number(),
 		})
-		.strict()
-		.noUnknown(),
+		.concat(paginationSchema(/^(criminal_id|case_no|approved|permission)$/)),
 	create: yup
 		.object({
 			case_no: yup.number().nullable(),
@@ -38,24 +28,8 @@ export const AccessPayload = {
 		.noUnknown(),
 	update: yup
 		.object({
-			access_id: yup.number().required(),
-			permission: yup.string().oneOf(['read', 'write', 'update', 'delete']),
-			approved: yup.boolean(),
-			police_nid: yup.number().min(10000),
-			type: yup.string().oneOf(['case', 'criminal']),
-			criminal_id: yup.number().nullable(),
-			case_no: yup.number().nullable(),
+			approved: yup.number().oneOf([0, 1]),
 		})
 		.strict()
-		.noUnknown()
-		.test((obj) => {
-			switch (obj.type) {
-				case 'criminal':
-					return !obj.case_no && Boolean(obj.criminal_id);
-				case 'case':
-					return !obj.criminal_id && Boolean(obj.case_no);
-				default:
-					return !obj.criminal_id && !obj.case_no;
-			}
-		}),
+		.noUnknown(),
 };

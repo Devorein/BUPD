@@ -1,18 +1,16 @@
 /* eslint-disable camelcase */
-import {
-	DeleteCasefilePayload,
-	ICasefile,
-	UpdateCasefilePayload,
-	WhereClauseQuery,
-} from '@bupd/types';
-import { generateDeleteQuery, generateUpdateQuery, query } from '../utils';
+import { ICasefile, TCasefileStatus, UpdateCasefilePayload } from '@bupd/types';
+import { PoolConnection } from 'mysql2/promise';
+import { SqlClause, SqlFilter } from '../types';
+import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
+import { useQuery } from './utils/useQuery';
 
 const CasefileModel = {
-	find(whereClauseQuery: WhereClauseQuery) {
+	find(sqlClause: SqlClause) {
 		return find<ICasefile>(
 			{
-				...whereClauseQuery,
+				...sqlClause,
 				select: [
 					'time',
 					'priority',
@@ -20,7 +18,7 @@ const CasefileModel = {
 					'location',
 					'case_no',
 					'police_nid',
-					...(whereClauseQuery.select ?? []),
+					...(sqlClause.select ?? []),
 				],
 			},
 			'CaseFile'
@@ -30,12 +28,32 @@ const CasefileModel = {
 	findByCaseNo(case_no: number) {
 		return find<ICasefile>(
 			{
-				filter: { case_no },
+				filter: [{ case_no }],
 			},
 			'Casefile'
 		);
 	},
-	async update(filterQuery: Partial<ICasefile>, payload: UpdateCasefilePayload) {
+
+	async create(
+		casefileData: Omit<ICasefile, 'time' | 'status'> & {
+			time: number;
+			status?: TCasefileStatus | null;
+		},
+		connection?: PoolConnection
+	) {
+		const casefile: ICasefile = {
+			case_no: casefileData.case_no,
+			time: new Date(casefileData.time).toISOString().slice(0, 19).replace('T', ' '),
+			status: casefileData.status ?? 'open',
+			priority: casefileData.priority,
+			location: casefileData.location,
+			police_nid: casefileData.police_nid,
+		};
+		await useQuery(generateInsertQuery(casefile, 'Casefile'), connection);
+		return casefile;
+	},
+
+	async update(filterQuery: SqlFilter, payload: UpdateCasefilePayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
 			await query(generateUpdateQuery(filterQuery, payload, 'Casefile'));
@@ -45,9 +63,9 @@ const CasefileModel = {
 			return null;
 		}
 	},
-	async delete(payload: DeleteCasefilePayload) {
-		await query(generateDeleteQuery(payload, 'Casefile'));
-		return payload;
+	async delete(case_no: number) {
+		await query(generateDeleteQuery([{ case_no }], 'Casefile'));
+		return true;
 	},
 };
 

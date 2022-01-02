@@ -1,12 +1,13 @@
-import { IAccess, UpdateAccessPayload, WhereClauseQuery } from '@bupd/types';
-import { generateUpdateQuery, query } from '../utils';
+import { IAccess, NextKey, UpdateAccessPayload } from '@bupd/types';
+import { SqlClause, SqlFilter } from '../types';
+import { generatePaginationQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 
 const AccessModel = {
-	find(whereClauseQuery: WhereClauseQuery) {
-		return find<IAccess>(whereClauseQuery, 'access');
+	find(sqlClause: SqlClause & { next?: NextKey }) {
+		return find<IAccess>(generatePaginationQuery(sqlClause, 'access_id'), 'access');
 	},
-	async update(filterQuery: Partial<IAccess>, payload: UpdateAccessPayload) {
+	async update(filterQuery: SqlFilter, payload: UpdateAccessPayload & { admin_id: number }) {
 		if (Object.keys(payload).length !== 0) {
 			await query(generateUpdateQuery(filterQuery, payload, 'Access'));
 			return payload as Partial<IAccess>;
