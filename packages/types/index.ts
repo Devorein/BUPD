@@ -95,6 +95,7 @@ export type ErrorApiResponse = {
 
 export type NextKey = null | {
 	id: number;
+	[key: string]: any;
 };
 
 export type PaginatedResponse<Data> = {

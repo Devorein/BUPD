@@ -18,7 +18,16 @@ export function paginationSchema(sortFieldsRegex: RegExp) {
 				.object({
 					id: yup.number().required(),
 				})
-				.noUnknown()
+				.test((obj) => {
+					if (obj === undefined || obj === null) {
+						return true;
+					}
+					// Making sure the keys of next are sortable properties
+					const objectKeys = Object.keys(obj);
+					return objectKeys.every(
+						(objectKey) => objectKey === 'id' || objectKey.match(sortFieldsRegex)
+					);
+				})
 				.nullable(),
 		})
 		.strict()
