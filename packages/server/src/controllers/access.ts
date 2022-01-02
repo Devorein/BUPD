@@ -33,7 +33,7 @@ const AccessController = {
 				case_no: payload.case_no,
 				admin_id: null,
 			};
-			await query(generateInsertQuery(access, 'access'));
+			await query(generateInsertQuery(access, 'Access'));
 			res.json({
 				status: 'success',
 				data: '',
