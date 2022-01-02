@@ -6,6 +6,7 @@ import {
 	GetAccessesPayload,
 	GetAccessesResponse,
 	IAccess,
+	IAccessPopulated,
 	PoliceJwtPayload,
 	UpdateAccessPayload,
 	UpdateAccessResponse,
@@ -15,6 +16,7 @@ import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
 import { generateInsertQuery, logger, query } from '../utils';
 import { convertClientQuery } from '../utils/convertClientQuery';
+import { inflateObject } from '../utils/inflateObject';
 
 const AccessController = {
 	create: async (
@@ -53,7 +55,7 @@ const AccessController = {
 	) => {
 		res.json({
 			status: 'success',
-			data: await paginate<IAccess>(
+			data: await paginate<IAccessPopulated>(
 				{
 					filter: convertClientQuery(req.query.filter),
 					limit: req.query.limit,
@@ -78,7 +80,8 @@ const AccessController = {
 					joins: [['Access', 'Police', 'police_nid', 'nid']],
 				},
 				'Access',
-				'access_id'
+				'access_id',
+				(rows) => rows.map((row) => inflateObject(row, 'Access'))
 			),
 		});
 	},

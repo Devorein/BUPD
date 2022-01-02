@@ -7,7 +7,9 @@ import find from './find';
 export async function paginate<Data>(
 	sqlClause: SqlClause & { next?: NextKey },
 	table: string,
-	nextCursorProperty: keyof Data
+	nextCursorProperty: keyof Data,
+	// eslint-disable-next-line
+	rowTransform?: (rows: Data[]) => Data[]
 ) {
 	// Generate the total counts first as sqlClause.filter will be mutated by generatePaginationQuery
 	const rowsCount = (await query(
@@ -15,7 +17,11 @@ export async function paginate<Data>(
 	)) as RowDataPacket[];
 	const paginationQuery = generatePaginationQuery(sqlClause, nextCursorProperty as string);
 
-	const rows = await find<Data>(paginationQuery, table);
+	let rows = await find<Data>(paginationQuery, table);
+
+	if (rowTransform) {
+		rows = rowTransform(rows);
+	}
 
 	const sortField = sqlClause.sort?.[0]?.[0];
 
