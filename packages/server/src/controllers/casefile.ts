@@ -162,10 +162,7 @@ const CasefileController = {
 			});
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: "Couldn't create case file. Please try again.",
-			});
+			handleError(res, 500, "Couldn't create case file. Please try again.");
 		}
 	},
 
