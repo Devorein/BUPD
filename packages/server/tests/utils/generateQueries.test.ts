@@ -136,11 +136,16 @@ describe('.generateWhereClause', () => {
 
 describe('.generateOrderbyClause', () => {
 	it(`Should work when we pass only sort for DESC`, () => {
-		expect(generateOrderbyClause(['rank', -1])).toBe('ORDER BY `rank` DESC');
+		expect(
+			generateOrderbyClause([
+				['rank', -1],
+				['key', -1],
+			])
+		).toBe('ORDER BY `rank` DESC, `key` DESC');
 	});
 
 	it(`Should work when we pass only sort for ASC`, () => {
-		expect(generateOrderbyClause(['rank', 1])).toBe('ORDER BY `rank` ASC');
+		expect(generateOrderbyClause([['rank', 1]])).toBe('ORDER BY `rank` ASC');
 	});
 });
 
@@ -191,7 +196,7 @@ describe('.generateSelectQuery', () => {
 							rank: 'Nayak',
 						},
 					],
-					sort: ['rank', -1],
+					sort: [['rank', -1]],
 					limit: 10,
 					select: ['attribute1'],
 				},
@@ -235,31 +240,54 @@ describe('.generatePaginationQuery', () => {
 			filter: [
 				{
 					access_id: {
-						$lt: 2,
+						$gt: 2,
 					},
 				},
 			],
 		});
 	});
 
-	it(`Should generate update filter if filter and sort is present`, () => {
+	it(`Should generate update filter if filter and sort(descending) is present`, () => {
 		expect(
 			generatePaginationQuery(
-				{ filter: [{ field1: 'value1' }], sort: ['field2', -1], next: { id: 2 } },
+				{ filter: [{ field1: 'value1' }], sort: [['field2', -1]], next: { id: 2 } },
+				'access_id'
+			)
+		).toMatchObject({
+			filter: [{ field1: 'value1' }, { $or: [{ field2: {} }, { access_id: { $gt: 2 } }] }],
+			sort: [
+				['field2', -1],
+				['access_id', -1],
+			],
+			next: { id: 2 },
+		});
+	});
+
+	it(`Should generate update filter if filter and sort(ascending) is present`, () => {
+		expect(
+			generatePaginationQuery(
+				{ filter: [{ field1: 'value1' }], sort: [['field2', 1]], next: { id: 2, field2: 2 } },
 				'access_id'
 			)
 		).toMatchObject({
 			filter: [
+				{ field1: 'value1' },
 				{
-					field1: 'value1',
-				},
-				{
-					access_id: {
-						$gt: 2,
-					},
+					$or: [
+						{
+							field2: {
+								$gt: 2,
+							},
+						},
+						{ access_id: { $lt: 2 } },
+					],
 				},
 			],
-			sort: ['field2', -1],
+			sort: [
+				['field2', 1],
+				['access_id', -1],
+			],
+			next: { id: 2 },
 		});
 	});
 });
