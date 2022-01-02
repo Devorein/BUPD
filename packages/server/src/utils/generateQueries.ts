@@ -318,6 +318,11 @@ export function generatePaginationQuery(
 				},
 			});
 		}
+	} else if (sortField && sortOrder) {
+		const secondarySortField = nullableSortFields?.[sortField];
+		if (sqlClauseSort && secondarySortField) {
+			sqlClauseSort.push([secondarySortField, sortOrder]);
+		}
 	}
 
 	const sort: SqlClause['sort'] = [...(sqlClauseSort ?? []), [nextCursorProperty, sortOrder ?? 1]];
