@@ -1,12 +1,17 @@
 import {
 	ApiResponse,
 	DeleteCriminalResponse,
+	GetCriminalPayload,
+	GetCriminalResponse,
+	ICriminal,
 	UpdateCriminalPayload,
 	UpdateCriminalResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { CriminalModel } from '../models';
+import { paginate } from '../models/utils/paginate';
 import { handleError, logger } from '../utils';
+import Logger from '../utils/logger';
 
 const CriminalController = {
 	async update(
@@ -62,6 +67,24 @@ const CriminalController = {
 			}
 		} else {
 			handleError(res, 404, "Criminal doesn't exist");
+		}
+	},
+	async find(req: Request<any, any, any, GetCriminalPayload>, res: Response<GetCriminalResponse>) {
+		try {
+			res.json({
+				status: 'success',
+				data: await paginate<ICriminal>(
+					{
+						filter: [],
+						limit: req.query.limit,
+						sort: req.query.sort ? [req.query.sort] : [],
+					},
+					'Criminal',
+					'criminal_id'
+				),
+			});
+		} catch (err) {
+			Logger.error(err);
 		}
 	},
 };
