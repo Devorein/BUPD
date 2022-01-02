@@ -171,6 +171,7 @@ export function generateJoinClause(joins: SqlJoins) {
 
 export function generateSelectQuery(sqlClause: SqlClause, table: string) {
 	const clauses: string[] = [];
+	console.log(sqlClause);
 	if (sqlClause.filter) clauses.push(generateWhereClause(sqlClause.filter));
 	if (sqlClause.sort) clauses.push(generateOrderbyClause(sqlClause.sort));
 	if (sqlClause.limit) clauses.push(generateLimitClause(sqlClause.limit));

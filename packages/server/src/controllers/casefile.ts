@@ -4,6 +4,9 @@ import {
 	CreateCasefileResponse,
 	DeleteCasefileResponse,
 	GetCasefileResponse,
+	GetCasefilesPayload,
+	GetCasefilesResponse,
+	ICasefile,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
@@ -13,10 +16,13 @@ import {
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
+import { paginate } from '../models/utils/paginate';
 import { CasefileModel, CrimeCategoryModel, CriminalModel, VictimModel } from '../models';
 import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
 import { handleError, logger, pool } from '../utils';
+import { convertCaseFilter } from '../utils/convertClientQuery';
+import Logger from '../utils/logger';
 
 const CasefileController = {
 	async create(
@@ -218,6 +224,27 @@ const CasefileController = {
 			});
 		} else {
 			handleError(res, 404, `No casefile with id, ${req.params.case_no} found`);
+		}
+	},
+	async findMany(
+		req: Request<any, any, any, GetCasefilesPayload>,
+		res: Response<GetCasefilesResponse>
+	) {
+		try {
+			res.json({
+				status: 'success',
+				data: await paginate<ICasefile>(
+					{
+						filter: convertCaseFilter(req.query.filter),
+						limit: req.query.limit,
+						sort: req.query.sort ? [req.query.sort] : [],
+					},
+					'Casefile',
+					'case_no'
+				),
+			});
+		} catch (err) {
+			Logger.error(err);
 		}
 	},
 };
