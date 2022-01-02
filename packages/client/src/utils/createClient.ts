@@ -8,6 +8,7 @@ export const createClient = () =>
 				cacheTime: Infinity,
 				refetchOnMount: false,
 				retry: false,
+				refetchOnWindowFocus: false,
 			},
 		},
 	});

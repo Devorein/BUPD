@@ -3,7 +3,7 @@ import {
 	CreateCasefilePayload,
 	CreateCasefileResponse,
 	DeleteCasefileResponse,
-	GetOnCasenoCasefileResponse,
+	GetCasefileResponse,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
@@ -51,7 +51,7 @@ const CasefileController = {
         SELECT
           MAX(case_no) + 1 as max_case_no
         from
-          casefile;
+          Casefile;
       `)) as RowDataPacket[];
 
 			const maxCaseNo = maxCaseNoQueryData[0][0].max_case_no ?? 1;
@@ -60,7 +60,7 @@ const CasefileController = {
         SELECT
           MAX(criminal_id) as max_criminal_id
         from
-          criminal;
+          Criminal;
       `)) as RowDataPacket[];
 
 			const maxCriminalId = maxCriminalIdQueryData[0][0].max_criminal_id ?? 0;
@@ -136,9 +136,9 @@ const CasefileController = {
           CR.photo,
           CR.criminal_id
         from
-          casefile as CF
-          left join casefile_criminal as CFC on CFC.case_no = ${maxCaseNo}
-          left join criminal as CR on CR.criminal_id = CFC.criminal_id
+          Casefile as CF
+          left join Casefile_Criminal as CFC on CFC.case_no = ${maxCaseNo}
+          left join Criminal as CR on CR.criminal_id = CFC.criminal_id
         where
           CF.case_no = ${maxCaseNo};
       `)) as [RowDataPacket[], FieldPacket[]];
@@ -166,7 +166,7 @@ const CasefileController = {
 	async delete(req: Request<{ case_no: number }>, res: Response<DeleteCasefileResponse>) {
 		const file = await CasefileModel.findByCaseNo(req.params.case_no);
 		if (file[0]) {
-			const result = await CasefileModel.delete({ case_no: req.params.case_no });
+			const result = await CasefileModel.delete(req.params.case_no);
 			if (result) {
 				res.json({
 					status: 'success',
@@ -184,14 +184,16 @@ const CasefileController = {
 	) {
 		try {
 			const payload = req.body;
-			const [casefile] = await CasefileModel.find({ filter: { case_no: req.params.case_no } });
+			const [casefile] = await CasefileModel.find({ filter: [{ case_no: req.params.case_no }] });
 			if (!casefile) {
 				handleError(res, 404, "Casefile doesn't exist");
 			} else {
 				await CasefileModel.update(
-					{
-						case_no: req.params.case_no,
-					},
+					[
+						{
+							case_no: req.params.case_no,
+						},
+					],
 					payload
 				);
 				res.json({
@@ -207,7 +209,7 @@ const CasefileController = {
 			handleError(res, 500, "Couldn't update the casefile");
 		}
 	},
-	async get(req: Request<{ case_no: number }>, res: Response<GetOnCasenoCasefileResponse>) {
+	async get(req: Request<{ case_no: number }>, res: Response<GetCasefileResponse>) {
 		const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
 		if (file) {
 			res.json({

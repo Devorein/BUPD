@@ -1,12 +1,7 @@
 /* eslint-disable camelcase */
-import {
-	DeleteCasefilePayload,
-	ICasefile,
-	TCasefileStatus,
-	UpdateCasefilePayload,
-} from '@bupd/types';
+import { ICasefile, TCasefileStatus, UpdateCasefilePayload } from '@bupd/types';
 import { PoolConnection } from 'mysql2/promise';
-import { SqlClause } from '../types';
+import { SqlClause, SqlFilter } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 import { useQuery } from './utils/useQuery';
@@ -33,7 +28,7 @@ const CasefileModel = {
 	findByCaseNo(case_no: number) {
 		return find<ICasefile>(
 			{
-				filter: { case_no },
+				filter: [{ case_no }],
 			},
 			'Casefile'
 		);
@@ -58,7 +53,7 @@ const CasefileModel = {
 		return casefile;
 	},
 
-	async update(filterQuery: Partial<ICasefile>, payload: UpdateCasefilePayload) {
+	async update(filterQuery: SqlFilter, payload: UpdateCasefilePayload) {
 		// Making sure that we are updating at least one field
 		if (Object.keys(payload).length !== 0) {
 			await query(generateUpdateQuery(filterQuery, payload, 'Casefile'));
@@ -68,9 +63,9 @@ const CasefileModel = {
 			return null;
 		}
 	},
-	async delete(payload: DeleteCasefilePayload) {
-		await query(generateDeleteQuery(payload, 'Casefile'));
-		return payload;
+	async delete(case_no: number) {
+		await query(generateDeleteQuery([{ case_no }], 'Casefile'));
+		return true;
 	},
 };
 

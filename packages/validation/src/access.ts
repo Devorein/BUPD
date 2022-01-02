@@ -6,7 +6,7 @@ export const AccessPayload = {
 		.object({
 			filter: yup
 				.object({
-					approved: yup.array().of(yup.number().min(0).max(1)),
+					approved: yup.array().of(yup.number().oneOf([0, 1, 2])),
 					permission: yup.array().of(yup.string().oneOf(['read', 'write', 'update', 'delete'])),
 					type: yup.array().of(yup.string().oneOf(['case', 'criminal'])),
 				})
@@ -28,20 +28,8 @@ export const AccessPayload = {
 		.noUnknown(),
 	update: yup
 		.object({
-			permission: yup.string().oneOf(['read', 'write', 'update', 'delete']),
-			approved: yup.boolean(),
-			police_nid: yup.number().min(10000),
-			type: yup.string().oneOf(['case', 'criminal']),
-			criminal_id: yup.number().nullable(),
-			case_no: yup.number().nullable(),
+			approved: yup.number().oneOf([0, 1]),
 		})
 		.strict()
-		.noUnknown()
-		.test((obj) => {
-			if (obj.type === 'criminal') {
-				return !obj.case_no && Boolean(obj.criminal_id);
-			} else {
-				return !obj.criminal_id && Boolean(obj.case_no);
-			}
-		}),
+		.noUnknown(),
 };

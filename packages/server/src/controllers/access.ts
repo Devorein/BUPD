@@ -13,7 +13,8 @@ import {
 import { Request, Response } from 'express';
 import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
-import { generateInsertQuery, logger, query, removeFields } from '../utils';
+import { generateInsertQuery, logger, query } from '../utils';
+import { convertClientQuery } from '../utils/convertClientQuery';
 
 const AccessController = {
 	create: async (
@@ -25,14 +26,14 @@ const AccessController = {
 			const payload = req.body;
 			const access: Omit<IAccess, 'access_id'> = {
 				permission: payload.permission,
-				approved: 0,
+				approved: 2,
 				police_nid: jwtPayload.nid,
 				type: payload.criminal_id !== null ? 'criminal' : 'case',
 				criminal_id: payload.criminal_id,
 				case_no: payload.case_no,
 				admin_id: null,
 			};
-			await query(generateInsertQuery(access, 'access'));
+			await query(generateInsertQuery(access, 'Access'));
 			res.json({
 				status: 'success',
 				data: '',
@@ -52,37 +53,49 @@ const AccessController = {
 	) => {
 		res.json({
 			status: 'success',
-			data: await paginate<IAccess>(req.query, 'Access', 'access_id'),
+			data: await paginate<IAccess>(
+				{
+					filter: convertClientQuery(req.query.filter),
+					limit: req.query.limit,
+					sort: [req.query.sort],
+					next: req.query.next,
+				},
+				'Access',
+				'access_id'
+			),
 		});
 	},
 
 	async update(
-		req: Request<any, any, UpdateAccessPayload>,
+		req: Request<{ access_id: number }, any, UpdateAccessPayload>,
 		res: Response<ApiResponse<UpdateAccessResponse>>
 	) {
 		try {
+			const accessId = req.params.access_id;
 			const decoded = req.jwt_payload as AdminJwtPayload;
 			const payload = req.body;
-			const [accessExist] = await AccessModel.find({ filter: { access_id: payload.access_id } });
-			if (!accessExist) {
+			const [access] = await AccessModel.find({ filter: [{ access_id: accessId }] });
+			if (!access) {
 				res.json({
 					status: 'error',
 					message: "Access doesn't exist",
 				});
 			} else {
 				await AccessModel.update(
+					[
+						{
+							access_id: accessId,
+						},
+					],
 					{
-						access_id: payload.access_id,
-					},
-					{
-						...removeFields(payload, ['access_id']),
+						...payload,
 						admin_id: decoded.id,
 					}
 				);
 				res.json({
 					status: 'success',
 					data: {
-						...accessExist,
+						...access,
 						...payload,
 						admin_id: decoded.id,
 					},
@@ -92,7 +105,7 @@ const AccessController = {
 			logger.error(err);
 			res.json({
 				status: 'error',
-				message: "Couldn't update the access request",
+				message: "Couldn't update access",
 			});
 		}
 	},

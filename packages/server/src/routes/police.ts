@@ -12,22 +12,15 @@ PoliceRouter.put(
 	isAuthenticated,
 	isAuthorized(['police']),
 	PoliceController.update
-);
-PoliceRouter.get(
+).get(
 	'/',
 	validateQuery(PoliceRequest.get),
 	isAuthenticated,
 	isAuthorized(['admin', 'police']),
 	PoliceController.get
 );
-PoliceRouter.delete(
-	'/',
-	validatePayload(PoliceRequest.delete),
-	isAuthenticated,
-	isAuthorized(['admin']),
-	PoliceController.delete
-);
-PoliceRouter.get(
+
+PoliceRouter.delete('/:nid', isAuthenticated, isAuthorized(['admin']), PoliceController.delete).get(
 	'/:nid',
 	validateQuery(PoliceRequest.get),
 	isAuthenticated,

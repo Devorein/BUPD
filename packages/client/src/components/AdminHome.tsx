@@ -24,14 +24,14 @@ export function AdminHome() {
 
   function render() {
     if (getAccessesQueryData) {
-      return <div className="flex justify-center flex-col gap-3 my-5 items-center w-3/4">
+      return <div className="flex justify-center flex-col gap-3 my-5 items-center max-w-[750px] w-3/4" style={{ height: "calc(100% - 50px)" }}>
         <div className="mb-5">
           <Typography className="uppercase" variant="h5">Access Requests</Typography>
         </div>
-        <div className="flex gap-8 justify-between w-full">
+        <div className="flex gap-8 justify-between w-full h-full">
           <AccessFilterForm />
 
-          <div className="flex flex-col gap-3 w-full">
+          <div className="flex flex-col gap-3 w-full h-full">
             <div className="flex justify-between items-center">
               <div className="flex gap-3 w-full">
                 <Select<number> value={parseInt(query?.limit?.toString() ?? "5", 10)} items={[5, 10, 15, 20, 25]} renderValue={(value) => `${value} per page`} onChange={(event) => {
@@ -46,7 +46,8 @@ export function AdminHome() {
               </div>
             </div>
             <div className="overflow-auto pr-5 w-full" style={{
-              height: 400
+              height: 400,
+              flexGrow: 1
             }}>
               <AccessList accesses={allAccessesItems} />
             </div>
@@ -59,5 +60,5 @@ export function AdminHome() {
     return null;
   }
 
-  return <div className="flex justify-center">{render()}</div>
+  return <div className="flex justify-center h-full">{render()}</div>
 }

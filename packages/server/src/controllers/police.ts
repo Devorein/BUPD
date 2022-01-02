@@ -2,7 +2,7 @@ import {
 	ApiResponse,
 	DeletePolicePayload,
 	DeletePoliceResponse,
-	GetOnNidPoliceResponse,
+	GetPoliceResponse,
 	GetPolicesPayload,
 	GetPolicesResponse,
 	IPolice,
@@ -23,7 +23,7 @@ const PoliceController = {
 		try {
 			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
 			const payload = req.body;
-			const [police] = await PoliceModel.find({ filter: { email: jwtPayload.email } });
+			const [police] = await PoliceModel.find({ filter: [{ email: jwtPayload.email }] });
 			if (!police) {
 				res.json({
 					status: 'error',
@@ -31,10 +31,12 @@ const PoliceController = {
 				});
 			} else {
 				await PoliceModel.update(
-					{
-						nid: jwtPayload.nid,
-						email: jwtPayload.email,
-					},
+					[
+						{
+							nid: jwtPayload.nid,
+							email: jwtPayload.email,
+						},
+					],
 					payload
 				);
 				res.json({
@@ -73,14 +75,14 @@ const PoliceController = {
 			),
 		});
 	},
-	async delete(req: Request<any, any, DeletePolicePayload>, res: Response<DeletePoliceResponse>) {
-		const police = await PoliceModel.findByNid(req.body.nid);
-		if (police[0]) {
-			const result = await PoliceModel.delete(req.body);
+	async delete(req: Request<DeletePolicePayload, any>, res: Response<DeletePoliceResponse>) {
+		const police = await PoliceModel.findByNid(req.params.nid);
+		if (police) {
+			const result = await PoliceModel.delete(req.params.nid);
 			if (result) {
 				res.json({
 					status: 'success',
-					data: police[0], // need to change it to ipolice
+					data: police,
 				});
 			}
 		} else {
@@ -90,8 +92,8 @@ const PoliceController = {
 			});
 		}
 	},
-	async getOnNid(req: Request<{ nid: number }>, res: Response<GetOnNidPoliceResponse>) {
-		const [police] = await PoliceModel.findByNid(req.params.nid);
+	async getOnNid(req: Request<{ nid: number }>, res: Response<GetPoliceResponse>) {
+		const police = await PoliceModel.findByNid(req.params.nid);
 		if (police) {
 			res.json({
 				status: 'success',

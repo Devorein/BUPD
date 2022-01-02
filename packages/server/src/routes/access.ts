@@ -21,7 +21,7 @@ AccessRouter.post(
 );
 
 AccessRouter.put(
-	'/',
+	'/:access_id',
 	validatePayload(AccessPayload.update),
 	isAuthenticated,
 	isAuthorized(['admin']),
