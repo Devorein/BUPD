@@ -159,7 +159,7 @@ export function generateJoinClause(joins: SqlJoins) {
 					}
 
 					joinClauseChunks.push(
-						` on ${leftTable}.${leftTableAttribute} = ${rightTable}.${rightTableAttribute}`
+						`on ${leftTable}.${leftTableAttribute} = ${rightTable}.${rightTableAttribute}`
 					);
 					tablesSet.add(leftTable);
 					tablesSet.add(rightTable);
