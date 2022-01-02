@@ -232,7 +232,7 @@ describe('.generateSelectQuery', () => {
 				'Police'
 			)
 		).toBe(
-			"SELECT Police.attribute1 as `Police.attribute1` FROM Police as Police INNER JOIN Criminal as Criminal on Police.nid = Criminal.criminal_nid WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') ORDER BY `rank` DESC LIMIT 10;"
+			"SELECT Police.attribute1 as `Police.attribute1` FROM Police as Police INNER JOIN Criminal as Criminal on Police.nid = Criminal.criminal_nid WHERE (Police.`filter1`='value1' AND Police.`filter2`='value2' AND Police.`rank`='Nayak') ORDER BY Police.`rank` DESC LIMIT 10;"
 		);
 	});
 });

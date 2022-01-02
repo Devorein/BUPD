@@ -1,7 +1,5 @@
-import { IAccessSort, IQuery } from "@bupd/types";
+import { GetAccessesPayload, IAccessSort } from "@bupd/types";
 import { Typography } from "@mui/material";
-import router from "next/router";
-import qs from "qs";
 import { useState } from "react";
 import { useGetAccessesQuery } from "../api";
 import { accessSortLabelRecord } from "../constants";
@@ -11,26 +9,39 @@ import { AccessList } from "./AccessList";
 import { LoadMoreButton } from "./LoadMoreButton";
 import { Select } from "./Select";
 
-export function AdminHome() {
-  const query = qs.parse(router.asPath.slice(2)) as unknown as Partial<IQuery<any, any>> ?? {};
-  // Next should not be part of query key
-  if (query) {
-    delete query.next;
+const createInitialAccessQuery = (query?: Partial<GetAccessesPayload>): GetAccessesPayload => ({
+  limit: 10,
+  next: null,
+  sort: ["approved", -1],
+  ...query,
+  filter: {
+    approved: [],
+    permission: [],
+    type: [],
+    ...(query?.filter ?? {})
   }
-  const { hasNextPage, lastFetchedPage, fetchNextPage, data: getAccessesQueryData, totalItems, allItems: allAccessesItems, isFetching } = useGetAccessesQuery(query);
+})
+
+export function AdminHome() {
+  const [clientQuery, setClientQuery] = useState(createInitialAccessQuery());
+  const [dummyQuery, setDummyQuery] = useState<GetAccessesPayload>(
+    clientQuery,
+  );
+
+  const { hasNextPage, lastFetchedPage, fetchNextPage, data: getAccessesQueryData, totalItems, allItems: allAccessesItems, isFetching } = useGetAccessesQuery(clientQuery);
 
   const [currentDetail, setAccessDetail] = useState<AccessDetailsProps["data"]>(null)
-
-  let sortKey: IAccessSort = ["permission", -1];
-  if (query.sort) {
-    sortKey = query.sort
-  }
 
   function render() {
     if (getAccessesQueryData) {
       return <div className="flex justify-center gap-10 my-5 items-center w-full" style={{ height: "calc(100% - 50px)" }}>
         <div className="h-full px-5">
-          <AccessFilterForm />
+          <AccessFilterForm clientFilter={dummyQuery.filter} setClientFilter={(clientFilter) => {
+            setDummyQuery({
+              ...clientQuery,
+              filter: clientFilter as GetAccessesPayload["filter"]
+            })
+          }} setClientQuery={setClientQuery} />
         </div>
 
         <div className="flex gap-8 flex-col justify-between w-full h-full">
@@ -38,11 +49,17 @@ export function AdminHome() {
           <div className="flex flex-col gap-3 w-full h-full">
             <div className="flex justify-between items-center">
               <div className="flex gap-3 w-full">
-                <Select<number> value={parseInt(query?.limit?.toString() ?? "5", 10)} items={[5, 10, 15, 20, 25]} renderValue={(value) => `${value} per page`} onChange={(event) => {
-                  router.push({ pathname: "/", query: qs.stringify({ ...query, limit: event.target.value }) })
+                <Select<number> value={parseInt(clientQuery.limit?.toString() ?? "5", 10)} items={[5, 10, 15, 20, 25]} renderValue={(value) => `${value} per page`} onChange={(event) => {
+                  setClientQuery({
+                    ...clientQuery,
+                    limit: event.target.value as number
+                  })
                 }} />
-                <Select<string> value={sortKey.join(".")} items={Object.keys(accessSortLabelRecord)} menuItemRender={(value) => accessSortLabelRecord[value as keyof typeof accessSortLabelRecord]} renderValue={(value) => accessSortLabelRecord[value as keyof typeof accessSortLabelRecord]} onChange={(event) => {
-                  router.push({ pathname: "/", query: qs.stringify({ ...query, sort: event.target.value.split(".") }) })
+                <Select<string> value={clientQuery.sort.join(".")} items={Object.keys(accessSortLabelRecord)} menuItemRender={(value) => accessSortLabelRecord[value as keyof typeof accessSortLabelRecord]} renderValue={(value) => accessSortLabelRecord[value as keyof typeof accessSortLabelRecord]} onChange={(event) => {
+                  setClientQuery({
+                    ...clientQuery,
+                    sort: event.target.value.split(".") as IAccessSort
+                  })
                 }} />
               </div>
               <div className="flex gap-3 text-lg">
@@ -56,7 +73,7 @@ export function AdminHome() {
               <AccessList accesses={allAccessesItems} setAccessDetail={setAccessDetail} />
             </div>
           </div>
-          <LoadMoreButton fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allAccessesItems.length !== totalItems} />
+          <LoadMoreButton payload={clientQuery} fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allAccessesItems.length !== totalItems} />
         </div>
         <AccessDetails data={currentDetail} />
       </div>;

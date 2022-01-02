@@ -1,9 +1,9 @@
+import { useContext } from "react";
 import { AdminHome, Page, PoliceHome } from "../components";
-import { useIsAuthenticated } from "../hooks";
+import { RootContext } from "../contexts";
 
 const Index = () => {
-  const currentUser = useIsAuthenticated();
-
+  const { currentUser } = useContext(RootContext);
   function render() {
     if (!currentUser) {
       return null;

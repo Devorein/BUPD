@@ -1,9 +1,9 @@
 import router from 'next/router';
-import { useEffect } from 'react';
-import { useCurrentUser } from './useCurrentUser';
+import { useContext, useEffect } from 'react';
+import { RootContext } from '../contexts';
 
 export function useIsAuthorized(allowedEntities: ('admin' | 'police')[]) {
-	const currentUser = useCurrentUser();
+	const { currentUser } = useContext(RootContext);
 
 	useEffect(() => {
 		if (currentUser?.type && !allowedEntities.includes(currentUser.type)) {

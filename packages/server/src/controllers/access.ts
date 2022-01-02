@@ -67,10 +67,10 @@ const AccessController = {
 					limit: req.query.limit,
 					sort: req.query.sort ? [req.query.sort] : [],
 					select: [
-						...getPoliceAttributes('Police', ['password']),
+						...getPoliceAttributes('Police', ['password', 'nid']),
 						...getAccessAttributes('Access'),
-						...getCasefileAttributes('Casefile'),
-						...getCriminalAttributes('Criminal'),
+						...getCasefileAttributes('Casefile', ['case_no']),
+						...getCriminalAttributes('Criminal', ['criminal_id']),
 					],
 					next: req.query.next,
 					joins: [
