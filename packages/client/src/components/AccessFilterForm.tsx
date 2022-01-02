@@ -21,8 +21,8 @@ export function AccessFilterForm() {
     setQuery(accessFilterInitialValue(queryParams?.filter))
   }, [router])
 
-  return <div className="flex flex-col gap-3">
-    <Typography variant="h5">
+  return <div className="flex flex-col gap-5">
+    <Typography variant="h4">
       Filter
     </Typography>
     <CheckboxGroup<IAccessFilter> items={[

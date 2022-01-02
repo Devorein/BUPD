@@ -10,6 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import WorkIcon from '@mui/icons-material/Work';
 import { green, red } from "@mui/material/colors";
 import { useUpdateAccessMutation, useUpdateAccessMutationCache } from "../api/mutations/useUpdateAccessMutation";
+import { svgIconSx } from "../constants";
 
 interface AccessListProps {
   accesses: IAccess[]
@@ -42,14 +43,16 @@ function ApprovalIcons(props: ApprovalIconsProps) {
             approved: 2
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
-          fill: red[500]
+          fill: red[500],
+          ...svgIconSx
         }} />
         <ThumbUpOutlinedIcon onClick={() => {
           updateAccessMutation.mutate({
             approved: 1
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
-          fill: green[500]
+          fill: green[500],
+          ...svgIconSx
         }} />
       </>
       break;
@@ -61,14 +64,16 @@ function ApprovalIcons(props: ApprovalIconsProps) {
             approved: 1
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
-          fill: red[500]
+          fill: red[500],
+          ...svgIconSx
         }} />
         <ThumbUpIcon onClick={() => {
           updateAccessMutation.mutate({
             approved: 2
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
-          fill: green[500]
+          fill: green[500],
+          ...svgIconSx
         }} />
       </>
       break;
@@ -80,14 +85,16 @@ function ApprovalIcons(props: ApprovalIconsProps) {
             approved: 0
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
-          fill: red[500]
+          fill: red[500],
+          ...svgIconSx
         }} />
         <ThumbUpOutlinedIcon onClick={() => {
           updateAccessMutation.mutate({
             approved: 1
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
-          fill: green[500]
+          fill: green[500],
+          ...svgIconSx
         }} />
       </>
       break;
@@ -98,17 +105,19 @@ function ApprovalIcons(props: ApprovalIconsProps) {
 
 function AccessListItem(props: { access: IAccess }) {
   const { access } = props;
-  return <div className="items-center flex gap-3 border-2 shadow-md px-5 py-2 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
-    <div className="text-lg font-semibold hover:underline cursor-pointer mr-5">{access.police_nid}</div>
-    <div className="mr-5 flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
-    <div className="flex items-center gap-2">to <span className="flex items-center gap-1 uppercase font-bold hover:underline cursor-pointer text-sm">{access.type === "criminal" ? <AccountBoxIcon fontSize="small" /> : <WorkIcon fontSize="small" />} {access.type === "case" ? access.case_no : access.criminal_id}</span></div>
+  return <div className="hover:scale-[1.015] transition-transform duration-300 items-center flex gap-3 border-2 shadow-md p-5 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
+    <div className="text-lg font-semibold hover:underline cursor-pointer">{access.police_nid}</div>
+    <div className="flex gap-3">
+      <div className="flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
+      <div className="flex items-center gap-2">to <span className="flex items-center gap-1 uppercase font-bold hover:underline cursor-pointer text-sm">{access.type === "criminal" ? <AccountBoxIcon fontSize="small" /> : <WorkIcon fontSize="small" />} {access.type === "case" ? access.case_no : access.criminal_id}</span></div>
+    </div>
     <ApprovalIcons accessId={access.access_id} approved={access.approved} />
   </div>
 }
 
 export function AccessList(props: AccessListProps) {
   const { accesses } = props;
-  return <div className="flex gap-5 flex-col">{
+  return <div className="flex gap-5 px-5 flex-col overflow-hidden">{
     accesses.map(access => <AccessListItem access={access} key={access.access_id} />)
   }</div>
 }
