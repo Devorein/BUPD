@@ -187,7 +187,7 @@ export function generatePaginationQuery(
 					{
 						[sortField]: sqlClause.next[sortField],
 						[nextCursorProperty]: {
-							[sortOperator === '$gt' ? '$lt' : '$gt']: sqlClause.next.id,
+							[sortOperator]: sqlClause.next.id,
 						},
 					},
 				],

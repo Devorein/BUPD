@@ -6,7 +6,15 @@ module.exports = {
 	globals: {},
 	extends: ['airbnb-base', 'prettier', 'plugin:import/recommended', 'plugin:import/typescript'],
 	parser: '@typescript-eslint/parser',
-	ignorePatterns: ['dist', 'tests', 'examples', 'experiment', 'jest.config.js', '.eslintrc.js'],
+	ignorePatterns: [
+		'dist',
+		'tests',
+		'examples',
+		'experiment',
+		'jest.config.js',
+		'next.config.js',
+		'.eslintrc.js',
+	],
 	parserOptions: {
 		ecmaVersion: 12,
 		sourceType: 'module',
