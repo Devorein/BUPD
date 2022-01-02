@@ -1,7 +1,7 @@
-import { GetAccessesPayload } from '@bupd/types';
+import { GetAccessesPayload, GetCasefilesPayload } from '@bupd/types';
 import { SqlFilter } from '../types';
 
-export function convertClientQuery(clientFilter: GetAccessesPayload['filter']) {
+export function convertAccessFilter(clientFilter: GetAccessesPayload['filter']) {
 	const filter: SqlFilter = [];
 	if (clientFilter?.type && clientFilter.type.length !== 0) {
 		filter.push({
@@ -27,5 +27,24 @@ export function convertClientQuery(clientFilter: GetAccessesPayload['filter']) {
 		});
 	}
 
+	return filter;
+}
+export function convertCaseFilter(clientFilter: GetCasefilesPayload['filter']) {
+	const filter: SqlFilter = [];
+	if (clientFilter?.status && clientFilter.status.length !== 0) {
+		filter.push({
+			status: {
+				$in: clientFilter.status,
+			},
+		});
+	}
+
+	if (clientFilter?.priority && clientFilter.priority.length !== 0) {
+		filter.push({
+			priority: {
+				$in: clientFilter.priority,
+			},
+		});
+	}
 	return filter;
 }
