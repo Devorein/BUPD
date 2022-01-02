@@ -254,7 +254,7 @@ describe('.generatePaginationQuery', () => {
 				'access_id'
 			)
 		).toMatchObject({
-			filter: [{ field1: 'value1' }, { $or: [{ field2: {} }, { access_id: { $gt: 2 } }] }],
+			filter: [{ field1: 'value1' }, { $or: [{ field2: {} }, { access_id: { $lt: 2 } }] }],
 			sort: [
 				['field2', -1],
 				['access_id', -1],
@@ -279,7 +279,7 @@ describe('.generatePaginationQuery', () => {
 								$gt: 2,
 							},
 						},
-						{ access_id: { $lt: 2 } },
+						{ access_id: { $gt: 2 } },
 					],
 				},
 			],
