@@ -2,7 +2,6 @@ import { ApiResponse, GetCurrentUserResponse, LoginPayload, LoginResponse } from
 import { Form, Formik } from 'formik';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
-import qs from 'qs';
 import { UseMutationResult } from 'react-query';
 import * as Yup from 'yup';
 import { useGetCurrentUserQueryData } from '../api';
@@ -104,7 +103,7 @@ export default function Login() {
   const currentUser = useCurrentUser();
 
   if (currentUser) {
-    router.push({ pathname: '/', query: qs.stringify({ sort: ["approved", 1], limit: 10 }) })
+    router.push({ pathname: '/' })
   }
   return (
     <Page>

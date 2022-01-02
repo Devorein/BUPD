@@ -1,8 +1,6 @@
-import { IAccessFilter, IQuery } from "@bupd/types";
+import { GetAccessesPayload, IAccessFilter } from "@bupd/types";
 import { Typography } from "@mui/material";
-import { useRouter } from "next/router";
-import qs from "qs";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Button } from "./Button";
 import { CheckboxGroup } from "./CheckboxGroup";
 
@@ -12,14 +10,14 @@ const accessFilterInitialValue = (initialAccessFilter?: Partial<IAccessFilter>) 
   permission: initialAccessFilter?.permission ?? []
 } as IAccessFilter);
 
+interface AccessFilterFormProps {
+  setClientQuery: Dispatch<SetStateAction<GetAccessesPayload>>
+  clientFilter: GetAccessesPayload["filter"],
+  setClientFilter: Dispatch<SetStateAction<GetAccessesPayload["filter"]>>
+}
 
-export function AccessFilterForm() {
-  const [query, setQuery] = useState(accessFilterInitialValue());
-  const router = useRouter();
-  useEffect(() => {
-    const queryParams = qs.parse(router.asPath.slice(2)) as unknown as Partial<IQuery<any, any>> ?? {};
-    setQuery(accessFilterInitialValue(queryParams?.filter))
-  }, [router])
+export function AccessFilterForm(props: AccessFilterFormProps) {
+  const { setClientQuery, clientFilter, setClientFilter } = props;
 
   return <div className="flex flex-col gap-5">
     <Typography variant="h4">
@@ -29,25 +27,22 @@ export function AccessFilterForm() {
       ['2', <div key="approved">Unapproved</div>],
       ['1', <div key="approved">Approved</div>],
       ['0', <div key="disapproved">Disapproved</div>]
-    ]} label="Approval" setState={setQuery} state={query} stateKey="approved" />
+    ]} label="Approval" setState={setClientFilter} state={clientFilter} stateKey="approved" />
     <CheckboxGroup<IAccessFilter> items={[
       ['case', <div key="case">Case</div>],
       ['criminal', <div key="criminal">Criminal</div>]
-    ]} label="Type" setState={setQuery} state={query} stateKey="type" />
+    ]} label="Type" setState={setClientFilter} state={clientFilter} stateKey="type" />
     <CheckboxGroup<IAccessFilter> items={[
       ['read', <div key="read">View</div>],
       ['update', <div key="update">Update</div>],
       ['delete', <div key="delete">Delete</div>]
-    ]} label="Permission" setState={setQuery} state={query} stateKey="permission" />
+    ]} label="Permission" setState={setClientFilter} state={clientFilter} stateKey="permission" />
     <div className="mt-3 flex gap-3">
       <Button color="secondary" content="Apply" onClick={() => {
-        router.push({
-          pathname: "/",
-          query: qs.stringify({ ...(qs.parse(router.asPath.slice(2))), filter: query })
-        })
+        setClientQuery(clientQuery => ({ ...clientQuery, filter: clientFilter }))
       }} />
       <Button content="Reset" onClick={() => {
-        setQuery(accessFilterInitialValue())
+        setClientFilter(accessFilterInitialValue())
       }} />
     </div>
   </div>

@@ -11,9 +11,14 @@ export function useGetAccessesQueryData() {
 	};
 }
 
-export function useGetAccessesQuery(query: Partial<GetAccessesPayload>) {
+export function useGetAccessesQuery(query: GetAccessesPayload) {
 	const currentUser = useCurrentUser();
-	return useApiInfiniteQuery<IAccessPopulated>(['access', qs.stringify(query)], `access`, {
-		enabled: currentUser?.type === 'admin',
-	});
+	return useApiInfiniteQuery<IAccessPopulated, GetAccessesPayload>(
+		['access', qs.stringify(query)],
+		`access`,
+		query,
+		{
+			enabled: currentUser?.type === 'admin',
+		}
+	);
 }

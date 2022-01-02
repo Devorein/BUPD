@@ -1,20 +1,18 @@
 import { ApiResponse, IQuery, PaginatedResponse } from "@bupd/types";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import router from "next/router";
-import qs from "qs";
 import { FetchNextPageOptions, InfiniteQueryObserverResult } from 'react-query';
 import { Button } from "./Button";
 
-interface LoadMoreButtonProps {
+interface LoadMoreButtonProps<Payload extends IQuery<any, any>> {
   hasNextPage?: boolean
   isQueryFetching: boolean
   lastFetchedPage: ApiResponse<PaginatedResponse<any>> | null | undefined
   fetchNextPage: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<ApiResponse<PaginatedResponse<any>>, Error>>,
+  payload: Payload
 }
 
-export function LoadMoreButton(props: LoadMoreButtonProps) {
-  const { fetchNextPage, hasNextPage, isQueryFetching, lastFetchedPage } = props;
-  const query = qs.parse(router.asPath.slice(2)) as unknown as IQuery<any, any>;
+export function LoadMoreButton<Payload extends IQuery<any, any>>(props: LoadMoreButtonProps<Payload>) {
+  const { fetchNextPage, hasNextPage, isQueryFetching, lastFetchedPage, payload } = props;
 
   return <div className="flex justify-center mt-5">
     {hasNextPage && !isQueryFetching && (
@@ -25,13 +23,13 @@ export function LoadMoreButton(props: LoadMoreButtonProps) {
           paddingRight: '5px'
         }}
         onClick={() => {
-          if (query) {
-            query.next = lastFetchedPage?.status === "success"
+          if (payload) {
+            payload.next = lastFetchedPage?.status === "success"
               ? lastFetchedPage.data?.next
               : null
           }
           fetchNextPage({
-            pageParam: qs.stringify(query)
+            pageParam: payload
           });
         }}
         content={
