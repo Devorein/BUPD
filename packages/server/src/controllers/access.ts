@@ -15,7 +15,7 @@ import { Request, Response } from 'express';
 import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
 import { generateInsertQuery, logger, query } from '../utils';
-import { convertClientQuery } from '../utils/convertClientQuery';
+import { convertAccessFilter } from '../utils/convertClientQuery';
 import {
 	getAccessAttributes,
 	getCasefileAttributes,
@@ -63,9 +63,9 @@ const AccessController = {
 			status: 'success',
 			data: await paginate<IAccessPopulated>(
 				{
-					filter: convertClientQuery(req.query.filter),
+					filter: convertAccessFilter(req.query.filter),
 					limit: req.query.limit,
-					sort: [req.query.sort],
+					sort: req.query.sort ? [req.query.sort] : [],
 					select: [
 						...getPoliceAttributes('Police', ['password']),
 						...getAccessAttributes('Access'),

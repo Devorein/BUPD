@@ -168,9 +168,13 @@ export interface IAccessFilter {
 	permission: TAccessPermission[];
 	type: TAccessType[];
 }
+export interface ICasefileFilter {
+	status: ICasefile['status'][];
+	priority: ICasefile['priority'][];
+}
 
 export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];
-
+export type ICasefileSort = ['case_no' | 'priority' | 'status' | 'time', -1 | 1];
 export interface IPoliceFilter {
 	designation?: string;
 	rank?: string;
@@ -203,7 +207,8 @@ export type GetCasefileResponse = ApiResponse<ICasefile>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;
 export interface GetAccessesPayload extends IQuery<IAccessFilter, IAccessSort> {}
 export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccessPopulated>>;
-
+export type GetCasefilesResponse = ApiResponse<PaginatedResponse<ICasefile>>;
+export type GetCasefilesPayload = IQuery<ICasefileFilter, ICasefileSort>;
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
 
 export interface CreateAccessPayload {
