@@ -18,10 +18,7 @@ const CriminalController = {
 			const payload = req.body;
 			const [criminal] = await CriminalModel.find({ filter: [{ criminal_id: criminalId }] });
 			if (!criminal) {
-				res.json({
-					status: 'error',
-					message: "Criminal doesn't exist",
-				});
+				handleError(res, 404, "Criminal doesn't exist");
 			} else {
 				await CriminalModel.update(
 					[
@@ -41,10 +38,7 @@ const CriminalController = {
 			}
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: "Couldn't update the criminal",
-			});
+			handleError(res, 500, "Couldn't update the criminal");
 		}
 	},
 	async delete(

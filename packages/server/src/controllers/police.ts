@@ -25,10 +25,7 @@ const PoliceController = {
 			const payload = req.body;
 			const [police] = await PoliceModel.find({ filter: [{ email: jwtPayload.email }] });
 			if (!police) {
-				res.json({
-					status: 'error',
-					message: "Police doesn't exist",
-				});
+				handleError(res, 404, `No Police exists with email ${jwtPayload.email}`);
 			} else {
 				await PoliceModel.update(
 					[
@@ -55,10 +52,7 @@ const PoliceController = {
 			}
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: "Couldn't update your profile",
-			});
+			handleError(res, 500, "Couldn't update your profile");
 		}
 	},
 	async get(req: Request<any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
@@ -86,10 +80,7 @@ const PoliceController = {
 				});
 			}
 		} else {
-			res.json({
-				status: 'error',
-				message: 'No valid polices given to delete',
-			});
+			handleError(res, 404, 'No valid polices given to delete');
 		}
 	},
 	async getOnNid(req: Request<{ nid: number }>, res: Response<GetPoliceResponse>) {

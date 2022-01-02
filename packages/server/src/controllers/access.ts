@@ -14,7 +14,7 @@ import {
 import { Request, Response } from 'express';
 import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
-import { generateInsertQuery, logger, query } from '../utils';
+import { generateInsertQuery, handleError, logger, query } from '../utils';
 import { convertClientQuery } from '../utils/convertClientQuery';
 import {
 	getAccessAttributes,
@@ -48,10 +48,7 @@ const AccessController = {
 			});
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: 'Something went wrong. Please try again.',
-			});
+			handleError(res);
 		}
 	},
 
@@ -106,10 +103,7 @@ const AccessController = {
 			const payload = req.body;
 			const [access] = await AccessModel.find({ filter: [{ access_id: accessId }] });
 			if (!access) {
-				res.json({
-					status: 'error',
-					message: "Access doesn't exist",
-				});
+				handleError(res, 404, "Access doesn't exist");
 			} else {
 				await AccessModel.update(
 					[
@@ -133,10 +127,7 @@ const AccessController = {
 			}
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: "Couldn't update access",
-			});
+			handleError(res, 500, "Couldn't update access");
 		}
 	},
 };

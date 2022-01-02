@@ -50,9 +50,7 @@ const hasAccess =
 					default:
 						handleError(res, 403, `Not Authorized to ${accessPermissions[0]} ${accessType}`);
 				}
-				// const test = await AccessModel.find({ filter });
-				// if (Object.keys(test[0]).length > 0) next();
-				// else handleError(res, 403, `Not Authorized to ${accessPermission} ${accessType}`);
+				handleError(res, 403, `Not Authorized to ${accessPermissions[0]} ${accessType}`);
 			}
 		} catch (err) {
 			logger.error(err);
