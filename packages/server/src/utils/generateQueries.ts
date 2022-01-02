@@ -14,6 +14,7 @@ import {
 	SqlFilterNeqOperator,
 	SqlFilterOperators,
 	SqlFilterOr,
+	SqlJoins,
 } from '../types';
 
 /**
@@ -140,14 +141,32 @@ export function generateSetClause(payload: Record<string, any>) {
 		.join(',')}`;
 }
 
+export function generateJoinClause(joins: SqlJoins) {
+	return joins.length !== 0
+		? joins
+				.map(
+					([leftTable, rightTable, leftTableAttribute, rightTableAttribute, joinType]) =>
+						`${leftTable} as ${leftTable} ${
+							joinType ?? 'INNER JOIN'
+						} ${rightTable} as ${rightTable} on ${leftTable}.${leftTableAttribute} = ${rightTable}.${rightTableAttribute}`
+				)
+				.join(' ')
+		: '';
+}
+
 export function generateSelectQuery(sqlClause: SqlClause, table: string) {
 	const clauses: string[] = [];
 	if (sqlClause.filter) clauses.push(generateWhereClause(sqlClause.filter));
 	if (sqlClause.sort) clauses.push(generateOrderbyClause(sqlClause.sort));
 	if (sqlClause.limit) clauses.push(generateLimitClause(sqlClause.limit));
+	const hasJoins = sqlClause.joins && sqlClause.joins.length !== 0;
 	return `SELECT ${
-		sqlClause.select ? sqlClause.select.map((attribute) => `\`${attribute}\``).join(',') : '*'
-	} FROM ${table} ${clauses.join(' ')};`;
+		sqlClause.select
+			? sqlClause.select
+					.map((attribute) => (hasJoins ? `${attribute} as \`${attribute}\`` : `\`${attribute}\``))
+					.join(',')
+			: '*'
+	} FROM ${hasJoins ? generateJoinClause(sqlClause.joins!) : table} ${clauses.join(' ')};`;
 }
 
 export function generateCountQuery(filterQuery: SqlFilter, table: string) {
