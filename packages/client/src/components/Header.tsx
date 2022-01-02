@@ -19,6 +19,7 @@ export function Header() {
       currentUserName = currentUser.name
     }
   }
+
   return <div className="flex gap-3 items-center justify-between shadow-md p-3">
     <div onClick={() => {
       router.push({ pathname: '/', query: qs.stringify({ sort: ["approved", 1], limit: 10 }) })

@@ -285,7 +285,7 @@ describe('.generatePaginationQuery', () => {
 			],
 			sort: [
 				['field2', 1],
-				['access_id', -1],
+				['access_id', 1],
 			],
 			next: { id: 2 },
 		});

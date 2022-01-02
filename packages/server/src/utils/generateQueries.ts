@@ -171,11 +171,11 @@ export function generatePaginationQuery(
 	nextCursorProperty: string
 ) {
 	const filter: SqlFilter = [];
+	const sortField = sqlClause.sort?.[0]?.[0];
+	const sortOrder = sqlClause.sort?.[0]?.[1];
+	const sortOperator = sqlClause.sort && sortOrder === -1 ? '$lt' : '$gt';
 
 	if (sqlClause.next) {
-		const sortField = sqlClause.sort?.[0]?.[0];
-		const sortOrder = sqlClause.sort?.[0]?.[1];
-		const sortOperator = sqlClause.sort && sortOrder === 1 ? '$gt' : '$lt';
 		if (sortField && sortOrder) {
 			filter.push({
 				$or: [
@@ -201,7 +201,7 @@ export function generatePaginationQuery(
 		}
 	}
 
-	const sort: SqlClause['sort'] = [...(sqlClause.sort ?? []), [nextCursorProperty, -1]];
+	const sort: SqlClause['sort'] = [...(sqlClause.sort ?? []), [nextCursorProperty, sortOrder ?? 1]];
 
 	return {
 		...sqlClause,

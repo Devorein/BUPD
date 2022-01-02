@@ -61,8 +61,8 @@ export default function Register() {
           }}
         >
           {({ isSubmitting, isValid }) => (
-            <Form>
-              <div className="my-5 text-center uppercase">
+            <Form className="p-5 shadow-md rounded-md">
+              <div className="underline my-5 text-center uppercase">
                 <Typography variant="h4">Register a police</Typography>
               </div>
               <div className="flex flex-col min-w-[450px] max-h-[500px] overflow-auto pr-5">
