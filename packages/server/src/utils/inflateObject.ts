@@ -1,6 +1,4 @@
 export function inflateObject<Data>(object: Record<string, any>, baseKey: string) {
-	console.log(JSON.stringify(object));
-
 	const baseObject: Record<string, any> = {};
 	Object.keys(object).forEach((objectKey) => {
 		const [keyFirstPart, keySecondPart] = objectKey.split('.');

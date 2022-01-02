@@ -1,19 +1,26 @@
-import { GetAccessesPayload, IAccess, PaginatedResponse } from '@bupd/types';
+import { GetAccessesPayload, IAccessPopulated, PaginatedResponse } from '@bupd/types';
 import qs from 'qs';
+import { useContext } from 'react';
+import { RootContext } from '../../contexts';
 import { CacheHitFunction, useQueryClientSetInfiniteData } from '../../hooks';
 import { useApiInfiniteQuery } from '../../hooks/useApiInfiniteQuery';
-import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 export function useGetAccessesQueryData() {
-	const queryClientSetData = useQueryClientSetInfiniteData<PaginatedResponse<IAccess>>();
-	return (cacheHitCb: CacheHitFunction<PaginatedResponse<IAccess>>) => {
+	const queryClientSetData = useQueryClientSetInfiniteData<PaginatedResponse<IAccessPopulated>>();
+	return (cacheHitCb: CacheHitFunction<PaginatedResponse<IAccessPopulated>>) => {
 		queryClientSetData(['access'], cacheHitCb);
 	};
 }
 
-export function useGetAccessesQuery(query: Partial<GetAccessesPayload>) {
-	const currentUser = useCurrentUser();
-	return useApiInfiniteQuery<IAccess>(['access', qs.stringify(query)], `access`, {
-		enabled: currentUser?.type === 'admin',
-	});
+export function useGetAccessesQuery(query: GetAccessesPayload) {
+	const { currentUser } = useContext(RootContext);
+	delete (query as any).next;
+	return useApiInfiniteQuery<IAccessPopulated, GetAccessesPayload>(
+		['access', qs.stringify(query)],
+		`access`,
+		query,
+		{
+			enabled: currentUser?.type === 'admin',
+		}
+	);
 }
