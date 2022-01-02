@@ -53,7 +53,6 @@ const AccessController = {
 	) => {
 		res.json({
 			status: 'success',
-			// TODO: Convert client query to sql filter
 			data: await paginate<IAccess>(
 				{
 					filter: convertClientQuery(req.query.filter),

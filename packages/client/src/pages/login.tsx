@@ -70,7 +70,7 @@ function FormikForm(props: FormikFormProps) {
     }}
   >
     {({ isSubmitting, isValid }) => (
-      <Form>
+      <Form className="shadow-md p-5">
         <div className="flex flex-col min-w-[350px]">
           <FormikTextInput
             disabled={loginMutation.isLoading}

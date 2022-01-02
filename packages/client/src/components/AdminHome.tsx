@@ -24,7 +24,7 @@ export function AdminHome() {
 
   function render() {
     if (getAccessesQueryData) {
-      return <div className="flex justify-center flex-col gap-3 my-5 items-center w-3/4">
+      return <div className="flex justify-center flex-col gap-3 my-5 items-center max-w-[750px] w-3/4">
         <div className="mb-5">
           <Typography className="uppercase" variant="h5">Access Requests</Typography>
         </div>
