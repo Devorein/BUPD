@@ -11,8 +11,6 @@ export function generatePaginationQuery(
 	const sortOrder = sqlClause.sort?.[0]?.[1];
 	const sortOperator = sqlClause.sort && sortOrder === -1 ? '$lt' : '$gt';
 
-	const sqlClauseSort = sqlClause.sort;
-
 	if (sqlClause.next) {
 		if (sortField && sortOrder) {
 			const secondarySortField = nullableSortFields?.[sortField];
@@ -46,18 +44,16 @@ export function generatePaginationQuery(
 						},
 					});
 				}
-				if (sqlClauseSort && secondarySortField) {
-					sqlClauseSort.push([secondarySortField, sortOrder]);
+				if (sqlClause.sort && secondarySortField) {
+					sqlClause.sort.push([secondarySortField, sortOrder]);
 				}
 			} else if (secondarySortField) {
 				// We have reached null for our cursor key, so use the secondary key as cursor
 				// Use the tuples second value to sort the rest of the rows
 
 				// Update the sort to use the secondary key as sort field
-				if (sqlClauseSort?.[0]) {
-					// eslint-disable-next-line
-					sqlClauseSort[0][0] = secondarySortField;
-				}
+				// eslint-disable-next-line
+				sqlClause!.sort![0][0] = secondarySortField;
 
 				filter.push({
 					[sortField]: {
@@ -92,12 +88,12 @@ export function generatePaginationQuery(
 		}
 	} else if (sortField && sortOrder) {
 		const secondarySortField = nullableSortFields?.[sortField];
-		if (sqlClauseSort && secondarySortField) {
-			sqlClauseSort.push([secondarySortField, sortOrder]);
+		if (sqlClause.sort && secondarySortField) {
+			sqlClause.sort.push([secondarySortField, sortOrder]);
 		}
 	}
 
-	const sort: SqlClause['sort'] = [...(sqlClauseSort ?? []), [nextCursorProperty, sortOrder ?? 1]];
+	const sort: SqlClause['sort'] = [...(sqlClause.sort ?? []), [nextCursorProperty, sortOrder ?? 1]];
 
 	return {
 		...sqlClause,
