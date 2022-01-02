@@ -28,7 +28,7 @@ export const AccessPayload = {
 		.noUnknown(),
 	update: yup
 		.object({
-			approved: yup.number().oneOf([0, 1]),
+			approved: yup.number().oneOf([0, 1, 2]),
 		})
 		.strict()
 		.noUnknown(),

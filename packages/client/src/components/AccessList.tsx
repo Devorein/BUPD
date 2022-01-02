@@ -61,7 +61,7 @@ function ApprovalIcons(props: ApprovalIconsProps) {
       approvalIcons = <>
         <ThumbDownOutlinedIcon onClick={() => {
           updateAccessMutation.mutate({
-            approved: 1
+            approved: 0
           }, updateAccessMutationCache(accessId))
         }} className="cursor-pointer" fontSize="small" sx={{
           fill: red[500],
