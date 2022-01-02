@@ -37,7 +37,7 @@ export type TAccessType = 'case' | 'criminal';
 export interface IAccess {
 	access_id: number;
 	permission: TAccessPermission;
-	approved: 1 | 0;
+	approved: 1 | 0 | 2;
 	police_nid: number;
 	type: TAccessType;
 	criminal_id: number | null;
@@ -158,7 +158,7 @@ export type UpdateAccessPayload = Pick<IAccess, 'approved'>;
 export interface UpdateAccessResponse extends IAccess {}
 
 export interface IAccessFilter {
-	approved: (0 | 1)[];
+	approved: IAccess['approved'][];
 	permission: TAccessPermission[];
 	type: TAccessType[];
 }

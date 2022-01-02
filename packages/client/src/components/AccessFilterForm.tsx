@@ -26,6 +26,7 @@ export function AccessFilterForm() {
       Filter
     </Typography>
     <CheckboxGroup<IAccessFilter> items={[
+      ['2', <div key="approved">Unapproved</div>],
       ['1', <div key="approved">Approved</div>],
       ['0', <div key="disapproved">Disapproved</div>]
     ]} label="Approval" setState={setQuery} state={query} stateKey="approved" />
