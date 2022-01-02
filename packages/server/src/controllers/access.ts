@@ -81,7 +81,17 @@ const AccessController = {
 				},
 				'Access',
 				'access_id',
-				(rows) => rows.map((row) => inflateObject(row, 'Access'))
+				(rows) =>
+					rows.map((row) => {
+						const inflatedObject = inflateObject(row, 'Access') as IAccessPopulated;
+						inflatedObject.casefile = inflatedObject.casefile?.case_no
+							? inflatedObject.casefile
+							: null;
+						inflatedObject.criminal = inflatedObject.criminal?.criminal_id
+							? inflatedObject.criminal
+							: null;
+						return inflatedObject;
+					})
 			),
 		});
 	},
