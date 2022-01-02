@@ -24,13 +24,13 @@ export function AdminHome() {
 
   function render() {
     if (getAccessesQueryData) {
-      return <div className="flex justify-center flex-col gap-3 my-5 items-center max-w-[750px] w-3/4" style={{ height: "calc(100% - 50px)" }}>
-        <div className="mb-5">
-          <Typography className="uppercase" variant="h5">Access Requests</Typography>
-        </div>
-        <div className="flex gap-8 justify-between w-full h-full">
+      return <div className="flex justify-center gap-10 my-5 items-center w-full" style={{ height: "calc(100% - 50px)" }}>
+        <div className="h-full px-5">
           <AccessFilterForm />
+        </div>
 
+        <div className="flex gap-8 flex-col justify-between w-full h-full">
+          <Typography className="uppercase" variant="h4">Access Requests</Typography>
           <div className="flex flex-col gap-3 w-full h-full">
             <div className="flex justify-between items-center">
               <div className="flex gap-3 w-full">
@@ -52,9 +52,9 @@ export function AdminHome() {
               <AccessList accesses={allAccessesItems} />
             </div>
           </div>
+          <LoadMoreButton fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allAccessesItems.length !== totalItems} />
         </div>
 
-        <LoadMoreButton fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allAccessesItems.length !== totalItems} />
       </div>;
     }
     return null;

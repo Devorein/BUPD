@@ -13,7 +13,7 @@ export function CheckboxGroup<State>(props: CheckboxGroupProps<State>) {
   const { items, state, setState, stateKey, label } = props;
   const checkedItems = state[stateKey] as unknown as (string | number)[];
   return <div className="CheckboxGroup flex flex-col gap-3">
-    <Typography variant="h6">{label}</Typography>
+    <Typography variant="h5">{label}</Typography>
     <div className="flex flex-col gap-3">
       {items.map((item) => {
         const currentLabel = Array.isArray(item) ? item[1] : item, value = Array.isArray(item) ? item[0] : item;

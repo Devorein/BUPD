@@ -98,10 +98,12 @@ function ApprovalIcons(props: ApprovalIconsProps) {
 
 function AccessListItem(props: { access: IAccess }) {
   const { access } = props;
-  return <div className="items-center flex gap-3 border-2 shadow-md px-5 py-2 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
-    <div className="text-lg font-semibold hover:underline cursor-pointer mr-5">{access.police_nid}</div>
-    <div className="mr-5 flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
-    <div className="flex items-center gap-2">to <span className="flex items-center gap-1 uppercase font-bold hover:underline cursor-pointer text-sm">{access.type === "criminal" ? <AccountBoxIcon fontSize="small" /> : <WorkIcon fontSize="small" />} {access.type === "case" ? access.case_no : access.criminal_id}</span></div>
+  return <div className="items-center flex gap-3 border-2 shadow-md p-5 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>
+    <div className="text-lg font-semibold hover:underline cursor-pointer">{access.police_nid}</div>
+    <div className="flex gap-3">
+      <div className="flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
+      <div className="flex items-center gap-2">to <span className="flex items-center gap-1 uppercase font-bold hover:underline cursor-pointer text-sm">{access.type === "criminal" ? <AccountBoxIcon fontSize="small" /> : <WorkIcon fontSize="small" />} {access.type === "case" ? access.case_no : access.criminal_id}</span></div>
+    </div>
     <ApprovalIcons accessId={access.access_id} approved={access.approved} />
   </div>
 }
