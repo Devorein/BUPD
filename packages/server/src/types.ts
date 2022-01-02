@@ -8,7 +8,7 @@ declare module 'express' {
 	}
 }
 
-export type PrimitiveValues = string | number | boolean;
+export type PrimitiveValues = string | number | boolean | null;
 
 export type SqlFilterInOperator = {
 	$in: PrimitiveValues[];
@@ -16,6 +16,10 @@ export type SqlFilterInOperator = {
 
 export type SqlFilterEqOperator = {
 	$eq: PrimitiveValues;
+};
+
+export type SqlFilterIsOperator = {
+	$is: PrimitiveValues;
 };
 
 export type SqlFilterNeqOperator = {
@@ -45,7 +49,8 @@ export type SqlFilterOperators =
 	| SqlFilterGteOperator
 	| SqlFilterGtOperator
 	| SqlFilterLtOperator
-	| SqlFilterLteOperator;
+	| SqlFilterLteOperator
+	| SqlFilterIsOperator;
 export interface SqlFilterOr {
 	// eslint-disable-next-line
 	$or: SqlFilter;

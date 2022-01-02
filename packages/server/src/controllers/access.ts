@@ -91,7 +91,11 @@ const AccessController = {
 							? inflatedObject.criminal
 							: null;
 						return inflatedObject;
-					})
+					}),
+				{
+					criminal_id: 'case_no',
+					case_no: 'criminal_id',
+				}
 			),
 		});
 	},

@@ -54,7 +54,7 @@ function parseObject(obj: Record<string, any>) {
 	const result: Record<string, any> = {};
 	Object.keys(obj).forEach((key) => {
 		const val = parseValue(obj[key]);
-		if (val !== null) result[key] = val; // ignore null values
+		result[key] = val; // ignore null values
 	});
 	return result;
 }

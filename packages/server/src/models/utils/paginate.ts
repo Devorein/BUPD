@@ -9,13 +9,22 @@ export async function paginate<Data>(
 	table: string,
 	nextCursorProperty: keyof Data,
 	// eslint-disable-next-line
-	rowTransform?: (rows: Data[]) => Data[]
+	rowTransform?: (rows: Data[]) => Data[],
+	nullableSortFields?: Record<string, string>
 ) {
+	const sortField = sqlClause.sort?.[0]?.[0];
+
+	let next: PaginatedResponse<any>['next'] = null;
+
 	// Generate the total counts first as sqlClause.filter will be mutated by generatePaginationQuery
 	const rowsCount = (await query(
 		generateCountQuery(sqlClause.filter ?? [], table)
 	)) as RowDataPacket[];
-	const paginationQuery = generatePaginationQuery(sqlClause, nextCursorProperty as string);
+	const paginationQuery = generatePaginationQuery(
+		sqlClause,
+		nextCursorProperty as string,
+		nullableSortFields as Record<string, string>
+	);
 
 	let rows = await find<Data>(paginationQuery, table);
 
@@ -23,9 +32,6 @@ export async function paginate<Data>(
 		rows = rowTransform(rows);
 	}
 
-	const sortField = sqlClause.sort?.[0]?.[0];
-
-	let next: PaginatedResponse<any>['next'] = null;
 	// Get the last row
 	const lastRow = rows[rows.length - 1];
 	if (lastRow) {
@@ -35,6 +41,11 @@ export async function paginate<Data>(
 		};
 
 		if (sortField) {
+			const secondarySortField = nullableSortFields?.[sortField as string];
+			const isLastRowPrimarySortNull = lastRow[sortField as keyof Data] === null;
+			if (isLastRowPrimarySortNull && secondarySortField) {
+				next[secondarySortField] = lastRow[secondarySortField as keyof Data];
+			}
 			next[sortField] = lastRow[sortField as keyof Data];
 		}
 	}

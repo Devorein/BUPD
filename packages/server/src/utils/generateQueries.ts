@@ -9,6 +9,7 @@ import {
 	SqlFilterGteOperator,
 	SqlFilterGtOperator,
 	SqlFilterInOperator,
+	SqlFilterIsOperator,
 	SqlFilterLteOperator,
 	SqlFilterLtOperator,
 	SqlFilterNeqOperator,
@@ -47,33 +48,45 @@ export function generateScalarClauses(
 ) {
 	const innerWhereClauses: string[] = [];
 	Object.entries(andFilters).forEach(([key, value]) => {
-		const formattedKey = `${namespace ? `${namespace}.` : ''}\`${key}\``;
-		if (Object.prototype.hasOwnProperty.call(value, '$lt')) {
-			innerWhereClauses.push(`${formattedKey}<${mysql.escape((value as SqlFilterLtOperator).$lt)}`);
-		} else if (Object.prototype.hasOwnProperty.call(value, '$in')) {
-			innerWhereClauses.push(
-				`${formattedKey} IN(${(value as SqlFilterInOperator).$in
-					.map((operand) => mysql.escape(operand))
-					.join(',')})`
-			);
-		} else if (Object.prototype.hasOwnProperty.call(value, '$lte')) {
-			innerWhereClauses.push(
-				`${formattedKey}<=${mysql.escape((value as SqlFilterLteOperator).$lte)}`
-			);
-		} else if (Object.prototype.hasOwnProperty.call(value, '$gte')) {
-			innerWhereClauses.push(
-				`${formattedKey}>=${mysql.escape((value as SqlFilterGteOperator).$gte)}`
-			);
-		} else if (Object.prototype.hasOwnProperty.call(value, '$gt')) {
-			innerWhereClauses.push(`${formattedKey}>${mysql.escape((value as SqlFilterGtOperator).$gt)}`);
-		} else if (Object.prototype.hasOwnProperty.call(value, '$eq')) {
-			innerWhereClauses.push(`${formattedKey}=${mysql.escape((value as SqlFilterEqOperator).$eq)}`);
-		} else if (Object.prototype.hasOwnProperty.call(value, '$neq')) {
-			innerWhereClauses.push(
-				`${formattedKey}!=${mysql.escape((value as SqlFilterNeqOperator).$neq)}`
-			);
-		} else {
-			innerWhereClauses.push(`${formattedKey}=${mysql.escape(value)}`);
+		if (value !== undefined) {
+			const formattedKey = `${namespace ? `${namespace}.` : ''}\`${key}\``;
+			if (Object.prototype.hasOwnProperty.call(value, '$lt')) {
+				innerWhereClauses.push(
+					`${formattedKey}<${mysql.escape((value as SqlFilterLtOperator).$lt)}`
+				);
+			} else if (Object.prototype.hasOwnProperty.call(value, '$in')) {
+				innerWhereClauses.push(
+					`${formattedKey} IN(${(value as SqlFilterInOperator).$in
+						.map((operand) => mysql.escape(operand))
+						.join(',')})`
+				);
+			} else if (Object.prototype.hasOwnProperty.call(value, '$lte')) {
+				innerWhereClauses.push(
+					`${formattedKey}<=${mysql.escape((value as SqlFilterLteOperator).$lte)}`
+				);
+			} else if (Object.prototype.hasOwnProperty.call(value, '$is')) {
+				innerWhereClauses.push(
+					`${formattedKey} IS ${mysql.escape((value as SqlFilterIsOperator).$is)}`
+				);
+			} else if (Object.prototype.hasOwnProperty.call(value, '$gte')) {
+				innerWhereClauses.push(
+					`${formattedKey}>=${mysql.escape((value as SqlFilterGteOperator).$gte)}`
+				);
+			} else if (Object.prototype.hasOwnProperty.call(value, '$gt')) {
+				innerWhereClauses.push(
+					`${formattedKey}>${mysql.escape((value as SqlFilterGtOperator).$gt)}`
+				);
+			} else if (Object.prototype.hasOwnProperty.call(value, '$eq')) {
+				innerWhereClauses.push(
+					`${formattedKey}=${mysql.escape((value as SqlFilterEqOperator).$eq)}`
+				);
+			} else if (Object.prototype.hasOwnProperty.call(value, '$neq')) {
+				innerWhereClauses.push(
+					`${formattedKey}!=${mysql.escape((value as SqlFilterNeqOperator).$neq)}`
+				);
+			} else {
+				innerWhereClauses.push(`${formattedKey}=${mysql.escape(value)}`);
+			}
 		}
 	});
 
@@ -218,30 +231,86 @@ export function generateDeleteQuery(filterQuery: SqlFilter, table: string) {
 
 export function generatePaginationQuery(
 	sqlClause: SqlClause & { next?: NextKey },
-	nextCursorProperty: string
+	nextCursorProperty: string,
+	nullableSortFields?: Record<string, string>
 ) {
 	const filter: SqlFilter = [];
 	const sortField = sqlClause.sort?.[0]?.[0];
 	const sortOrder = sqlClause.sort?.[0]?.[1];
 	const sortOperator = sqlClause.sort && sortOrder === -1 ? '$lt' : '$gt';
 
+	const sqlClauseSort = sqlClause.sort;
+
 	if (sqlClause.next) {
 		if (sortField && sortOrder) {
-			filter.push({
-				$or: [
+			const secondarySortField = nullableSortFields?.[sortField];
+			const sortFieldValue = sqlClause.next[sortField];
+			const filterOr: SqlFilterOr = {
+				$or: [],
+			};
+
+			if (sortFieldValue !== null) {
+				filterOr.$or.push(
 					{
 						[sortField]: {
-							[sortOperator]: sqlClause.next[sortField],
+							[sortOperator]: sortFieldValue,
 						},
-					},
+					} as Record<string, PrimitiveValues | SqlFilterOperators>,
 					{
-						[sortField]: sqlClause.next[sortField],
+						[sortField]: {
+							$eq: sqlClause.next[sortField],
+						},
 						[nextCursorProperty]: {
 							[sortOperator]: sqlClause.next.id,
 						},
+					} as Record<string, PrimitiveValues | SqlFilterOperators>
+				);
+
+				// If the field might have null as a value and sort field value is next is not null
+				if (secondarySortField) {
+					filterOr.$or.push({
+						[sortField]: {
+							$is: null,
+						},
+					});
+				}
+				if (sqlClauseSort && secondarySortField) {
+					sqlClauseSort.push([secondarySortField, sortOrder]);
+				}
+			} else if (secondarySortField) {
+				// We have reached null for our cursor key, so use the secondary key as cursor
+				// Use the tuples second value to sort the rest of the rows
+
+				// Update the sort to use the secondary key as sort field
+				if (sqlClauseSort?.[0]) {
+					// eslint-disable-next-line
+					sqlClauseSort[0][0] = secondarySortField;
+				}
+
+				filter.push({
+					[sortField]: {
+						$is: null,
 					},
-				],
-			});
+				});
+
+				filterOr.$or.push(
+					{
+						[secondarySortField]: {
+							[sortOperator]: sqlClause.next[secondarySortField],
+						},
+					} as Record<string, PrimitiveValues | SqlFilterOperators>,
+					{
+						[secondarySortField]: {
+							$eq: sqlClause.next[secondarySortField],
+						},
+						[nextCursorProperty]: {
+							[sortOperator]: sqlClause.next.id,
+						},
+					} as Record<string, PrimitiveValues | SqlFilterOperators>
+				);
+			}
+
+			filter.push(filterOr);
 		} else {
 			filter.push({
 				[nextCursorProperty]: {
@@ -251,7 +320,7 @@ export function generatePaginationQuery(
 		}
 	}
 
-	const sort: SqlClause['sort'] = [...(sqlClause.sort ?? []), [nextCursorProperty, sortOrder ?? 1]];
+	const sort: SqlClause['sort'] = [...(sqlClauseSort ?? []), [nextCursorProperty, sortOrder ?? 1]];
 
 	return {
 		...sqlClause,
