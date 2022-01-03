@@ -1,4 +1,4 @@
-import { IAccessSort, TCasefilePriority, TCasefileStatus } from '@bupd/types';
+import { IAccessSort, IPoliceSort, TCasefilePriority, TCasefileStatus } from '@bupd/types';
 import { Theme } from '@emotion/react';
 import { SxProps } from '@mui/material';
 
@@ -37,3 +37,12 @@ export const accessSortLabelRecord: Record<`${IAccessSort[0]}.${IAccessSort[1]}`
 	'permission.-1': 'Permission desc',
 	'permission.1': 'Permission asc',
 } as any;
+
+export const policeSortLabelRecord: Record<`${IPoliceSort[0]}.${IPoliceSort[1]}`, string> = {
+	'designation.-1': 'Designation desc',
+	'designation.1': 'Designation asc',
+	'name.-1': 'Name desc',
+	'name.1': 'Name asc',
+	'rank.-1': 'Rank desc',
+	'rank.1': 'Rank asc',
+};

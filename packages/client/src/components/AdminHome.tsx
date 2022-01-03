@@ -9,7 +9,7 @@ import { AccessList } from "./AccessList";
 import { LoadMoreButton } from "./LoadMoreButton";
 import { Select } from "./Select";
 
-const createInitialAccessQuery = (query?: Partial<GetAccessesPayload>): GetAccessesPayload => ({
+const createInitialGetAccessesQuery = (query?: Partial<GetAccessesPayload>): GetAccessesPayload => ({
   limit: 10,
   next: null,
   sort: ["approved", -1],
@@ -23,7 +23,7 @@ const createInitialAccessQuery = (query?: Partial<GetAccessesPayload>): GetAcces
 })
 
 export function AdminHome() {
-  const [clientQuery, setClientQuery] = useState(createInitialAccessQuery());
+  const [clientQuery, setClientQuery] = useState(createInitialGetAccessesQuery());
   const [dummyQuery, setDummyQuery] = useState<GetAccessesPayload>(
     clientQuery,
   );

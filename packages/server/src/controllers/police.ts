@@ -14,6 +14,8 @@ import { Request, Response } from 'express';
 import { PoliceModel } from '../models';
 import { paginate } from '../models/utils/paginate';
 import { generatePoliceJwtToken, handleError, logger, removeFields } from '../utils';
+import { convertPoliceFilter } from '../utils/convertClientQuery';
+import { getPoliceAttributes } from '../utils/generateAttributes';
 
 const PoliceController = {
 	async update(
@@ -55,14 +57,16 @@ const PoliceController = {
 			handleError(res, 500, "Couldn't update your profile");
 		}
 	},
-	async get(req: Request<any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
+	async get(req: Request<any, any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
 		res.json({
 			status: 'success',
 			data: await paginate<IPolice>(
 				{
 					...req.query,
+					sort: req.query.sort ? [req.query.sort] : [],
+					filter: convertPoliceFilter(req.query.filter),
 					// Custom select to remove password field
-					select: ['nid', 'name', 'email', 'address', 'designation', 'phone', 'rank'],
+					select: getPoliceAttributes(undefined, ['password']),
 				},
 				'Police',
 				'nid'

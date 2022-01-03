@@ -20,7 +20,7 @@ interface DetailsListProps {
 function DetailsList(props: DetailsListProps) {
   return <div className="flex h-full flex-col gap-5">
     <div className="flex justify-center px-5 py-2 rounded-sm uppercase text-center" style={{
-      background: grey[200]
+      background: grey[100]
     }}>
       <Typography variant="h5">{props.header}</Typography>
     </div>
@@ -68,8 +68,7 @@ export function AccessDetails(props: AccessDetailsProps) {
     ]} header="Criminal Details" />
   }
 
-  return <div className="flex items-center rounded-md justify-center py-8 px-5 h-full min-w-[350px]" style={{
-    backgroundColor: grey[100],
+  return <div className="flex items-center rounded-md justify-center py-8 px-5 h-full min-w-[350px] shadow-md" style={{
   }}>
     {render()}
   </div>

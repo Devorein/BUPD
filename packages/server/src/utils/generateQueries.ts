@@ -196,6 +196,8 @@ export function generateJoinClause(joins: SqlJoins) {
 }
 
 export function generateSelectQuery(sqlClause: SqlClause, table: string) {
+	console.log(JSON.stringify(sqlClause));
+
 	const clauses: string[] = [];
 	const hasJoins = sqlClause.joins && sqlClause.joins.length !== 0;
 	if (sqlClause.filter)
