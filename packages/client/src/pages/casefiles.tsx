@@ -1,9 +1,13 @@
 import { GetCasefilesPayload, ICasefile, ICasefileSort } from "@bupd/types";
 import { grey } from "@mui/material/colors";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { useGetCasefilesQuery } from "../api/queries/useGetCasefilesQuery";
 import { DetailsList } from "../components/DetailsList";
 import { Paginate } from "../components/Paginate";
 import { casefileSortLabelRecord } from "../constants";
+
+dayjs.extend(relativeTime)
 
 const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
   limit: 10,
@@ -45,7 +49,7 @@ export default function Casefiles() {
           <DetailsList items={[
             ["Location", casefile.location],
             ["Police NID", casefile.police_nid],
-            ["Time", casefile.time],
+            ["Time", dayjs().to(dayjs(casefile.time))],
             ["Priority", <span className="px-2 py-1 font-semibold text-sm rounded-sm" key="priority" style={{
               backgroundColor,
               color: "white"

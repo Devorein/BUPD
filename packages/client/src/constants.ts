@@ -73,6 +73,6 @@ export const casefileSortLabelRecord: Record<`${ICasefileSort[0]}.${ICasefileSor
 	'priority.1': 'Lowest priority',
 	'status.-1': 'Solved first',
 	'status.1': 'Closed first',
-	'time.-1': 'Latest',
-	'time.1': 'Earliest',
+	'time.-1': 'Newest',
+	'time.1': 'Oldest',
 };
