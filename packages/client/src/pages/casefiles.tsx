@@ -94,6 +94,5 @@ export default function Casefiles() {
         })}
       </div>} clientQueryFn={createInitialGetCasefilesQuery} dataFetcher={useGetCasefilesQuery} label="Casefiles" sortLabelRecord={casefileSortLabelRecord} />}
     </DeleteModal>
-
   </div>
 }

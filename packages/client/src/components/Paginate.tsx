@@ -26,7 +26,7 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
 
   if (data) {
     return <div className="flex justify-center gap-10 py-5 w-full h-full">
-      <div className="h-full px-5">
+      <div className="h-full">
         <FilterForm<ClientQuery> clientFilter={dummyQuery.filter} setClientFilter={(clientFilter) => {
           setDummyQuery({
             ...clientQuery,
@@ -66,7 +66,9 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
             {dataListComponentFn(allItems)}
           </div>
         </div>
-        <LoadMoreButton payload={clientQuery} fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allItems.length !== totalItems} />
+        <div style={{ marginTop: 15 }}>
+          <LoadMoreButton payload={clientQuery} fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allItems.length !== totalItems} />
+        </div>
       </div>
     </div>;
   }

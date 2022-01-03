@@ -1,8 +1,8 @@
 import {
 	ApiResponse,
 	DeleteCriminalResponse,
-	GetCriminalPayload,
-	GetCriminalResponse,
+	GetCriminalsPayload,
+	GetCriminalsResponse,
 	ICriminal,
 	UpdateCriminalPayload,
 	UpdateCriminalResponse,
@@ -68,7 +68,10 @@ const CriminalController = {
 			handleError(res);
 		}
 	},
-	async find(req: Request<any, any, any, GetCriminalPayload>, res: Response<GetCriminalResponse>) {
+	async findMany(
+		req: Request<any, any, any, GetCriminalsPayload>,
+		res: Response<GetCriminalsResponse>
+	) {
 		try {
 			res.json({
 				status: 'success',
@@ -77,6 +80,7 @@ const CriminalController = {
 						filter: [],
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
+						next: req.query.next,
 					},
 					'Criminal',
 					'criminal_id'
