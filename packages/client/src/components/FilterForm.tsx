@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Button } from "./Button";
 import { CheckboxGroup, CheckboxGroupProps } from "./CheckboxGroup";
 
-interface FilterFormProps<ClientQuery extends IQuery<any, any>> {
+export interface FilterFormProps<ClientQuery extends IQuery<any, any>> {
   setClientQuery: Dispatch<SetStateAction<ClientQuery>>
   clientFilter: ClientQuery["filter"],
   setClientFilter: Dispatch<SetStateAction<ClientQuery["filter"]>>

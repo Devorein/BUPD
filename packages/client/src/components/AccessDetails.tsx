@@ -27,8 +27,8 @@ function DetailsList(props: DetailsListProps) {
     <div className="flex flex-col gap-3">
       {
         props.items.map(([label, value]) => <div key={`${label}.${value}`} className="flex justify-between">
-          <span className="font-bold text-lg mr-5">{label}:</span>
-          <span className="text-right capitalize font-semibold break-words" style={{
+          <span className="text-lg mr-5">{label}:</span>
+          <span className="font-bold text-right capitalize break-words" style={{
             wordBreak: "break-all"
           }}>{value}</span>
         </div>)

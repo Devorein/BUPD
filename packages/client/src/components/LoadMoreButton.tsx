@@ -14,7 +14,7 @@ interface LoadMoreButtonProps<Payload extends IQuery<any, any>> {
 export function LoadMoreButton<Payload extends IQuery<any, any>>(props: LoadMoreButtonProps<Payload>) {
   const { fetchNextPage, hasNextPage, isQueryFetching, lastFetchedPage, payload } = props;
 
-  return <div className="flex justify-center mt-5">
+  return <div className="flex justify-center">
     {hasNextPage && !isQueryFetching && (
       <Button
         color="secondary"

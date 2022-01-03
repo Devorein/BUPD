@@ -1,7 +1,16 @@
 import { ApiResponse, IQuery, PaginatedResponse } from '@bupd/types';
 import qs from 'qs';
-import { useInfiniteQuery, UseInfiniteQueryOptions } from 'react-query';
+import { useInfiniteQuery, UseInfiniteQueryOptions, UseInfiniteQueryResult } from 'react-query';
 import { apiRequest } from '../utils';
+
+export type UseApiInfiniteQuery<Item> = UseInfiniteQueryResult<
+	ApiResponse<PaginatedResponse<Item>>,
+	Error
+> & {
+	totalItems: number;
+	allItems: Item[];
+	lastFetchedPage: ApiResponse<PaginatedResponse<Item>> | null | undefined;
+};
 
 export function useApiInfiniteQuery<Item, Payload extends IQuery<any, any>>(
 	keys: string[],
@@ -14,7 +23,7 @@ export function useApiInfiniteQuery<Item, Payload extends IQuery<any, any>>(
 		ApiResponse<PaginatedResponse<Item>>,
 		string[]
 	>
-) {
+): UseApiInfiniteQuery<Item> {
 	const infiniteQuery = useInfiniteQuery<
 		ApiResponse<PaginatedResponse<Item>>,
 		Error,
