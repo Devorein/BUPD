@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/faker": "^5.5.9",
-    "@bupd/types": "1.0.0"
+    "@bupd/types": "1.0.0",
+    "@bupd/constants": "1.0.0"
   }
 }

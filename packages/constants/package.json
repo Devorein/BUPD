@@ -1,0 +1,18 @@
+{
+  "name": "@bupd/constants",
+  "version": "1.0.0",
+  "description": "A package to contain shared constants",
+  "main": "./dist/index.js",
+  "scripts": {
+    "prebuild": "del-cli ./dist",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc --sourceMap false",
+    "lint": "eslint \"./src\" --ext tsx,ts"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@bupd/types": "1.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
