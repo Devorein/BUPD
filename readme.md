@@ -104,8 +104,8 @@ We are using a few shared dependencies across the monorepo to avoid installing s
 
 ## Contributors
 
-1.  Safwan Shaheer [devorein](https://github.com/Devorein) Server, Client, Devops, System Design, Documentation, ER & Schema Design
-2.  Zayed Humayun [abystoma](https://github.com/abystoma) Server, Testing, Documentation, ER & Schema Design
-3.  Rafid Hamid [xImouto](https://github.com/xImouto) Server, Testing, Documentation, ER & Schema Design
-4.  Rakinul Haque [rakinulhaque](https://github.com/rakinulhaque) ER & Schema Design, Documentation
-5.  Abrar Awsaf [ShababKabab](https://github.com/ShababKabab) ER & Schema Design, Documentation
+1.  Safwan Shaheer [devorein](https://github.com/Devorein) Backend, Frontend, Devops, Testing, System Design, Documentation, ER & Schema Design
+2.  Zayed Humayun [abystoma](https://github.com/abystoma) Backend, Testing, Documentation, ER & Schema Design
+3.  Rafid Hamid [xImouto](https://github.com/xImouto) Backend, Testing, Documentation, ER & Schema Design
+4.  Rakinul Haque [rakinulhaque](https://github.com/rakinulhaque) Backend, ER & Schema Design, Documentation
+5.  Abrar Awsaf [ShababKabab](https://github.com/ShababKabab) Backend, ER & Schema Design, Documentation

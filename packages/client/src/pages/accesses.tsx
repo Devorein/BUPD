@@ -6,16 +6,14 @@ import { AccessList } from "../components/AccessList";
 import { Paginate } from "../components/Paginate";
 import { accessSortLabelRecord } from "../constants";
 
-const createInitialGetAccessesQuery = (query?: Partial<GetAccessesPayload>): GetAccessesPayload => ({
+const createInitialGetAccessesQuery = (): GetAccessesPayload => ({
   limit: 10,
   next: null,
   sort: ["approved", -1],
-  ...query,
   filter: {
     approved: [],
     permission: [],
     type: [],
-    ...(query?.filter ?? {})
   }
 })
 

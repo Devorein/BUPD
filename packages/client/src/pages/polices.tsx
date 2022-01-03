@@ -9,18 +9,15 @@ import { Paginate } from "../components/Paginate";
 import { policeSortLabelRecord, POLICE_RANKS, svgIconSx } from "../constants";
 import { useIsAuthenticated, useIsAuthorized } from "../hooks";
 
-const createInitialGetPolicesQuery = (query?: Partial<GetPolicesPayload>): GetPolicesPayload => ({
+const createInitialGetPolicesQuery = (): GetPolicesPayload => ({
   limit: 10,
   next: null,
   sort: ["name", -1],
-  ...query,
   filter: {
     designation: [],
     rank: [],
-    ...(query?.filter ?? {})
   }
 })
-
 
 export default function Polices() {
   useIsAuthenticated();
