@@ -25,7 +25,7 @@ export function AccessFilterForm(props: AccessFilterFormProps) {
     </Typography>
     <div className="flex flex-col gap-5">
       <CheckboxGroup<IAccessFilter> items={[
-        ['2', <div key="approved">Unapproved</div>],
+        ['2', <div key="unapproved">Unapproved</div>],
         ['1', <div key="approved">Approved</div>],
         ['0', <div key="disapproved">Disapproved</div>]
       ]} label="Approval" setState={setClientFilter} state={clientFilter} stateKey="approved" />
