@@ -1,9 +1,10 @@
 import {
-	IAccessSort,
-	ICasefileSort,
-	IPoliceSort,
-	TCasefilePriority,
-	TCasefileStatus,
+  IAccessSort,
+  ICasefileSort,
+  ICriminalSort,
+  IPoliceSort,
+  TCasefilePriority,
+  TCasefileStatus
 } from '@bupd/types';
 import { Theme } from '@emotion/react';
 import { SxProps } from '@mui/material';
@@ -74,4 +75,11 @@ export const casefileSortLabelRecord: Record<`${ICasefileSort[0]}.${ICasefileSor
 	'status.1': 'Closed first',
 	'time.-1': 'Newest',
 	'time.1': 'Oldest',
+};
+
+export const criminalSortLabelRecord: Record<`${ICriminalSort[0]}.${ICriminalSort[1]}`, string> = {
+  "criminal_id.-1": "Highest criminal id",
+  "criminal_id.1": "Lowest criminal id",
+  "name.-1": "Name desc",
+  "name.1": "Name asc",
 };
