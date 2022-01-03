@@ -177,8 +177,8 @@ export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission'
 export type ICriminalSort = ['criminal_id' | 'name', -1 | 1];
 export type ICasefileSort = ['case_no' | 'priority' | 'status' | 'time', -1 | 1];
 export interface IPoliceFilter {
-	designation?: string;
-	rank?: string;
+	designation?: string[];
+	rank?: string[];
 }
 
 export type IPoliceSort = ['designation' | 'rank' | 'name', -1 | 1];

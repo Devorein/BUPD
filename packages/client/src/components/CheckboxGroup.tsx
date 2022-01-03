@@ -1,7 +1,7 @@
 import { Checkbox, Typography } from "@mui/material";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 
-interface CheckboxGroupProps<State> {
+export interface CheckboxGroupProps<State> {
   items: (string | number | [string | number, (ReactNode | ReactNode[])])[]
   setState: Dispatch<SetStateAction<State>>
   state: State

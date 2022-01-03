@@ -33,7 +33,7 @@ export function generateTheme() {
 			},
 		},
 		typography: {
-			fontFamily: 'Rubik',
+			fontFamily: 'Rubik, sans-serif',
 			fontSize: 14,
 			body1: {
 				fontWeight: 400,

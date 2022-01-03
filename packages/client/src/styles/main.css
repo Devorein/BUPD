@@ -5,6 +5,8 @@
 body {
   height: 100vh;
   width: 100vw;
+  font-family: Rubik, sans-serif;
+  overflow:hidden;
 }
 
 #__next, .Page {
@@ -14,9 +16,10 @@ body {
 
 .Body {
   margin: 15px 0px;
-  height: calc(100% - 60px);
+  height: calc(100% - 75px);
   overflow: auto;
   width: 100%;
+  overflow:hidden;
 }
 
 ::-webkit-scrollbar {

@@ -7,7 +7,7 @@ import { UseMutationResult } from 'react-query';
 import * as Yup from 'yup';
 import { useGetCurrentUserQueryData } from '../api';
 import { useLoginMutation } from '../api/mutations';
-import { Button, FormikTextInput, MultiTabs, Page } from '../components';
+import { Button, FormikTextInput, MultiTabs } from '../components';
 import { JWT_LS_KEY } from '../constants';
 import { RootContext } from '../contexts';
 
@@ -107,16 +107,14 @@ export default function Login() {
     router.push({ pathname: '/' })
   }
   return (
-    <Page>
-      <div className="flex items-center justify-center h-full">
-        <MultiTabs
-          panels={[
-            <FormikForm as='admin' loginMutation={loginMutation} key="admin" />,
-            <FormikForm as='police' loginMutation={loginMutation} key="police" />,
-          ]}
-          tabs={['admin', 'police']}
-        />
-      </div>
-    </Page>
+    <div className="flex items-center justify-center h-full">
+      <MultiTabs
+        panels={[
+          <FormikForm as='admin' loginMutation={loginMutation} key="admin" />,
+          <FormikForm as='police' loginMutation={loginMutation} key="police" />,
+        ]}
+        tabs={['admin', 'police']}
+      />
+    </div>
   );
 }
