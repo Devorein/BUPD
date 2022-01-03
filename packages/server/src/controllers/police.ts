@@ -80,7 +80,7 @@ const PoliceController = {
 			if (result) {
 				res.json({
 					status: 'success',
-					data: police,
+					data: removeFields(police, ['password']),
 				});
 			}
 		} else {

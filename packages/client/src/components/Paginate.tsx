@@ -35,8 +35,8 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
         }} setClientQuery={setClientQuery} checkboxGroups={checkboxGroups} resetFilter={() => clientQueryFn().filter} />
       </div>
 
-      <div className="flex gap-8 flex-col justify-between w-full h-full">
-        <Typography className="uppercase" variant="h4">{label}</Typography>
+      <div className="flex gap-2 flex-col w-full h-full">
+        <Typography className="mb-5 uppercase" variant="h4">{label}</Typography>
         <div className="flex flex-col gap-3 w-full h-full" style={{
           height: 'calc(100% - 130px)'
         }}>
