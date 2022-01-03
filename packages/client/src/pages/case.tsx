@@ -1,3 +1,4 @@
+import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS } from "@bupd/constants";
 import { CreateCasefilePayload, TCasefilePriority, TCasefileStatus } from "@bupd/types";
 import { Typography, useTheme } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -6,14 +7,13 @@ import { useCreateCasefileMutation } from "../api";
 import { Button, FormikSelectInput, FormikTextInput } from "../components";
 import { CaseCriminalsForm } from '../components/CaseForm/CaseCriminalsForm';
 import { CaseVictimsForm } from "../components/CaseForm/CaseVictimsForm";
-import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS } from "../constants";
 import { useIsAuthenticated, useIsAuthorized } from "../hooks";
 
 const createCasefileInitialPayload = (): CreateCasefilePayload => ({
   categories: [],
   criminals: [],
   location: "",
-  priority: "low",
+  priority: 2,
   time: Date.now(),
   victims: [],
   weapons: [],
@@ -62,7 +62,7 @@ export default function Case() {
               placeholder="Dhaka"
             />
             <FormikSelectInput<string[]> renderValue={(renderValues) => <Tags values={renderValues} />} multiple defaultValue={[]} items={CRIME_CATEGORIES} label="Crime category" name="categories" />
-            <FormikSelectInput<TCasefilePriority> defaultValue="low" items={CASEFILE_PRIORITIES} label="Priority" name="priority" />
+            <FormikSelectInput<TCasefilePriority> defaultValue={2} items={CASEFILE_PRIORITIES} label="Priority" name="priority" />
             <FormikSelectInput<TCasefileStatus> defaultValue="open" items={CASEFILE_STATUSES} label="Status" name="status" />
             <FormikSelectInput<string[]> renderValue={(renderValues) => <Tags values={renderValues} />} multiple defaultValue={[]} items={CRIME_WEAPONS} label="Crime weapons" name="weapons" />
             <div className="border-b-2 border-gray-300 my-3"></div>
