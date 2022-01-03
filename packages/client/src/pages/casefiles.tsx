@@ -18,7 +18,11 @@ const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
 export default function Casefiles() {
   return <div className="flex gap-5 h-full">
     <Paginate<GetCasefilesPayload, ICasefileSort, ICasefile> checkboxGroups={[{
-      items: ['high', 'medium', 'low'],
+      items: [
+        [0, 'Low'],
+        [1, 'Medium'],
+        [2, 'High'],
+      ],
       label: "Priority",
       stateKey: "priority"
     }, {
@@ -28,9 +32,9 @@ export default function Casefiles() {
     }]} dataListComponentFn={(casefiles) => <div className="grid grid-cols-3 gap-5 pr-5">
       {casefiles.map(casefile => {
         let backgroundColor = "#20da48d6";
-        if (casefile.priority === "high") {
+        if (casefile.priority === 2) {
           backgroundColor = "#da2020d4"
-        } else if (casefile.priority === "medium") {
+        } else if (casefile.priority === 1) {
           backgroundColor = "#ebd82add"
         }
         return <div className="border-2 shadow-md rounded-md p-5 flex flex-col gap-3" key={casefile.case_no}>

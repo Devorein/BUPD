@@ -14,7 +14,7 @@ const crimeWeapons = [
 	'Cricket bat',
 ];
 const crimeCategories = ['Murder', 'Robbery', 'Sexual assault', 'Arson', 'Burglary', 'Theft'];
-const casePriorities: TCasefilePriority[] = ['high', 'low', 'medium'];
+const casePriorities: TCasefilePriority[] = [0, 1, 2];
 
 interface CreateCasefileSeederOptions {
 	totalCaseFiles: number;
