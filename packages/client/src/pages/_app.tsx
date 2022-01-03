@@ -2,7 +2,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { AppProps } from 'next/app';
 import Head from "next/head";
 import { SnackbarProvider } from "notistack";
-import React from "react";
+import React, { useEffect } from "react";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { useGetCurrentUserQuery } from "../api";
@@ -18,6 +18,13 @@ const Index: React.FC<{}> = (props) => {
   const getCurrentUserQuery = useGetCurrentUserQuery();
   const currentUser = (getCurrentUserQuery.status === "success" && getCurrentUserQuery.data.status === "success") ? getCurrentUserQuery.data.data : null
 
+  useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector('#jss-server-side');
+    if (jssStyles?.parentElement) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, [])
   return <RootContext.Provider value={{ currentUser, getCurrentUserQueryResult: getCurrentUserQuery }}>
     <Page>
       {props.children}

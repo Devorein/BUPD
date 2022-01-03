@@ -31,11 +31,14 @@ export default function Casefiles() {
       stateKey: "status"
     }]} dataListComponentFn={(casefiles) => <div className="grid grid-cols-3 gap-5 pr-5">
       {casefiles.map(casefile => {
+        let priority = "Low";
         let backgroundColor = "#20da48d6";
         if (casefile.priority === 2) {
           backgroundColor = "#da2020d4"
+          priority = "High";
         } else if (casefile.priority === 1) {
           backgroundColor = "#ebd82add"
+          priority = "Medium";
         }
         return <div className="border-2 shadow-md rounded-md p-5 flex flex-col gap-3" key={casefile.case_no}>
           <div className="justify-center flex font-bold text-2xl my-2">Case {casefile.case_no}</div>
@@ -47,7 +50,7 @@ export default function Casefiles() {
               backgroundColor,
               color: "white"
             }}>
-              {casefile.priority}
+              {priority}
             </span>],
             ["Status", <span className="border-2 px-2 py-1 font-semibold text-sm rounded-md" key="status" style={{
               backgroundColor: grey[100]

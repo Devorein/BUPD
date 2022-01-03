@@ -14,9 +14,10 @@ export function useGetAccessesQueryData() {
 
 export function useGetAccessesQuery(query: GetAccessesPayload) {
 	const { currentUser } = useContext(RootContext);
-	delete (query as any).next;
+	const clonedQuery = JSON.parse(JSON.stringify(query));
+	delete clonedQuery.next;
 	return useApiInfiniteQuery<IAccessPopulated, GetAccessesPayload>(
-		['access', qs.stringify(query)],
+		['access', qs.stringify(clonedQuery)],
 		`access`,
 		query,
 		{

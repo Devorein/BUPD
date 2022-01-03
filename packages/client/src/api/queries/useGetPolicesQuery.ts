@@ -12,13 +12,14 @@ export function useGetPolicesQueryData() {
 	};
 }
 
-export function useGetPolicesQuery(payload: GetPolicesPayload) {
+export function useGetPolicesQuery(query: GetPolicesPayload) {
 	const { currentUser } = useContext(RootContext);
-	delete (payload as any).next;
+	const clonedQuery = JSON.parse(JSON.stringify(query));
+	delete clonedQuery.next;
 	return useApiInfiniteQuery<IPolice, GetPolicesPayload>(
-		['police', qs.stringify(payload)],
+		['police', qs.stringify(clonedQuery)],
 		`police`,
-		payload,
+		query,
 		{
 			enabled: currentUser?.type === 'admin',
 		}

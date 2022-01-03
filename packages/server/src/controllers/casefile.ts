@@ -245,6 +245,7 @@ const CasefileController = {
 						filter: convertCaseFilter(req.query.filter),
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
+						next: req.query.next,
 					},
 					'Casefile',
 					'case_no'

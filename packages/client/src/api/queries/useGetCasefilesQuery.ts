@@ -14,9 +14,10 @@ export function useGetCasefilesQueryData() {
 
 export function useGetCasefilesQuery(query: GetCasefilesPayload) {
 	const { currentUser } = useContext(RootContext);
-	delete (query as any).next;
+	const clonedQuery = JSON.parse(JSON.stringify(query));
+	delete clonedQuery.next;
 	return useApiInfiniteQuery<ICasefile, GetCasefilesPayload>(
-		['casefile', qs.stringify(query)],
+		['casefile', qs.stringify(clonedQuery)],
 		`casefile`,
 		query,
 		{
