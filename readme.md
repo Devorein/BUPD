@@ -22,11 +22,12 @@
 
 This monorepo contains the following packages:-
 
-- **`@bupd/client`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/client): Next.js client package for BUPD
-- **`@bupd/seeder`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/seeder): Database seeder package for BUPD
-- **`@bupd/server`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/server) : Node.js Express server package for BUPD
-- **`@bupd/types`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/types) : Typescript type definition package for BUPD
-- **`@bupd/validation`** [Github](https://github.com/Devorein/bupd/tree/staging/packages/validation) : Payload validation package for BUPD
+- [**`@bupd/client`**](https://github.com/Devorein/bupd/tree/staging/packages/client): Next.js client package for BUPD
+- [**`@bupd/seeder`**](https://github.com/Devorein/bupd/tree/staging/packages/seeder): Database seeder package for BUPD
+- [**`@bupd/server`**](https://github.com/Devorein/bupd/tree/staging/packages/server) : Node.js Express server package for BUPD
+- [**`@bupd/types`**](https://github.com/Devorein/bupd/tree/staging/packages/types) : Typescript type definition package for BUPD
+- [**`@bupd/validation`**](https://github.com/Devorein/bupd/tree/staging/packages/validation) : Payload validation package for BUPD
+- [**`@bupd/constants`**](https://github.com/Devorein/bupd/tree/staging/packages/constants) : Shared constants package
 
 ## Requirements
 

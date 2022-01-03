@@ -13,7 +13,6 @@ export const JWT_LS_KEY = 'bupd.jwt.token';
 export const CRIME_CATEGORIES = ['Murder', 'Robbery', 'Assault', 'Arson', 'Burglary', 'Theft'];
 export const CASEFILE_PRIORITIES: TCasefilePriority[] = [0, 1, 2];
 export const CASEFILE_STATUSES: TCasefileStatus[] = ['open', 'closed', 'solved'];
-export const CASEFILE_WEAPONS: TCasefileStatus[] = ['open', 'closed', 'solved'];
 export const CRIME_WEAPONS = [
 	'Machete',
 	'Knife',

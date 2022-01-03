@@ -1,3 +1,4 @@
+import { POLICE_RANKS } from "@bupd/constants";
 import { GetPolicesPayload, IPolice, IPoliceSort } from "@bupd/types";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { grey, red } from "@mui/material/colors";
@@ -6,7 +7,7 @@ import { useGetPolicesQuery } from "../api/queries/useGetPolicesQuery";
 import { DeleteModal } from "../components/DeleteModal";
 import { DetailsList } from "../components/DetailsList";
 import { Paginate } from "../components/Paginate";
-import { policeSortLabelRecord, POLICE_RANKS, svgIconSx } from "../constants";
+import { policeSortLabelRecord, svgIconSx } from "../constants";
 import { useIsAuthenticated, useIsAuthorized } from "../hooks";
 
 const createInitialGetPolicesQuery = (): GetPolicesPayload => ({

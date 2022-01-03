@@ -1,10 +1,10 @@
-import { IAccess, ICasefile, ICriminal, IPolice } from '@bupd/types';
 import {
 	accessAttributes,
 	casefileAttributes,
 	criminalAttributes,
 	policeAttributes,
-} from '../constants';
+} from '@bupd/constants';
+import { IAccess, ICasefile, ICriminal, IPolice } from '@bupd/types';
 
 function generateAttributes<Entity>(
 	attributes: (keyof Entity)[],

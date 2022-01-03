@@ -1,25 +1,10 @@
+import { POLICE_RANKS } from '@bupd/constants';
 import { IPolice, RegisterPolicePayload, RegisterPoliceResponse } from '@bupd/types';
 import colors from 'colors';
 import faker from 'faker';
 import { handleRequest, promiseAll } from './utils';
 
 export async function createPolices(TOTAL_POLICES: number, adminToken: string) {
-	const policeRanks = [
-		'Constable',
-		'Assistant Sub Inspector',
-		'Sergeant',
-		'Sub Inspector',
-		'Inspector',
-		'Assistant Superintendent',
-		'Senior Assistant Superintendent',
-		'Additional Superintendent',
-		'Superintendent',
-		'Additional Deputy Inspector General',
-		'Deputy Inspector General',
-		'Additional Inspector General',
-		'Inspector General',
-	];
-
 	const registerPolicePromises: Promise<RegisterPoliceResponse>[] = [];
 	const polices: IPolice[] = [];
 
@@ -42,7 +27,7 @@ export async function createPolices(TOTAL_POLICES: number, adminToken: string) {
 								faker.internet.password() +
 								faker.datatype.number({ max: 50, min: 20 }),
 							phone: `+880${faker.datatype.number({ min: 10000000, max: 99999999 })}`,
-							rank: faker.random.arrayElement(policeRanks),
+							rank: faker.random.arrayElement(POLICE_RANKS),
 						};
 						polices.push(police);
 
