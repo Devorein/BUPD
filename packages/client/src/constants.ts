@@ -19,6 +19,19 @@ export const CRIME_WEAPONS = [
 	'Cricket bat',
 ];
 
+export const POLICE_RANKS = [
+	'Constable',
+	'Assistant Sub Inspector',
+	'Sergeant',
+	'Sub Inspector',
+	'Inspector',
+	'Assistant Superintendent',
+	'Additional Superintendent',
+	'Superintendent',
+	'Deputy Inspector General',
+	'Inspector General',
+];
+
 export const svgIconSx: SxProps<Theme> = {
 	'&': {
 		transition: 'transform 150ms ease-in-out',

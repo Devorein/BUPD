@@ -17,8 +17,7 @@ export const PoliceRequest = {
 	get: yup
 		.object({
 			filter: yup.object({
-				designation: yup.string(),
-				rank: yup.string(),
+				rank: yup.array().of(yup.string()),
 			}),
 		})
 		.concat(paginationSchema(/^(designation|rank|name)$/)),

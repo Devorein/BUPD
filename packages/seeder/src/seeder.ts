@@ -30,7 +30,7 @@ export default function seeder() {
 					password: process.env.ADMIN_PASSWORD!,
 				});
 				const adminToken = loginResponse.token;
-				const polices = await createPolices(5, adminToken);
+				const polices = await createPolices(50, adminToken);
 				const loginPoliceResponses = await loginPolices(polices);
 				const policeTokens = loginPoliceResponses.map(
 					(loginPoliceResponse) => loginPoliceResponse.token

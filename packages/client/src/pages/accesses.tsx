@@ -48,7 +48,6 @@ export default function Accesses() {
     }]} dataListComponentFn={(items) => <AccessList accesses={items} setAccessDetail={setAccessDetail} />} clientQueryFn={createInitialGetAccessesQuery} dataFetcher={useGetAccessesQuery} label="Access Requests" sortLabelRecord={accessSortLabelRecord} />
     <div className="my-2">
       <AccessDetails data={currentDetail} />
-
     </div>
   </div>
 }

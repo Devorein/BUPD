@@ -1,10 +1,9 @@
-import { GetPolicesPayload, IPoliceSort } from "@bupd/types";
-import { Typography } from "@mui/material";
-import { useState } from "react";
+import { GetPolicesPayload, IPolice, IPoliceSort } from "@bupd/types";
+import { grey } from "@mui/material/colors";
 import { useGetPolicesQuery } from "../api/queries/useGetPolicesQuery";
-import { Select } from "../components";
-import { LoadMoreButton } from "../components/LoadMoreButton";
-import { policeSortLabelRecord } from "../constants";
+import { DetailsList } from "../components/DetailsList";
+import { Paginate } from "../components/Paginate";
+import { policeSortLabelRecord, POLICE_RANKS } from "../constants";
 import { useIsAuthenticated, useIsAuthorized } from "../hooks";
 
 const createInitialGetPolicesQuery = (query?: Partial<GetPolicesPayload>): GetPolicesPayload => ({
@@ -24,45 +23,30 @@ export default function Polices() {
   useIsAuthenticated();
   useIsAuthorized(["admin"]);
 
-  const [clientQuery, setClientQuery] = useState(createInitialGetPolicesQuery());
-  const [dummyQuery, setDummyQuery] = useState<GetPolicesPayload>(
-    clientQuery,
-  );
-
-  const { hasNextPage, lastFetchedPage, fetchNextPage, data: getAccessesQueryData, totalItems, allItems: allAccessesItems, isFetching } = useGetPolicesQuery(clientQuery);
-
-  function render() {
-    if (getAccessesQueryData) {
-      return <div className="flex justify-center gap-10 my-5 items-center w-full">
-        <div className="flex gap-8 flex-col justify-between w-full h-full">
-          <Typography className="uppercase" variant="h4">Polices</Typography>
-          <div className="flex flex-col gap-3 w-full h-full">
-            <div className="flex justify-between items-center">
-              <div className="flex gap-3 w-full">
-                <Select<number> value={parseInt(clientQuery.limit?.toString() ?? "5", 10)} items={[5, 10, 15, 20, 25]} renderValue={(value) => `${value} per page`} onChange={(event) => {
-                  setClientQuery({
-                    ...clientQuery,
-                    limit: event.target.value as number
-                  })
-                }} />
-                <Select<string> value={clientQuery.sort.join(".")} items={Object.keys(policeSortLabelRecord)} menuItemRender={(value) => policeSortLabelRecord[value as keyof typeof policeSortLabelRecord]} renderValue={(value) => policeSortLabelRecord[value as keyof typeof policeSortLabelRecord]} onChange={(event) => {
-                  setClientQuery({
-                    ...clientQuery,
-                    sort: event.target.value.split(".") as IPoliceSort
-                  })
-                }} />
-              </div>
-              <div className="flex gap-3 text-lg">
-                Total: <span className="font-bold">{allAccessesItems.length}/{totalItems}</span>
-              </div>
-            </div>
-          </div>
-          <LoadMoreButton payload={clientQuery} fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allAccessesItems.length !== totalItems} />
-        </div>
-      </div>;
-    }
-    return null;
-  }
-
-  return <div className="flex justify-center h-full">{render()}</div>
+  return <Paginate<GetPolicesPayload, IPoliceSort, IPolice> checkboxGroups={[{
+    items: POLICE_RANKS.map(policeRank => ([policeRank, <div key={policeRank}>{policeRank}</div>])),
+    label: "Rank",
+    stateKey: "rank"
+  }]} clientQueryFn={createInitialGetPolicesQuery} dataListComponentFn={(polices) => <div className="grid grid-cols-3 gap-5 pr-5">
+    {polices.map(police => <div className="border-2 shadow-md rounded-md p-5 flex flex-col gap-5 my-5" key={police.nid}>
+      <div className="mt-5 flex justify-center w-full">
+        <img className="h-[50px] w-[50px] rounded-full shadow-md" alt="profile" src={"https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg"} />
+      </div>
+      <div className="justify-center flex font-bold text-2xl">{police.name}</div>
+      <div className="flex justify-center mb-2">
+        <span className="border-2 px-2 py-1 font-semibold text-sm rounded-md" style={{
+          backgroundColor: grey[100]
+        }}>
+          {police.rank}
+        </span>
+      </div>
+      <DetailsList items={[
+        ["Designation", police.designation],
+        ["Address", police.address],
+        ["Email", police.email],
+        ["NID", police.nid],
+        ["Phone", police.phone],
+      ]} />
+    </div>)}
+  </div>} label="Polices" sortLabelRecord={policeSortLabelRecord} dataFetcher={useGetPolicesQuery} />
 }

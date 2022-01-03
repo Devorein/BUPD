@@ -1,6 +1,6 @@
 import { ICasefile, ICriminal, IPolice } from "@bupd/types";
 import { Typography } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import { DetailsList } from "./DetailsList";
 
 export interface AccessDetailsProps {
   data: ({
@@ -12,30 +12,6 @@ export interface AccessDetailsProps {
   } & ICriminal) | null
 }
 
-interface DetailsListProps {
-  items: [string, (string | number)][]
-  header: string
-}
-
-function DetailsList(props: DetailsListProps) {
-  return <div className="flex h-full flex-col gap-5">
-    <div className="flex justify-center px-5 py-2 rounded-sm uppercase text-center" style={{
-      background: grey[100]
-    }}>
-      <Typography variant="h5">{props.header}</Typography>
-    </div>
-    <div className="flex flex-col gap-3">
-      {
-        props.items.map(([label, value]) => <div key={`${label}.${value}`} className="flex justify-between">
-          <span className="text-lg mr-5">{label}:</span>
-          <span className="font-bold text-right capitalize break-words" style={{
-            wordBreak: "break-all"
-          }}>{value}</span>
-        </div>)
-      }
-    </div>
-  </div>
-}
 
 export function AccessDetails(props: AccessDetailsProps) {
   const { data } = props;

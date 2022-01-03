@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { IPolice, RegisterPolicePayload, RegisterPoliceResponse } from '@bupd/types';
 import colors from 'colors';
 import faker from 'faker';
