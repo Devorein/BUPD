@@ -63,7 +63,7 @@ export default function Polices() {
       label: "Rank",
       stateKey: "rank"
     }]} clientQueryFn={createInitialGetPolicesQuery} dataListComponentFn={(polices) => <div className="grid grid-cols-3 gap-5 pr-5">
-      {polices.map(police => <div className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3 my-5" key={police.nid}>
+      {polices.map(police => <div className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3" key={police.nid}>
         <div>
           <DeleteIcon sx={svgIconSx} className="cursor-pointer absolute" style={{
             fill: red[500]
