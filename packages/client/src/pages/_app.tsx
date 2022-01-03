@@ -6,6 +6,7 @@ import React from "react";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { useGetCurrentUserQuery } from "../api";
+import { Page } from "../components";
 import { RootContext } from "../contexts";
 import '../styles/main.css';
 import { createClient, generateTheme } from "../utils";
@@ -18,7 +19,9 @@ const Index: React.FC<{}> = (props) => {
   const currentUser = (getCurrentUserQuery.status === "success" && getCurrentUserQuery.data.status === "success") ? getCurrentUserQuery.data.data : null
 
   return <RootContext.Provider value={{ currentUser, getCurrentUserQueryResult: getCurrentUserQuery }}>
-    {props.children}
+    <Page>
+      {props.children}
+    </Page>
     <ReactQueryDevtools />
   </RootContext.Provider>
 }

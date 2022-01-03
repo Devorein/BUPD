@@ -119,7 +119,7 @@ export function AccessList(props: AccessListProps) {
           })
         }}>{access.police_nid}</div>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <div className="flex items-center gap-2">Requesting {PermissionIconRecord[access.permission]}  access</div>
         <div className="flex items-center gap-2">to <span onClick={() => {
           if (access.type === "criminal") {

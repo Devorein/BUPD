@@ -33,7 +33,7 @@ export default function Polices() {
 
   function render() {
     if (getAccessesQueryData) {
-      return <div className="flex justify-center gap-10 my-5 items-center w-full" style={{ height: "calc(100% - 50px)" }}>
+      return <div className="flex justify-center gap-10 my-5 items-center w-full">
         <div className="flex gap-8 flex-col justify-between w-full h-full">
           <Typography className="uppercase" variant="h4">Polices</Typography>
           <div className="flex flex-col gap-3 w-full h-full">

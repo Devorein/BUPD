@@ -28,7 +28,9 @@ function DetailsList(props: DetailsListProps) {
       {
         props.items.map(([label, value]) => <div key={`${label}.${value}`} className="flex justify-between">
           <span className="font-bold text-lg mr-5">{label}:</span>
-          <span className="text-right capitalize font-semibold">{value}</span>
+          <span className="text-right capitalize font-semibold break-words" style={{
+            wordBreak: "break-all"
+          }}>{value}</span>
         </div>)
       }
     </div>
@@ -68,7 +70,7 @@ export function AccessDetails(props: AccessDetailsProps) {
     ]} header="Criminal Details" />
   }
 
-  return <div className="flex items-center rounded-md justify-center py-8 px-5 h-full min-w-[350px] shadow-md" style={{
+  return <div className="flex items-center rounded-md justify-center py-8 px-5 h-full min-w-[350px] max-w-[350px] shadow-md" style={{
   }}>
     {render()}
   </div>

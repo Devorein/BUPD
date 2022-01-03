@@ -1,21 +1,13 @@
 import { useContext } from "react";
-import { AdminHome, Page, PoliceHome } from "../components";
+import { AdminHome, PoliceHome } from "../components";
 import { RootContext } from "../contexts";
 
 const Index = () => {
   const { currentUser } = useContext(RootContext);
-  function render() {
-    if (!currentUser) {
-      return null;
-    }
-    return currentUser.type === "admin" ? <AdminHome /> : <PoliceHome />
+  if (!currentUser) {
+    return null;
   }
-
-  return (
-    <Page>
-      {render()}
-    </Page>
-  );
+  return currentUser.type === "admin" ? <AdminHome /> : <PoliceHome />
 };
 
 export default Index;
