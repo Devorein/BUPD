@@ -21,7 +21,7 @@ export const CasefilePayload = {
 				)
 				.default([])
 				.strict(),
-			priority: yup.string().oneOf(['high', 'low', 'medium']).strict(),
+			priority: yup.number().oneOf([0, 1, 2]).strict().required(),
 			victims: yup.array().of(
 				yup
 					.object({
@@ -44,7 +44,7 @@ export const CasefilePayload = {
 			time: yup.number().strict(),
 			status: yup.string().oneOf(['solved', 'open', 'closed']).nullable().strict(),
 			location: yup.string().strict(),
-			priority: yup.string().oneOf(['high', 'low', 'medium']).strict().nullable(),
+			priority: yup.number().oneOf([0, 1, 2]).strict().required(),
 		})
 		.strict()
 		.noUnknown(),

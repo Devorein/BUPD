@@ -62,7 +62,7 @@ export interface ICrimeCategory {
 
 export type TCasefileStatus = 'solved' | 'open' | 'closed';
 
-export type TCasefilePriority = 'high' | 'low' | 'medium';
+export type TCasefilePriority = 0 | 1 | 2;
 
 export interface ICasefile {
 	time: string;

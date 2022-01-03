@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 interface DetailsListProps {
-  items: [string, (string | number)][]
+  items: [string, (string | number | JSX.Element)][]
   header?: string
 }
 

@@ -113,7 +113,7 @@ export default function Login() {
           <FormikForm as='admin' loginMutation={loginMutation} key="admin" />,
           <FormikForm as='police' loginMutation={loginMutation} key="police" />,
         ]}
-        tabs={['admin', 'police']}
+        tabs={['Login as admin', 'Login as police']}
       />
     </div>
   );
