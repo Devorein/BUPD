@@ -14,8 +14,8 @@ interface LoadMoreButtonProps<Payload extends IQuery<any, any>> {
 export function LoadMoreButton<Payload extends IQuery<any, any>>(props: LoadMoreButtonProps<Payload>) {
   const { fetchNextPage, hasNextPage, isQueryFetching, lastFetchedPage, payload } = props;
 
-  return <div className="flex justify-center">
-    {hasNextPage && !isQueryFetching && (
+  return hasNextPage && !isQueryFetching ?
+    <div className="flex justify-center">
       <Button
         color="secondary"
         sx={{
@@ -39,6 +39,5 @@ export function LoadMoreButton<Payload extends IQuery<any, any>>(props: LoadMore
           </span>
         }
       />
-    )}
-  </div>
+    </div> : null
 }

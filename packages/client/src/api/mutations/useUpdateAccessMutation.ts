@@ -17,8 +17,8 @@ export function useUpdateAccessMutationCache() {
 			getAccessesQueryData((page) => {
 				if (page?.status === 'success') {
 					const accessIndex = page.data.items.findIndex((access) => access.access_id === accessId);
-					if (accessIndex !== -1) {
-						page.data.items[accessIndex] = mutationResponse;
+					if (accessIndex !== -1 && page.data.items[accessIndex]) {
+						page.data.items[accessIndex]!.approved = mutationResponse.approved;
 					}
 				}
 				return page;

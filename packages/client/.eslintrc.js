@@ -23,6 +23,7 @@ eslintConfig.rules = {
 	'unused-imports/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 	'no-param-reassign': ['error', { props: false }],
 	'no-else-return': ['error', { allowElseIf: true }],
+	'arrow-body-style': 'off',
 };
 
 module.exports = eslintConfig;

@@ -8,7 +8,6 @@ export function useIsAuthenticated() {
 
 	useEffect(() => {
 		const queryState = queryClient.getQueryState<GetCurrentUserResponse>(['currentUser']);
-		console.log({ queryState });
 		if (queryState && !queryState.isFetching && queryState.data?.status === 'error') {
 			router.push({ pathname: '/login' });
 		}
