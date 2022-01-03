@@ -110,10 +110,10 @@ export default function Login() {
     <div className="flex items-center justify-center h-full">
       <MultiTabs
         panels={[
-          <FormikForm as='admin' loginMutation={loginMutation} key="admin" />,
           <FormikForm as='police' loginMutation={loginMutation} key="police" />,
+          <FormikForm as='admin' loginMutation={loginMutation} key="admin" />,
         ]}
-        tabs={['Login as admin', 'Login as police']}
+        tabs={['police', 'admin',]}
       />
     </div>
   );
