@@ -16,6 +16,7 @@ import { paginate } from '../models/utils/paginate';
 import { generatePoliceJwtToken, handleError, logger, removeFields } from '../utils';
 import { convertPoliceFilter } from '../utils/convertClientQuery';
 import { getPoliceAttributes } from '../utils/generateAttributes';
+import Logger from '../utils/logger';
 
 const PoliceController = {
 	async update(
@@ -58,44 +59,59 @@ const PoliceController = {
 		}
 	},
 	async get(req: Request<any, any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
-		res.json({
-			status: 'success',
-			data: await paginate<IPolice>(
-				{
-					...req.query,
-					sort: req.query.sort ? [req.query.sort] : [],
-					filter: convertPoliceFilter(req.query.filter),
-					// Custom select to remove password field
-					select: getPoliceAttributes(undefined, ['password']),
-				},
-				'Police',
-				'nid'
-			),
-		});
+		try {
+			res.json({
+				status: 'success',
+				data: await paginate<IPolice>(
+					{
+						...req.query,
+						sort: req.query.sort ? [req.query.sort] : [],
+						filter: convertPoliceFilter(req.query.filter),
+						// Custom select to remove password field
+						select: getPoliceAttributes(undefined, ['password']),
+					},
+					'Police',
+					'nid'
+				),
+			});
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
+		}
 	},
 	async delete(req: Request<DeletePolicePayload, any>, res: Response<DeletePoliceResponse>) {
-		const police = await PoliceModel.findByNid(req.params.nid);
-		if (police) {
-			const result = await PoliceModel.delete(req.params.nid);
-			if (result) {
+		try {
+			const police = await PoliceModel.findByNid(req.params.nid);
+			if (police) {
+				const result = await PoliceModel.delete(req.params.nid);
+				if (result) {
+					res.json({
+						status: 'success',
+						data: removeFields(police, ['password']),
+					});
+				}
+			} else {
+				handleError(res, 404, 'No valid polices given to delete');
+			}
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
+		}
+	},
+	async getOnNid(req: Request<{ nid: number }>, res: Response<GetPoliceResponse>) {
+		try {
+			const police = await PoliceModel.findByNid(req.params.nid);
+			if (police) {
 				res.json({
 					status: 'success',
 					data: removeFields(police, ['password']),
 				});
+			} else {
+				handleError(res, 404, `No police with nid, ${req.params.nid} found`);
 			}
-		} else {
-			handleError(res, 404, 'No valid polices given to delete');
-		}
-	},
-	async getOnNid(req: Request<{ nid: number }>, res: Response<GetPoliceResponse>) {
-		const police = await PoliceModel.findByNid(req.params.nid);
-		if (police) {
-			res.json({
-				status: 'success',
-				data: removeFields(police, ['password']),
-			});
-		} else {
-			handleError(res, 404, `No police with nid, ${req.params.nid} found`);
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
 		}
 	},
 };

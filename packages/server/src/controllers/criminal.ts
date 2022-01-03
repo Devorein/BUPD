@@ -50,17 +50,22 @@ const CriminalController = {
 		req: Request<{ criminal_id: number }, any, undefined>,
 		res: Response<DeleteCriminalResponse>
 	) {
-		const criminal = await CriminalModel.findByCriminalID(req.params.criminal_id);
-		if (criminal[0]) {
-			const result = await CriminalModel.delete(req.params.criminal_id);
-			if (result) {
-				res.json({
-					status: 'success',
-					data: criminal[0],
-				});
+		try {
+			const criminal = await CriminalModel.findByCriminalID(req.params.criminal_id);
+			if (criminal[0]) {
+				const result = await CriminalModel.delete(req.params.criminal_id);
+				if (result) {
+					res.json({
+						status: 'success',
+						data: criminal[0],
+					});
+				}
+			} else {
+				handleError(res, 404, "Criminal doesn't exist");
 			}
-		} else {
-			handleError(res, 404, "Criminal doesn't exist");
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
 		}
 	},
 	async find(req: Request<any, any, any, GetCriminalPayload>, res: Response<GetCriminalResponse>) {
@@ -79,6 +84,7 @@ const CriminalController = {
 			});
 		} catch (err) {
 			Logger.error(err);
+			handleError(res);
 		}
 	},
 };

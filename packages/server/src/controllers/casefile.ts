@@ -167,17 +167,22 @@ const CasefileController = {
 	},
 
 	async delete(req: Request<{ case_no: number }>, res: Response<DeleteCasefileResponse>) {
-		const file = await CasefileModel.findByCaseNo(req.params.case_no);
-		if (file[0]) {
-			const result = await CasefileModel.delete(req.params.case_no);
-			if (result) {
-				res.json({
-					status: 'success',
-					data: file[0],
-				});
+		try {
+			const file = await CasefileModel.findByCaseNo(req.params.case_no);
+			if (file[0]) {
+				const result = await CasefileModel.delete(req.params.case_no);
+				if (result) {
+					res.json({
+						status: 'success',
+						data: file[0],
+					});
+				}
+			} else {
+				handleError(res, 404, 'No valid case files found to delete');
 			}
-		} else {
-			handleError(res, 404, 'No valid case files found to delete');
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
 		}
 	},
 
@@ -213,14 +218,19 @@ const CasefileController = {
 		}
 	},
 	async get(req: Request<{ case_no: number }>, res: Response<GetCasefileResponse>) {
-		const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
-		if (file) {
-			res.json({
-				status: 'success',
-				data: file,
-			});
-		} else {
-			handleError(res, 404, `No casefile with id, ${req.params.case_no} found`);
+		try {
+			const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
+			if (file) {
+				res.json({
+					status: 'success',
+					data: file,
+				});
+			} else {
+				handleError(res, 404, `No casefile with id, ${req.params.case_no} found`);
+			}
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
 		}
 	},
 	async findMany(

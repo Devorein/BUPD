@@ -56,45 +56,50 @@ const AccessController = {
 		req: Request<any, any, any, GetAccessesPayload>,
 		res: Response<GetAccessesResponse>
 	) => {
-		res.json({
-			status: 'success',
-			data: await paginate<IAccessPopulated>(
-				{
-					filter: convertAccessFilter(req.query.filter),
-					limit: req.query.limit,
-					sort: req.query.sort ? [req.query.sort] : [],
-					select: [
-						...getPoliceAttributes('Police', ['password']),
-						...getAccessAttributes('Access'),
-						...getCasefileAttributes('Casefile'),
-						...getCriminalAttributes('Criminal'),
-					],
-					next: req.query.next,
-					joins: [
-						['Access', 'Police', 'police_nid', 'nid'],
-						['Access', 'Criminal', 'criminal_id', 'criminal_id', 'LEFT'],
-						['Access', 'Casefile', 'case_no', 'case_no', 'LEFT'],
-					],
-				},
-				'Access',
-				'access_id',
-				(rows) =>
-					rows.map((row) => {
-						const inflatedObject = inflateObject(row, 'Access') as IAccessPopulated;
-						inflatedObject.casefile = inflatedObject.casefile?.case_no
-							? inflatedObject.casefile
-							: null;
-						inflatedObject.criminal = inflatedObject.criminal?.criminal_id
-							? inflatedObject.criminal
-							: null;
-						return inflatedObject;
-					}),
-				{
-					criminal_id: 'case_no',
-					case_no: 'criminal_id',
-				}
-			),
-		});
+		try {
+			res.json({
+				status: 'success',
+				data: await paginate<IAccessPopulated>(
+					{
+						filter: convertAccessFilter(req.query.filter),
+						limit: req.query.limit,
+						sort: req.query.sort ? [req.query.sort] : [],
+						select: [
+							...getPoliceAttributes('Police', ['password']),
+							...getAccessAttributes('Access'),
+							...getCasefileAttributes('Casefile'),
+							...getCriminalAttributes('Criminal'),
+						],
+						next: req.query.next,
+						joins: [
+							['Access', 'Police', 'police_nid', 'nid'],
+							['Access', 'Criminal', 'criminal_id', 'criminal_id', 'LEFT'],
+							['Access', 'Casefile', 'case_no', 'case_no', 'LEFT'],
+						],
+					},
+					'Access',
+					'access_id',
+					(rows) =>
+						rows.map((row) => {
+							const inflatedObject = inflateObject(row, 'Access') as IAccessPopulated;
+							inflatedObject.casefile = inflatedObject.casefile?.case_no
+								? inflatedObject.casefile
+								: null;
+							inflatedObject.criminal = inflatedObject.criminal?.criminal_id
+								? inflatedObject.criminal
+								: null;
+							return inflatedObject;
+						}),
+					{
+						criminal_id: 'case_no',
+						case_no: 'criminal_id',
+					}
+				),
+			});
+		} catch (err) {
+			logger.error(err);
+			handleError(res);
+		}
 	},
 
 	async update(
