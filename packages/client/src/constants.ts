@@ -1,4 +1,10 @@
-import { IAccessSort, IPoliceSort, TCasefilePriority, TCasefileStatus } from '@bupd/types';
+import {
+	IAccessSort,
+	ICasefileSort,
+	IPoliceSort,
+	TCasefilePriority,
+	TCasefileStatus,
+} from '@bupd/types';
 import { Theme } from '@emotion/react';
 import { SxProps } from '@mui/material';
 
@@ -58,4 +64,15 @@ export const policeSortLabelRecord: Record<`${IPoliceSort[0]}.${IPoliceSort[1]}`
 	'name.1': 'Name asc',
 	'rank.-1': 'Rank desc',
 	'rank.1': 'Rank asc',
+};
+
+export const casefileSortLabelRecord: Record<`${ICasefileSort[0]}.${ICasefileSort[1]}`, string> = {
+	'case_no.-1': 'Highest case no',
+	'case_no.1': 'Lowest case no',
+	'priority.-1': 'Highest priority',
+	'priority.1': 'Lowest priority',
+	'status.-1': 'Solved first',
+	'status.1': 'Closed first',
+	'time.-1': 'Latest',
+	'time.1': 'Earliest',
 };

@@ -32,7 +32,7 @@ export function CheckboxGroup<State>(props: CheckboxGroupProps<State>) {
               })
             }
           }} />
-          <Typography component="div" className="flex-grow">{currentLabel}</Typography>
+          <Typography component="div" className="flex-grow capitalize">{currentLabel}</Typography>
         </div>
       })}
     </div>
