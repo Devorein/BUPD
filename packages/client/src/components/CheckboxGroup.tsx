@@ -18,7 +18,7 @@ export function CheckboxGroup<State>(props: CheckboxGroupProps<State>) {
       {items.map((item) => {
         const currentLabel = Array.isArray(item) ? item[1] : item, value = Array.isArray(item) ? item[0] : item;
         return <div className="flex items-center" key={value}>
-          <Checkbox color="secondary" checked={checkedItems.includes(value)} onClick={(e) => {
+          <Checkbox disableRipple color="secondary" className="cursor-pointer" checked={checkedItems.includes(value)} onClick={(e) => {
             const checked = (e.target as any).checked
             if (checked) {
               setState({
