@@ -1,13 +1,13 @@
 import { GetVictimsPayload, IVictim, IVictimSort } from '@bupd/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red } from '@mui/material/colors';
-import { useDeleteVictimMutation, useDeleteVictimMutationCache } from '../api/mutations/useDeleteVictimMutation';
-import { useGetVictimsQuery } from '../api/queries/useGetVictimsQuery';
-import { DeleteModal } from '../components/DeleteModal';
-import { DetailsList } from '../components/DetailsList';
-import { Paginate } from '../components/Paginate';
-import { svgIconSx, victimsSortLabelRecord } from '../constants';
-import { useIsAuthenticated } from '../hooks';
+import { useDeleteVictimMutation, useDeleteVictimMutationCache } from '../../api/mutations/useDeleteVictimMutation';
+import { useGetVictimsQuery } from '../../api/queries/useGetVictimsQuery';
+import { DeleteModal } from '../../components/DeleteModal';
+import { DetailsList } from '../../components/DetailsList';
+import { Paginate } from '../../components/Paginate';
+import { svgIconSx, victimsSortLabelRecord } from '../../constants';
+import { useIsAuthenticated } from '../../hooks';
 
 const createInitialGetVictimsQuery = (): GetVictimsPayload => ({
   limit: 10,

@@ -4,17 +4,17 @@ import { PoliceRequest } from "@bupd/validation";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { blue, grey, red } from "@mui/material/colors";
-import { useDeletePoliceMutation, useDeletePoliceMutationCache } from "../api/mutations/useDeletePoliceMutation";
-import { useUpdatePoliceMutation, useUpdatePoliceMutationCache } from "../api/mutations/useUpdatePoliceMutation";
-import { useGetPolicesQuery } from "../api/queries/useGetPolicesQuery";
-import { DeleteModal } from "../components/DeleteModal";
-import { DetailsList } from "../components/DetailsList";
-import { TransitionedModal } from "../components/Modal";
-import { Paginate } from "../components/Paginate";
-import { PoliceForm } from "../components/PoliceForm";
-import { policeSortLabelRecord, svgIconSx } from "../constants";
-import { useIsAuthenticated, useIsAuthorized } from "../hooks";
-import { useModal } from "../hooks/useModal";
+import { useDeletePoliceMutation, useDeletePoliceMutationCache } from "../../api/mutations/useDeletePoliceMutation";
+import { useUpdatePoliceMutation, useUpdatePoliceMutationCache } from "../../api/mutations/useUpdatePoliceMutation";
+import { useGetPolicesQuery } from "../../api/queries/useGetPolicesQuery";
+import { DeleteModal } from "../../components/DeleteModal";
+import { DetailsList } from "../../components/DetailsList";
+import { TransitionedModal } from "../../components/Modal";
+import { Paginate } from "../../components/Paginate";
+import { PoliceForm } from "../../components/PoliceForm";
+import { policeSortLabelRecord, svgIconSx } from "../../constants";
+import { useIsAuthenticated, useIsAuthorized } from "../../hooks";
+import { useModal } from "../../hooks/useModal";
 
 const createInitialGetPolicesQuery = (): GetPolicesPayload => ({
   limit: 10,

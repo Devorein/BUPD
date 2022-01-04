@@ -4,13 +4,13 @@ import { red } from '@mui/material/colors';
 import {
   useDeleteCriminalMutation,
   useDeleteCriminalMutationCache
-} from '../api/mutations/useDeleteCriminalMutation';
-import { useGetCriminalsQuery } from '../api/queries/useGetCriminalsQuery';
-import { DeleteModal } from '../components/DeleteModal';
-import { DetailsList } from '../components/DetailsList';
-import { Paginate } from '../components/Paginate';
-import { criminalSortLabelRecord, svgIconSx } from '../constants';
-import { useIsAuthenticated } from '../hooks';
+} from '../../api/mutations/useDeleteCriminalMutation';
+import { useGetCriminalsQuery } from '../../api/queries/useGetCriminalsQuery';
+import { DeleteModal } from '../../components/DeleteModal';
+import { DetailsList } from '../../components/DetailsList';
+import { Paginate } from '../../components/Paginate';
+import { criminalSortLabelRecord, svgIconSx } from '../../constants';
+import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
 
 const createInitialGetCriminalsQuery = (): GetCriminalsPayload => ({
   limit: 10,
@@ -21,6 +21,7 @@ const createInitialGetCriminalsQuery = (): GetCriminalsPayload => ({
 
 export default function Criminals() {
   useIsAuthenticated();
+  useIsAuthorized(["admin"]);
   const deleteCriminalMutation = useDeleteCriminalMutation();
   const deleteCriminalMutationCache = useDeleteCriminalMutationCache();
 

@@ -1,9 +1,9 @@
 import { RegisterPolicePayload } from '@bupd/types';
 import { PoliceRequest } from '@bupd/validation';
 import { useSnackbar } from 'notistack';
-import { useRegisterMutation } from '../api/mutations';
-import { PoliceForm } from '../components/PoliceForm';
-import { useIsAuthenticated, useIsAuthorized } from '../hooks';
+import { useRegisterMutation } from '../../api/mutations';
+import { PoliceForm } from '../../components/PoliceForm';
+import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
 
 const registerInputInitialValue = (): RegisterPolicePayload => ({
   email: '',

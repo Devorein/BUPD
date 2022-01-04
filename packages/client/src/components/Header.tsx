@@ -31,14 +31,11 @@ export function Header() {
     </div>
     <div className="flex gap-3 items-center">
       {currentUser ? <div className="mr-3"><span className="font-medium">Welcome back, </span><span className="font-bold text-lg">{currentUserName}</span></div> : null}
-      {currentUser?.type === "admin" ? <Button content="View polices" onClick={() => {
-        router.push(`/polices`)
-      }} /> : null}
       {currentUser?.type === "admin" ? <Button content="Register a police" onClick={() => {
-        router.push(`/register`)
+        router.push(`/admin/register`)
       }} /> : null}
       {currentUser?.type === "police" ? <Button content="Report a case" onClick={() => {
-        router.push(`/case`)
+        router.push(`/police/case`)
       }} /> : null}
       {!currentUser ? <Button content="Login" onClick={() => {
         router.push(`/login`)

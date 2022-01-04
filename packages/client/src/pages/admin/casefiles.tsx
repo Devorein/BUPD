@@ -7,18 +7,18 @@ import { blue, green, grey, red } from '@mui/material/colors';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useContext } from 'react';
-import { useCreateAccessMutation } from '../api/mutations/useCreateAccessMutation';
+import { useCreateAccessMutation } from '../../api/mutations/useCreateAccessMutation';
 import {
   useDeleteCasefileMutation,
   useDeleteCasefileMutationCache
-} from '../api/mutations/useDeleteCasefileMutation';
-import { useGetCasefilesQuery } from '../api/queries/useGetCasefilesQuery';
-import { DeleteModal } from '../components/DeleteModal';
-import { DetailsList } from '../components/DetailsList';
-import { Paginate } from '../components/Paginate';
-import { casefileSortLabelRecord, svgIconSx } from '../constants';
-import { RootContext } from '../contexts';
-import { useIsAuthenticated } from '../hooks';
+} from '../../api/mutations/useDeleteCasefileMutation';
+import { useGetCasefilesQuery } from '../../api/queries/useGetCasefilesQuery';
+import { DeleteModal } from '../../components/DeleteModal';
+import { DetailsList } from '../../components/DetailsList';
+import { Paginate } from '../../components/Paginate';
+import { casefileSortLabelRecord, svgIconSx } from '../../constants';
+import { RootContext } from '../../contexts';
+import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
 
 dayjs.extend(relativeTime);
 
@@ -34,6 +34,7 @@ const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
 
 export default function Casefiles() {
   useIsAuthenticated();
+  useIsAuthorized(["admin"]);
   const deleteCasefileMutation = useDeleteCasefileMutation();
   const deleteCasefileMutationCache = useDeleteCasefileMutationCache();
   const { currentUser } = useContext(RootContext);
