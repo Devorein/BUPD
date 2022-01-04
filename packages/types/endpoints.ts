@@ -1,3 +1,4 @@
+import { IVictim } from '.';
 import { ApiResponse, NextKey, PaginatedResponse } from './api';
 import {
 	IAccess,
@@ -82,6 +83,12 @@ export interface IPoliceFilter {
 	rank?: string[];
 }
 
+export interface IVictimFilter {
+	age: [number?, number?];
+}
+
+export type IVictimSort = ['name' | 'age' | 'case_no', -1 | 1];
+
 export type IPoliceSort = ['designation' | 'rank' | 'name', -1 | 1];
 
 export interface IQuery<Filter, Sort> {
@@ -90,6 +97,9 @@ export interface IQuery<Filter, Sort> {
 	limit: number;
 	next: NextKey;
 }
+
+export interface GetVictimsPayload extends IQuery<IVictimFilter, IVictimSort> {}
+export type GetVictimsResponse = ApiResponse<PaginatedResponse<IVictim>>;
 
 export interface GetPolicesPayload extends IQuery<IPoliceFilter, IPoliceSort> {}
 export interface DeletePolicePayload {

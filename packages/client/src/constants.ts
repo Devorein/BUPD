@@ -1,42 +1,9 @@
-import {
-  IAccessSort,
-  ICasefileSort,
-  ICriminalSort,
-  IPoliceSort,
-  TCasefilePriority,
-  TCasefileStatus
-} from '@bupd/types';
+import { IAccessSort, ICasefileSort, ICriminalSort, IPoliceSort } from '@bupd/types';
 import { Theme } from '@emotion/react';
 import { SxProps } from '@mui/material';
 
 export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? 'http://localhost:3000/v1';
 export const JWT_LS_KEY = 'bupd.jwt.token';
-export const CRIME_CATEGORIES = ['Murder', 'Robbery', 'Assault', 'Arson', 'Burglary', 'Theft'];
-export const CASEFILE_PRIORITIES: TCasefilePriority[] = [0, 1, 2];
-export const CASEFILE_STATUSES: TCasefileStatus[] = ['open', 'closed', 'solved'];
-export const CRIME_WEAPONS = [
-	'Machete',
-	'Knife',
-	'Pistol Auto 9mm 1A',
-	'Submachine guns',
-	'Bamboo Stick',
-	'Hockey Stick',
-	'Baseball bat',
-	'Cricket bat',
-];
-
-export const POLICE_RANKS = [
-	'Constable',
-	'Assistant Sub Inspector',
-	'Sergeant',
-	'Sub Inspector',
-	'Inspector',
-	'Assistant Superintendent',
-	'Additional Superintendent',
-	'Superintendent',
-	'Deputy Inspector General',
-	'Inspector General',
-];
 
 export const svgIconSx: SxProps<Theme> = {
 	'&': {
@@ -78,8 +45,8 @@ export const casefileSortLabelRecord: Record<`${ICasefileSort[0]}.${ICasefileSor
 };
 
 export const criminalSortLabelRecord: Record<`${ICriminalSort[0]}.${ICriminalSort[1]}`, string> = {
-  "criminal_id.-1": "Highest criminal id",
-  "criminal_id.1": "Lowest criminal id",
-  "name.-1": "Name desc",
-  "name.1": "Name asc",
+	'criminal_id.-1': 'Highest criminal id',
+	'criminal_id.1': 'Lowest criminal id',
+	'name.-1': 'Name desc',
+	'name.1': 'Name asc',
 };
