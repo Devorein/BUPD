@@ -36,6 +36,7 @@ export default function Polices() {
 
   const deletePoliceMutation = useDeletePoliceMutation();
   const deletePoliceMutationCache = useDeletePoliceMutationCache();
+
   const updatePoliceMutation = useUpdatePoliceMutation();
   const updatePoliceMutationCache = useUpdatePoliceMutationCache();
 

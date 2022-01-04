@@ -13,12 +13,14 @@ export function useDeleteMutationCache<Data, Response>(
 	);
 
 	const queryData = queryDataGenerator();
-	return (identifier: number, postCacheUpdateCb?: () => void) => {
+	return (identifier: number | ((data: Data) => boolean), postCacheUpdateCb?: () => void) => {
 		return postMutation(() => {
 			queryData((page, pages) => {
 				if (page?.status === 'success') {
 					const dataIndex = page.data.items.findIndex(
-						(data) => (data[key] as unknown as number) === identifier
+						typeof identifier === 'function'
+							? identifier
+							: (data) => (data[key] as unknown as number) === identifier
 					);
 					if (dataIndex !== -1) {
 						page.data.items.splice(dataIndex, 1);
