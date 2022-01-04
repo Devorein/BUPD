@@ -107,7 +107,9 @@ export default function Casefiles() {
                             openModal(casefile)
                           }}
                         />
-                      </div> : <div className="flex gap-1 absolute items-center">
+                      </div> : <div className="flex gap-1 absolute items-center px-2 py-1 rounded-sm" style={{
+                        backgroundColor: grey[100],
+                      }}>
                         <VisibilityOutlinedIcon onClick={() => {
                           createAccessMutation.mutate({
                             case_no: casefile.case_no,

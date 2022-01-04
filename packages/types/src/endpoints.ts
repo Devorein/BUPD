@@ -123,6 +123,8 @@ export type GetCasefilesResponse = ApiResponse<PaginatedResponse<ICasefile>>;
 export type GetCasefilesPayload = IQuery<ICasefileFilter, ICasefileSort>;
 export type GetCriminalsPayload = IQuery<ICriminalFilter, ICriminalSort>;
 export type GetCriminalsResponse = ApiResponse<PaginatedResponse<ICriminal>>;
+export type GetPoliceAccessesResponse = ApiResponse<PaginatedResponse<IAccess>>;
+export interface GetPoliceAccessesPayload extends GetAccessesPayload {}
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
 
 export interface CreateAccessPayload {
