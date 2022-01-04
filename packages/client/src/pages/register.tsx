@@ -16,6 +16,9 @@ const registerInputInitialValue = (): RegisterPolicePayload => ({
   rank: ""
 });
 
+const createPolicePayloadValidationSchema = PoliceRequest.create("client");
+
+
 export default function Register() {
   useIsAuthenticated();
   useIsAuthorized(["admin"])
@@ -40,5 +43,5 @@ export default function Register() {
     } catch (err: any) {
       enqueueSnackbar(err.message, { variant: 'error' });
     }
-  }} validationSchema={PoliceRequest.create("client")} />
+  }} validationSchema={createPolicePayloadValidationSchema} />
 }

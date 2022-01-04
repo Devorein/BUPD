@@ -8,7 +8,7 @@ const PoliceRouter = express.Router();
 
 PoliceRouter.put(
 	'/',
-	validatePayload(PoliceRequest.update),
+	validatePayload(PoliceRequest.update('server')),
 	isAuthenticated,
 	isAuthorized(['police']),
 	PoliceController.update

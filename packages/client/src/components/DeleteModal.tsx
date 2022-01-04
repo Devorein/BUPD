@@ -1,32 +1,21 @@
-import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { ReactNode } from "react";
+import { UseModal, useModal } from "../hooks/useModal";
 import { Button } from "./Button";
 import { TransitionedModal } from "./Modal";
 
 interface DeleteModalProps<Data> {
-  onDelete: (selectedData: Data, resetState: () => void) => void
+  onDelete: (selectedData: Data, closeModal: () => void) => void
   isMutationLoading: boolean
-  children: (renderProps: {
-    isModalOpen: boolean
-    setIsModalOpen: Dispatch<SetStateAction<boolean>>
-    selectedData: Data | null
-    setSelectedData: Dispatch<SetStateAction<Data | null>>,
-    resetState: () => void
-  }) => ReactNode
+  children: (renderProps: UseModal<Data>) => ReactNode
 }
 
 export function DeleteModal<Data>(props: DeleteModalProps<Data>) {
   const { onDelete, children, isMutationLoading } = props;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedData, setSelectedData] = useState<Data | null>(null)
-
-  function resetState() {
-    setIsModalOpen(false);
-    setSelectedData(null);
-  }
-
+  const useModalValues = useModal<Data>();
+  const { closeModal, selectedData, isModalOpen } = useModalValues;
   return <>
     <TransitionedModal isModalOpen={isModalOpen} onClose={() => {
-      resetState()
+      closeModal()
     }}>
       <div className="p-5 flex flex-col gap-5">
         <div className="text-center text-2xl font-bold uppercase">
@@ -36,19 +25,13 @@ export function DeleteModal<Data>(props: DeleteModalProps<Data>) {
         <div className="flex justify-between mt-5">
           <Button content="Confirm" disabled={isMutationLoading || !selectedData} color="secondary" onClick={() => {
             if (selectedData) {
-              onDelete(selectedData, resetState)
+              onDelete(selectedData, closeModal)
             }
           }} />
-          <Button disabled={isMutationLoading || !selectedData} content="Cancel" onClick={() => resetState()} />
+          <Button disabled={isMutationLoading || !selectedData} content="Cancel" onClick={() => closeModal()} />
         </div>
       </div>
     </TransitionedModal>
-    {children({
-      isModalOpen,
-      selectedData,
-      setIsModalOpen,
-      setSelectedData,
-      resetState
-    })}
+    {children(useModalValues)}
   </>
 }

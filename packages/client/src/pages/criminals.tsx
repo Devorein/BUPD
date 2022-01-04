@@ -28,18 +28,18 @@ export default function Criminals() {
     <div className="flex justify-center w-full h-full">
       <DeleteModal<ICriminal>
         isMutationLoading={deleteCriminalMutation.isLoading}
-        onDelete={(selectedData, resetState) => {
+        onDelete={(selectedData, closeModal) => {
           deleteCriminalMutation.mutate(
             {
               endpoint: `criminal/${selectedData.criminal_id}`,
             },
             deleteCriminalMutationCache(selectedData.criminal_id, () => {
-              resetState();
+              closeModal();
             })
           );
         }}
       >
-        {({ setSelectedData, setIsModalOpen }) => (
+        {({ openModal }) => (
           <Paginate<GetCriminalsPayload, ICriminalSort, ICriminal>
             filterGroups={[]}
             clientQueryFn={createInitialGetCriminalsQuery}
@@ -58,8 +58,7 @@ export default function Criminals() {
                           fill: red[500],
                         }}
                         onClick={() => {
-                          setIsModalOpen(true);
-                          setSelectedData(criminal);
+                          openModal(criminal);
                         }}
                       />
                     </div>

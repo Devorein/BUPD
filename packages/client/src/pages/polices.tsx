@@ -1,5 +1,6 @@
 import { POLICE_RANKS } from "@bupd/constants";
 import { GetPolicesPayload, IPolice, IPoliceSort } from "@bupd/types";
+import { PoliceRequest } from "@bupd/validation";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { blue, grey, red } from "@mui/material/colors";
@@ -21,6 +22,8 @@ const createInitialGetPolicesQuery = (): GetPolicesPayload => ({
   }
 })
 
+const updatePolicePayloadValidationSchema = PoliceRequest.update("client");
+
 export default function Polices() {
   useIsAuthenticated();
   useIsAuthorized(["admin"]);
@@ -29,16 +32,15 @@ export default function Polices() {
   const deletePoliceMutationCache = useDeletePoliceMutationCache();
 
   return <div className="flex justify-center w-full h-full">
-    <DeleteModal<IPolice> isMutationLoading={deletePoliceMutation.isLoading} onDelete={(selectedData, resetState) => {
+    <DeleteModal<IPolice> isMutationLoading={deletePoliceMutation.isLoading} onDelete={(selectedData, closeModal) => {
       deletePoliceMutation.mutate({
         endpoint: `police/${selectedData.nid}`
       }, deletePoliceMutationCache(selectedData.nid, () => {
-        resetState()
+        closeModal()
       }))
     }}>
       {({
-        setIsModalOpen,
-        setSelectedData
+        openModal
       }) => <Paginate<GetPolicesPayload, IPoliceSort, IPolice> filterGroups={[{
         type: "checkbox_group",
         props: {
@@ -52,8 +54,7 @@ export default function Polices() {
             <DeleteIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
               fill: red[500]
             }} onClick={() => {
-              setIsModalOpen(true);
-              setSelectedData(police);
+              openModal(police)
             }} />
             <EditIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
               fill: blue[500]
