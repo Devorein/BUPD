@@ -19,6 +19,12 @@ VictimRouter.delete(
 	isAuthorized(['admin']),
 	validatePayload(VictimRequest.delete),
 	VictimController.delete
+).put(
+	'/',
+	isAuthenticated,
+	isAuthorized(['admin']),
+	validatePayload(VictimRequest.update),
+	VictimController.update
 );
 
 export default VictimRouter;

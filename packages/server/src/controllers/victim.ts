@@ -1,14 +1,17 @@
 import {
+	ApiResponse,
 	DeleteVictimPayload,
 	DeleteVictimResponse,
 	GetVictimsPayload,
 	GetVictimsResponse,
 	IVictim,
+	UpdateVictimPayload,
 } from '@bupd/types';
+import { UpdateVictimResponse } from '@bupd/types/src/endpoints';
 import { Request, Response } from 'express';
 import { VictimModel } from '../models';
 import { paginate } from '../models/utils/paginate';
-import { handleError } from '../utils';
+import { handleError, removeFields } from '../utils';
 import { convertVictimFilter } from '../utils/convertClientQuery';
 import Logger from '../utils/logger';
 
@@ -53,6 +56,36 @@ const VictimController = {
 		} catch (err) {
 			Logger.error(err);
 			handleError(res);
+		}
+	},
+	async update(
+		req: Request<any, any, UpdateVictimPayload>,
+		res: Response<ApiResponse<UpdateVictimResponse>>
+	) {
+		try {
+			const payload = req.body;
+			const [victim] = await VictimModel.find(payload.old_name, payload.case_no);
+			if (!victim) {
+				handleError(res, 404, `Victim not found`);
+			} else {
+				const updatedData = await VictimModel.update(
+					[
+						{
+							name: payload.old_name,
+							case_no: payload.case_no,
+						},
+					],
+					removeFields(payload, ['case_no'])
+				);
+
+				res.json({
+					status: 'success',
+					data: removeFields(updatedData, ['old_name']),
+				});
+			}
+		} catch (err) {
+			Logger.error(err);
+			handleError(res, 500, "Couldn't delete victim");
 		}
 	},
 };
