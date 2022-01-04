@@ -1,4 +1,4 @@
-import { GetCasefilesPayload, ICasefile, PaginatedResponse } from '@bupd/types';
+import { GetCasefilesPayload, ICasefile, ICasefilePopulated, PaginatedResponse } from '@bupd/types';
 import qs from 'qs';
 import { useContext } from 'react';
 import { RootContext } from '../../contexts';
@@ -16,7 +16,7 @@ export function useGetCasefilesQuery(query: GetCasefilesPayload) {
 	const { currentUser } = useContext(RootContext);
 	const clonedQuery = JSON.parse(JSON.stringify(query));
 	delete clonedQuery.next;
-	return useApiInfiniteQuery<ICasefile, GetCasefilesPayload>(
+	return useApiInfiniteQuery<ICasefilePopulated, GetCasefilesPayload>(
 		['casefile', decodeURIComponent(qs.stringify(clonedQuery))],
 		`casefile`,
 		query,

@@ -15,6 +15,7 @@ import {
 	SqlFilterOperators,
 	SqlFilterOr,
 	SqlJoins,
+	SqlSelect,
 } from '../types';
 
 /**
@@ -195,20 +196,48 @@ export function generateJoinClause(joins: SqlJoins) {
 		: '';
 }
 
+export function generateGroupClause(groups: string[]) {
+	if (groups.length !== 0) {
+		return `GROUP BY ${groups.join(',')}`;
+	}
+	return '';
+}
+
+export function generateSelectClause(selects: SqlSelect, hasJoins: boolean) {
+	const attributes: string[] = [];
+
+	selects.forEach((select) => {
+		if (typeof select === 'string') {
+			if (hasJoins) {
+				attributes.push(`${select} as \`${select}\``);
+			} else {
+				attributes.push(`\`${select}\``);
+			}
+		} else {
+			let expression = `\`${select.attribute}\``;
+			for (let index = 0; index < select.aggregation.length; index += 1) {
+				expression = `${select.aggregation[index]}(${expression})`;
+			}
+			attributes.push(`${expression} as \`${select.attribute}\``);
+		}
+	});
+
+	return attributes.join(',');
+}
+
 export function generateSelectQuery(sqlClause: SqlClause, table: string) {
 	const clauses: string[] = [];
-	const hasJoins = sqlClause.joins && sqlClause.joins.length !== 0;
+	const hasJoins = Boolean(sqlClause.joins && sqlClause.joins.length !== 0);
 	if (sqlClause.filter)
 		clauses.push(generateWhereClause(sqlClause.filter, hasJoins ? table : undefined));
+	if (sqlClause.groups) clauses.push(generateGroupClause(sqlClause.groups));
+
 	if (sqlClause.sort)
 		clauses.push(generateOrderbyClause(sqlClause.sort, hasJoins ? table : undefined));
 	if (sqlClause.limit) clauses.push(generateLimitClause(sqlClause.limit));
+
 	return `SELECT ${
-		sqlClause.select
-			? sqlClause.select
-					.map((attribute) => (hasJoins ? `${attribute} as \`${attribute}\`` : `\`${attribute}\``))
-					.join(',')
-			: '*'
+		sqlClause.select ? generateSelectClause(sqlClause.select, hasJoins) : '*'
 	} FROM ${hasJoins ? generateJoinClause(sqlClause.joins!) : table} ${clauses.join(' ')};`;
 }
 
