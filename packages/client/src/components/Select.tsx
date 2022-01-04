@@ -10,9 +10,17 @@ export interface SelectProps<Value> extends MuiSelectProps<Value> {
 
 export function Select<Value>(props: SelectProps<Value>) {
   const { menuItemRender, renderValue, className = "", defaultValue, items, value, onChange, ...restProps } = props;
+  let finalValue: Value | undefined = value;
+
+  if (typeof value === "string" && value === "") {
+    finalValue = defaultValue as Value
+  } else if (Array.isArray(value) && value.length === 0) {
+    finalValue = defaultValue as Value
+  }
+
   return <MuiSelect<Value>
     {...restProps}
-    value={value}
+    value={finalValue}
     defaultValue={defaultValue}
     className={`bold rounded-sm shadow-md ${className}`}
     renderValue={(valueToRender) =>

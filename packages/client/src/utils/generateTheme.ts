@@ -1,5 +1,5 @@
 import { blue, grey, red } from '@mui/material/colors';
-import { createTheme, lighten, ThemeOptions } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 export function generateTheme() {
 	const text: {
@@ -124,7 +124,7 @@ export function generateTheme() {
 							fontWeight: 500,
 						},
 						'&:hover': {
-							backgroundColor: lighten(grey[700], 0.5),
+							backgroundColor: grey[900],
 							color: 'white',
 						},
 					},

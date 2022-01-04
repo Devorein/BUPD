@@ -1,6 +1,6 @@
 import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS } from "@bupd/constants";
 import { CreateCasefilePayload, TCasefilePriority, TCasefileStatus } from "@bupd/types";
-import { Typography, useTheme } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useSnackbar } from "notistack";
 import { useCreateCasefileMutation } from "../api";
@@ -19,11 +19,6 @@ const createCasefileInitialPayload = (): CreateCasefilePayload => ({
   weapons: [],
   status: "open"
 });
-
-function Tags(props: { values: string[] }) {
-  const theme = useTheme();
-  return <div className="flex gap-2 flex-wrap overflow-auto">{props.values.map(value => <span key={value} className={`px-2 py-1 rounded-sm text-white font-normal`} style={{ background: theme.palette.primary.main }}>{value}</span>)}</div>
-}
 
 export default function Case() {
   useIsAuthenticated();
@@ -61,10 +56,10 @@ export default function Case() {
               label="Location of crime"
               placeholder="Dhaka"
             />
-            <FormikSelectInput<string[]> renderValue={(renderValues) => <Tags values={renderValues} />} multiple defaultValue={[]} items={CRIME_CATEGORIES} label="Crime category" name="categories" />
+            <FormikSelectInput<string[]> multiple defaultValue={[]} items={CRIME_CATEGORIES} label="Crime category" name="categories" />
             <FormikSelectInput<TCasefilePriority> defaultValue={2} items={CASEFILE_PRIORITIES} label="Priority" name="priority" />
             <FormikSelectInput<TCasefileStatus> defaultValue="open" items={CASEFILE_STATUSES} label="Status" name="status" />
-            <FormikSelectInput<string[]> renderValue={(renderValues) => <Tags values={renderValues} />} multiple defaultValue={[]} items={CRIME_WEAPONS} label="Crime weapons" name="weapons" />
+            <FormikSelectInput<string[]> multiple defaultValue={[]} items={CRIME_WEAPONS} label="Crime weapons" name="weapons" />
             <div className="border-b-2 border-gray-300 my-3"></div>
             <CaseCriminalsForm />
             <div className="border-b-2 border-gray-300 my-3"></div>
