@@ -130,7 +130,7 @@ export interface CreateAccessPayload {
 	criminal_id: number | null;
 	permission: AccessPermission;
 }
-export interface CreateAccessResponse {}
+export interface CreateAccessResponse extends IAccess {}
 export interface DeleteVictimPayload {
 	name: string;
 	case_no: number;

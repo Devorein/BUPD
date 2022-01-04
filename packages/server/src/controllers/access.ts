@@ -44,7 +44,7 @@ const AccessController = {
 			await query(generateInsertQuery(access, 'Access'));
 			res.json({
 				status: 'success',
-				data: '',
+				data: access,
 			});
 		} catch (err) {
 			logger.error(err);
