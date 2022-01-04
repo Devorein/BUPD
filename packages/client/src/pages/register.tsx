@@ -1,10 +1,11 @@
+import { POLICE_RANKS } from '@bupd/constants';
 import { RegisterPolicePayload } from '@bupd/types';
+import { PoliceRequest } from '@bupd/validation';
 import { Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useSnackbar } from 'notistack';
-import * as Yup from 'yup';
 import { useRegisterMutation } from '../api/mutations';
-import { Button, FormikTextInput } from '../components';
+import { Button, FormikSelectInput, FormikTextInput } from '../components';
 import { useIsAuthenticated, useIsAuthorized } from '../hooks';
 
 const registerInputInitialValue: RegisterPolicePayload = {
@@ -13,21 +14,10 @@ const registerInputInitialValue: RegisterPolicePayload = {
   address: "",
   designation: "",
   name: "",
-  nid: 0,
+  nid: 10000,
   phone: "",
   rank: ""
 };
-
-const registerInputValidationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Required'),
-  password: Yup.string().required('Required'),
-  name: Yup.string().required("Required"),
-  nid: Yup.number().required("Required"),
-  rank: Yup.string().required("Required"),
-  phone: Yup.string(),
-  designation: Yup.string(),
-  address: Yup.string(),
-});
 
 export default function Register() {
   useIsAuthenticated();
@@ -39,15 +29,16 @@ export default function Register() {
     <div className="flex items-center justify-center w-full h-full">
       <Formik
         validateOnMount
-        validationSchema={registerInputValidationSchema}
+        validationSchema={PoliceRequest.create("client")}
         initialValues={registerInputInitialValue}
-        onSubmit={async (values) => {
+        onSubmit={async (values, { resetForm }) => {
           try {
             registerMutation.mutate(
               values,
               {
                 onSuccess() {
-                  enqueueSnackbar(`Successfully registered as ${values.name}`, { variant: 'success' });
+                  enqueueSnackbar(`Successfully registered ${values.name}`, { variant: 'success' });
+                  resetForm()
                 },
                 onError(response) {
                   enqueueSnackbar((response as any).message, { variant: 'error' });
@@ -60,11 +51,13 @@ export default function Register() {
         }}
       >
         {({ isSubmitting, isValid }) => (
-          <Form className="p-5 shadow-md rounded-md">
+          <Form className="p-5 shadow-md rounded-md h-full border-2">
             <div className="underline my-5 text-center uppercase">
               <Typography variant="h4">Register a police</Typography>
             </div>
-            <div className="flex flex-col min-w-[450px] max-h-[500px] overflow-auto pr-5">
+            <div className="flex flex-col min-w-[450px] overflow-auto pr-5" style={{
+              height: 'calc(100% - 135px)'
+            }}>
               <FormikTextInput
                 disabled={registerMutation.isLoading}
                 name="name"
@@ -84,6 +77,7 @@ export default function Register() {
                 placeholder="*****"
                 type="password"
               />
+              <FormikSelectInput<string> defaultValue={POLICE_RANKS[0]} items={POLICE_RANKS} label="Rank" name="rank" />
               <FormikTextInput
                 disabled={registerMutation.isLoading}
                 name="phone"
@@ -102,12 +96,6 @@ export default function Register() {
                 label="NID"
                 placeholder="123456"
                 type="number"
-              />
-              <FormikTextInput
-                disabled={registerMutation.isLoading}
-                name="rank"
-                label="Rank"
-                placeholder="Superintendent"
               />
               <FormikTextInput
                 disabled={registerMutation.isLoading}

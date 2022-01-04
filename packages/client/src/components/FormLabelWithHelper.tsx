@@ -10,7 +10,7 @@ interface FormLabelWithHelperProps {
 export function FormLabelWithHelper(props: FormLabelWithHelperProps) {
   const { className, name, label, error } = props;
 
-  return <div className={`${className ?? ""} flex justify-between items-center my-1`}>
+  return <div className={`${className ?? ""} flex justify-between items-center my-1 capitalize`}>
     <FormLabel htmlFor={name}>{label}</FormLabel>
     {Boolean(error) && <FormHelperText error={Boolean(error)}>{error}</FormHelperText>}
   </div>
