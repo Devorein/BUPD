@@ -31,8 +31,8 @@ export function PoliceForm<PoliceData = IPolice>(props: PoliceFormProps<PoliceDa
     >
       {({ isSubmitting, isValid }) => (
         <Form className={`p-5 shadow-md rounded-md h-full border-2 w-full ${className ?? ""}`}>
-          <div className="underline my-5 text-center uppercase">
-            <Typography variant="h4">{header}</Typography>
+          <div className="my-5 text-center uppercase">
+            <Typography variant="h5">{header}</Typography>
           </div>
           <div className="flex flex-col overflow-auto pr-5" style={{
             height: 'calc(100% - 135px)'

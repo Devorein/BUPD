@@ -1,37 +1,14 @@
-import { DeleteCasefileResponse } from '@bupd/types';
+import { DeleteCasefileResponse, ICasefile } from '@bupd/types';
 import { useApiMutation } from '../../hooks';
-import { usePostMutation } from '../../hooks/usePostMutation';
 import { useGetCasefilesQueryData } from '../queries/useGetCasefilesQuery';
+import { useDeleteMutationCache } from '../utils/useDeleteMutationCache';
 
 export function useDeleteCasefileMutationCache() {
-	const getCasefilesQueryData = useGetCasefilesQueryData();
-	const postMutation = usePostMutation<any, DeleteCasefileResponse>(
-		'Successfully deleted casefile',
-		"Couldn't delete casefile"
+	return useDeleteMutationCache<ICasefile, DeleteCasefileResponse>(
+		'casefile',
+		useGetCasefilesQueryData,
+		'case_no'
 	);
-
-	return (caseNo: number, postCacheUpdateCb?: () => void) => {
-		return postMutation(() => {
-			getCasefilesQueryData((page, pages) => {
-				if (page?.status === 'success') {
-					const policeIndex = page.data.items.findIndex((casefile) => casefile.case_no === caseNo);
-					if (policeIndex !== -1) {
-						page.data.items.splice(policeIndex, 1);
-						const lastPage = pages?.[pages.length - 1];
-
-						// Decrease the count from the last page
-						if (lastPage?.status === 'success') {
-							lastPage.data.total -= 1;
-						}
-					}
-				}
-				return page;
-			});
-			if (postCacheUpdateCb) {
-				postCacheUpdateCb();
-			}
-		});
-	};
 }
 
 export function useDeleteCasefileMutation() {
