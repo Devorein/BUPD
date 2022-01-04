@@ -1,8 +1,13 @@
 import { GetCasefilesPayload, ICasefile, ICasefileSort } from '@bupd/types';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { grey, red } from '@mui/material/colors';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { blue, green, grey, red } from '@mui/material/colors';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useContext } from 'react';
+import { useCreateAccessMutation } from '../api/mutations/useCreateAccessMutation';
 import {
   useDeleteCasefileMutation,
   useDeleteCasefileMutationCache
@@ -12,6 +17,7 @@ import { DeleteModal } from '../components/DeleteModal';
 import { DetailsList } from '../components/DetailsList';
 import { Paginate } from '../components/Paginate';
 import { casefileSortLabelRecord, svgIconSx } from '../constants';
+import { RootContext } from '../contexts';
 import { useIsAuthenticated } from '../hooks';
 
 dayjs.extend(relativeTime);
@@ -30,6 +36,9 @@ export default function Casefiles() {
   useIsAuthenticated();
   const deleteCasefileMutation = useDeleteCasefileMutation();
   const deleteCasefileMutationCache = useDeleteCasefileMutationCache();
+  const { currentUser } = useContext(RootContext);
+
+  const createAccessMutation = useCreateAccessMutation();
 
   return (
     <div className="flex gap-5 justify-center h-full w-full">
@@ -87,7 +96,7 @@ export default function Casefiles() {
                       className="border-2 shadow-md rounded-md p-5 flex flex-col gap-3 relative"
                       key={casefile.case_no}
                     >
-                      <div>
+                      {currentUser?.type === "admin" ? <div>
                         <DeleteIcon
                           sx={svgIconSx}
                           className="cursor-pointer absolute"
@@ -98,7 +107,31 @@ export default function Casefiles() {
                             openModal(casefile)
                           }}
                         />
-                      </div>
+                      </div> : <div className="flex gap-1 absolute items-center px-2 py-1 rounded-sm" style={{
+                        backgroundColor: grey[100],
+                      }}>
+                        <VisibilityOutlinedIcon onClick={() => {
+                          createAccessMutation.mutate({
+                            case_no: casefile.case_no,
+                            criminal_id: null,
+                            permission: "read"
+                          })
+                        }} className="cursor-pointer" style={{ fill: green[500] }} fontSize="small" />
+                        <EditOutlinedIcon onClick={() => {
+                          createAccessMutation.mutate({
+                            case_no: casefile.case_no,
+                            criminal_id: null,
+                            permission: "update"
+                          })
+                        }} className="cursor-pointer" style={{ fill: blue[500] }} fontSize="small" />
+                        <DeleteOutlinedIcon onClick={() => {
+                          createAccessMutation.mutate({
+                            case_no: casefile.case_no,
+                            criminal_id: null,
+                            permission: "delete"
+                          })
+                        }} className="cursor-pointer" style={{ fill: red[500] }} fontSize="small" />
+                      </div>}
                       <div className="justify-center flex font-bold text-2xl my-2">
                         Case {casefile.case_no}
                       </div>

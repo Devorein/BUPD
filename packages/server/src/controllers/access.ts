@@ -5,6 +5,8 @@ import {
 	CreateAccessResponse,
 	GetAccessesPayload,
 	GetAccessesResponse,
+	GetPoliceAccessesPayload,
+	GetPoliceAccessesResponse,
 	IAccess,
 	IAccessPopulated,
 	PoliceJwtPayload,
@@ -44,7 +46,44 @@ const AccessController = {
 			await query(generateInsertQuery(access, 'Access'));
 			res.json({
 				status: 'success',
-				data: '',
+				// TODO: Doesn't return access_id
+				data: access as any,
+			});
+		} catch (err) {
+			logger.error(err);
+			handleError(res);
+		}
+	},
+
+	findForPolice: async (
+		req: Request<any, any, any, GetPoliceAccessesPayload>,
+		res: Response<GetPoliceAccessesResponse>
+	) => {
+		const jwtPayload = req.jwt_payload as PoliceJwtPayload;
+
+		try {
+			res.json({
+				status: 'success',
+				data: await paginate<IAccess>(
+					{
+						filter: [
+							...convertAccessFilter(req.query.filter),
+							{
+								police_nid: jwtPayload.nid,
+							},
+						],
+						limit: req.query.limit,
+						sort: req.query.sort ? [req.query.sort] : [],
+						next: req.query.next,
+					},
+					'Access',
+					'access_id',
+					undefined,
+					{
+						criminal_id: 'case_no',
+						case_no: 'criminal_id',
+					}
+				),
 			});
 		} catch (err) {
 			logger.error(err);
@@ -108,7 +147,7 @@ const AccessController = {
 	) {
 		try {
 			const accessId = req.params.access_id;
-			const decoded = req.jwt_payload as AdminJwtPayload;
+			const jwtPayload = req.jwt_payload as AdminJwtPayload;
 			const payload = req.body;
 			const [access] = await AccessModel.find({ filter: [{ access_id: accessId }] });
 			if (!access) {
@@ -122,7 +161,7 @@ const AccessController = {
 					],
 					{
 						...payload,
-						admin_id: decoded.id,
+						admin_id: jwtPayload.id,
 					}
 				);
 				res.json({
@@ -130,7 +169,7 @@ const AccessController = {
 					data: {
 						...access,
 						...payload,
-						admin_id: decoded.id,
+						admin_id: jwtPayload.id,
 					},
 				});
 			}
