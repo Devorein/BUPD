@@ -1,6 +1,8 @@
 import { IVictim } from '@bupd/types';
 import { PoolConnection } from 'mysql2/promise';
-import { generateInsertQuery } from '../utils/generateQueries';
+import { query } from '../utils';
+import { generateDeleteQuery, generateInsertQuery } from '../utils/generateQueries';
+import { find } from './utils';
 import { useQuery } from './utils/useQuery';
 
 const VictimModel = {
@@ -19,6 +21,23 @@ const VictimModel = {
 
 		await useQuery(generateInsertQuery<IVictim>(victim, 'Victim'), connection);
 		return victim;
+	},
+	async find(name: string, case_no: number) {
+		return find<IVictim>(
+			{
+				filter: [
+					{
+						name,
+						case_no,
+					},
+				],
+			},
+			'Victim'
+		);
+	},
+	async delete(name: string, case_no: number) {
+		await query(generateDeleteQuery([{ name, case_no }], 'Victim'));
+		return true;
 	},
 };
 
