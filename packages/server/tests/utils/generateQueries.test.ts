@@ -3,12 +3,14 @@
 import {
 	generateCountQuery,
 	generateDeleteQuery,
+	generateGroupClause,
 	generateInsertQuery,
 	generateJoinClause,
 	generateLimitClause,
 	generateLogicalOperationClauses,
 	generateOrderbyClause,
 	generateScalarClauses,
+	generateSelectClause,
 	generateSelectQuery,
 	generateSetClause,
 	generateUpdateQuery,
@@ -27,6 +29,48 @@ it(`generateCountQuery`, () => {
 			'police'
 		)
 	).toBe("SELECT COUNT(*) as count FROM police WHERE (`filter1`='value1' AND `filter2`='value2');");
+});
+
+describe('.generateGroupClause', () => {
+	it(`Should generate group clause for empty array`, () => {
+		expect(generateGroupClause([])).toBe(``);
+	});
+
+	it(`Should generate group clause for non empty array`, () => {
+		expect(generateGroupClause(['name', 'age'])).toBe(`GROUP BY name,age`);
+	});
+});
+
+describe('.generateSelectClause', () => {
+	it(`Should generate correct select clause without joins`, () => {
+		expect(
+			generateSelectClause(
+				[
+					'col1',
+					{
+						aggregation: ['SUM', 'COUNT'],
+						attribute: 'col2',
+					},
+				],
+				false
+			)
+		).toBe('`col1`,COUNT(SUM(`col2`)) as `col2`');
+	});
+
+	it(`Should generate correct select clause with joins`, () => {
+		expect(
+			generateSelectClause(
+				[
+					'col1',
+					{
+						aggregation: ['SUM', 'COUNT'],
+						attribute: 'col2',
+					},
+				],
+				true
+			)
+		).toBe('col1 as `col1`,COUNT(SUM(`col2`)) as `col2`');
+	});
 });
 
 describe('.generateScalarClauses', () => {
@@ -55,9 +99,12 @@ describe('.generateScalarClauses', () => {
 					$eq: 5,
 				},
 				h: true,
+				i: {
+					$is: null,
+				},
 			})
 		).toBe(
-			"(`a`>1 AND `b`<=3 AND `c` IN(1,2,3) AND `d`>='abc' AND `e`<5 AND `f`!='def' AND `g`=5 AND `h`=true)"
+			"(`a`>1 AND `b`<=3 AND `c` IN(1,2,3) AND `d`>='abc' AND `e`<5 AND `f`!='def' AND `g`=5 AND `h`=true AND `i` IS NULL)"
 		);
 	});
 
@@ -204,11 +251,12 @@ describe('.generateSelectQuery', () => {
 					sort: [['rank', -1]],
 					limit: 10,
 					select: ['attribute1'],
+					groups: ['col1'],
 				},
 				'Police'
 			)
 		).toBe(
-			"SELECT `attribute1` FROM Police WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') ORDER BY `rank` DESC LIMIT 10;"
+			"SELECT `attribute1` FROM Police WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') GROUP BY col1 ORDER BY `rank` DESC LIMIT 10;"
 		);
 	});
 

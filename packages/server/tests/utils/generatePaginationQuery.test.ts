@@ -1,7 +1,7 @@
 import { generatePaginationQuery } from '../../src/utils/generatePaginationQuery';
 
 describe('.generatePaginationQuery', () => {
-	it.only(`Should work if next, sort is not present`, () => {
+	it(`Should work if next, sort is not present`, () => {
 		expect(
 			generatePaginationQuery(
 				{
@@ -19,7 +19,7 @@ describe('.generatePaginationQuery', () => {
 		});
 	});
 
-	it.only(`Should work if sort and filter is not present, but next is`, () => {
+	it(`Should work if sort and filter is not present, but next is`, () => {
 		expect(generatePaginationQuery({ next: { id: 1 } }, 'access_id')).toMatchObject({
 			sort: [['access_id', 1]],
 			filter: [
@@ -32,7 +32,7 @@ describe('.generatePaginationQuery', () => {
 		});
 	});
 
-	it.only(`Should work if sort (nullable key) is present, but next is not`, () => {
+	it(`Should work if sort (nullable key) is present, but next is not`, () => {
 		expect(generatePaginationQuery({ sort: [['a', -1]] }, 'access_id', { a: 'b' })).toMatchObject({
 			sort: [
 				['a', -1],
@@ -43,7 +43,7 @@ describe('.generatePaginationQuery', () => {
 		});
 	});
 
-	it.only(`Should work if sort is present, but next is not`, () => {
+	it(`Should work if sort is present, but next is not`, () => {
 		expect(generatePaginationQuery({ sort: [['a', -1]] }, 'access_id')).toMatchObject({
 			sort: [
 				['a', -1],
@@ -53,7 +53,7 @@ describe('.generatePaginationQuery', () => {
 		});
 	});
 
-	it.only(`Should work if sort (nullable key) and next is present and next.sort(nullable key) is not null`, () => {
+	it(`Should work if sort (nullable key) and next is present and next.sort(nullable key) is not null`, () => {
 		expect(
 			generatePaginationQuery({ sort: [['a', -1]], next: { id: 1, a: 2 } }, 'access_id', { a: 'b' })
 		).toMatchObject({
@@ -89,7 +89,7 @@ describe('.generatePaginationQuery', () => {
 		});
 	});
 
-	it.only(`Should work if sort (nullable key) and next is present and next.sort(nullable key) is null`, () => {
+	it(`Should work if sort (nullable key) and next is present and next.sort(nullable key) is null`, () => {
 		expect(
 			generatePaginationQuery({ sort: [['a', -1]], next: { id: 3, a: null, b: 2 } }, 'access_id', {
 				a: 'b',
@@ -126,7 +126,7 @@ describe('.generatePaginationQuery', () => {
 		});
 	});
 
-	it.only(`Should work if sort and next is present`, () => {
+	it(`Should work if sort and next is present`, () => {
 		expect(
 			generatePaginationQuery({ sort: [['a', -1]], next: { id: 1, a: 2 } }, 'access_id')
 		).toMatchObject({

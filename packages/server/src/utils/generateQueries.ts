@@ -214,7 +214,7 @@ export function generateSelectClause(selects: SqlSelect, hasJoins: boolean) {
 				attributes.push(`\`${select}\``);
 			}
 		} else {
-			let expression = select.attribute;
+			let expression = `\`${select.attribute}\``;
 			for (let index = 0; index < select.aggregation.length; index += 1) {
 				expression = `${select.aggregation[index]}(${expression})`;
 			}
