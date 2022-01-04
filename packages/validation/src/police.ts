@@ -7,55 +7,42 @@ function policeValidationSchema(purpose?: 'create' | 'update', domain?: 'server'
 	purpose = purpose ?? 'update';
 
 	const baseSchema = {
-		email: yup.string().test((email) => {
-			if (!email || !validateEmail(email)) {
-				return false;
-			}
-			return true;
-		}),
+		email: yup
+			.string()
+			.test((email) => {
+				if (!email || !validateEmail(email)) {
+					return false;
+				}
+				return true;
+			})
+			.required(domain === 'client' ? 'Required' : undefined)
+			.typeError('Invalid'),
 		phone: yup.string(),
 		address: yup.string(),
 		designation: yup.string(),
-		name: yup.string(),
-		rank: yup.string(),
+		name: yup.string().required(domain === 'client' ? 'Required' : undefined),
+		rank: yup.string().required(domain === 'client' ? 'Required' : undefined),
 	};
 
 	if (purpose === 'create') {
 		return yup
 			.object({
-				email: baseSchema.email
-					.required(domain === 'client' ? 'Required' : undefined)
-					.typeError('Invalid'),
-				name: baseSchema.name.required(domain === 'client' ? 'Required' : undefined),
-				rank: baseSchema.rank.required(domain === 'client' ? 'Required' : undefined),
+				...baseSchema,
 				password: yup
 					.string()
 					.test((password) => validatePassword(password ?? ''))
 					.required(domain === 'client' ? 'Required' : undefined),
 				nid: yup.number().required(domain === 'client' ? 'Required' : undefined),
-				address: baseSchema.address,
-				phone: baseSchema.phone,
-				designation: baseSchema.designation,
 			})
 			.strict()
 			.noUnknown();
 	}
 
-	return yup
-		.object({
-			email: baseSchema.email.nullable(),
-			name: baseSchema.name.nullable(),
-			rank: baseSchema.rank.nullable(),
-			address: baseSchema.address.nullable(),
-			phone: baseSchema.phone.nullable(),
-			designation: baseSchema.designation.nullable(),
-		})
-		.strict()
-		.noUnknown();
+	return yup.object(baseSchema).strict().noUnknown();
 }
 
 export const PoliceRequest = {
-	update: policeValidationSchema('update'),
+	update: (domain: 'client' | 'server') => policeValidationSchema('update', domain),
 	get: yup
 		.object({
 			filter: yup.object({

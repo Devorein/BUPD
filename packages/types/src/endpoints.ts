@@ -1,4 +1,3 @@
-import { IVictim } from '.';
 import { ApiResponse, NextKey, PaginatedResponse } from './api';
 import {
 	IAccess,
@@ -8,6 +7,7 @@ import {
 	ICasefilePopulated,
 	ICriminal,
 	IPolice,
+	IVictim,
 	TAccessPermission,
 	TAccessType,
 	TCasefilePriority,
@@ -19,7 +19,7 @@ export interface RegisterPolicePayload extends IPolice {}
 export interface RegisterPoliceResponse extends Omit<IPolice, 'password'> {}
 // You shouldn't be able to update police password using this endpoint
 // there should be a separate endpoint for that as you need to provide your current password if you want to update it
-export interface UpdatePolicePayload extends Omit<IPolice, 'password'> {}
+export interface UpdatePolicePayload extends Omit<IPolice, 'password' | 'nid'> {}
 export interface UpdateCriminalPayload extends Omit<ICriminal, 'criminal_id'> {}
 export interface UpdateCriminalResponse extends ICriminal {}
 export interface UpdatePoliceResponse extends Omit<IPolice, 'password'> {

@@ -35,22 +35,22 @@ export default function Casefiles() {
     <div className="flex gap-5 justify-center h-full w-full">
       <DeleteModal<ICasefile>
         isMutationLoading={deleteCasefileMutation.isLoading}
-        onDelete={(selectedData, resetState) => {
+        onDelete={(selectedData, closeModal) => {
           deleteCasefileMutation.mutate(
             {
               endpoint: `casefile/${selectedData.case_no}`,
             },
             deleteCasefileMutationCache(selectedData.case_no, () => {
-              resetState();
+              closeModal();
             })
           );
         }}
       >
-        {({ setSelectedData, setIsModalOpen }) => (
+        {({ openModal }) => (
           <Paginate<GetCasefilesPayload, ICasefileSort, ICasefile>
             filterGroups={[
               {
-                type: "checkboxgroup",
+                type: "checkbox_group",
                 props: {
                   items: [
                     [0, 'Low'],
@@ -62,7 +62,7 @@ export default function Casefiles() {
                 }
               },
               {
-                type: "checkboxgroup",
+                type: "checkbox_group",
                 props: {
                   items: ['solved', 'open', 'closed'],
                   label: 'Status',
@@ -95,8 +95,7 @@ export default function Casefiles() {
                             fill: red[500],
                           }}
                           onClick={() => {
-                            setIsModalOpen(true);
-                            setSelectedData(casefile);
+                            openModal(casefile)
                           }}
                         />
                       </div>

@@ -11,10 +11,10 @@ export interface FilterFormProps<ClientQuery extends IQuery<any, any>> {
   setClientFilter: Dispatch<SetStateAction<ClientQuery["filter"]>>
   resetFilter: () => ClientQuery["filter"]
   filterGroups: ({
-    type: "checkboxgroup",
+    type: "checkbox_group",
     props: Omit<CheckboxGroupProps<ClientQuery["filter"]>, "setState" | "state">
   } | {
-    type: "numberrange",
+    type: "number_range",
     props: Omit<NumberRangeProps<ClientQuery["filter"]>, "setState" | "state">
   })[]
 }
@@ -30,10 +30,10 @@ export function FilterForm<ClientQuery extends IQuery<any, any>>(props: FilterFo
       <div className="flex flex-col gap-5">
         {filterGroups.map(filterGroup => {
           switch (filterGroup.type) {
-            case "checkboxgroup": {
+            case "checkbox_group": {
               return <CheckboxGroup<ClientQuery["filter"]> key={filterGroup.props.label} {...filterGroup.props} setState={setClientFilter} state={clientFilter} />
             }
-            case "numberrange": {
+            case "number_range": {
               return <NumberRange<ClientQuery["filter"]> key={filterGroup.props.label} {...filterGroup.props} setState={setClientFilter} state={clientFilter} />
             }
             default: {
