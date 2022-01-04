@@ -15,14 +15,15 @@ CriminalRouter.put(
 ).delete(
 	'/:criminal_id',
 	isAuthenticated,
-	isAuthorized(['police']),
+	isAuthorized(['police', 'admin']),
 	hasAccess('criminal', ['delete']),
 	CriminalController.delete
 );
+
 CriminalRouter.get(
 	'/',
 	isAuthenticated,
 	isAuthorized(['police', 'admin']),
-	CriminalController.find
+	CriminalController.findMany
 );
 export default CriminalRouter;

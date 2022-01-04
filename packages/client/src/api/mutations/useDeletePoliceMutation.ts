@@ -4,7 +4,7 @@ import { usePostMutation } from '../../hooks/usePostMutation';
 import { useGetPolicesQueryData } from '../queries/useGetPolicesQuery';
 
 export function useDeletePoliceMutationCache() {
-	const getAccessesQueryData = useGetPolicesQueryData();
+	const getPolicesQueryData = useGetPolicesQueryData();
 	const postMutation = usePostMutation<any, DeletePoliceResponse>(
 		'Successfully deleted police',
 		"Couldn't delete police"
@@ -12,7 +12,7 @@ export function useDeletePoliceMutationCache() {
 
 	return (policeNid: number, postCacheUpdateCb?: () => void) => {
 		return postMutation(() => {
-			getAccessesQueryData((page, pages) => {
+			getPolicesQueryData((page, pages) => {
 				if (page?.status === 'success') {
 					const policeIndex = page.data.items.findIndex((police) => police.nid === policeNid);
 					if (policeIndex !== -1) {

@@ -111,8 +111,8 @@ export interface GetAccessesPayload extends IQuery<IAccessFilter, IAccessSort> {
 export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccessPopulated>>;
 export type GetCasefilesResponse = ApiResponse<PaginatedResponse<ICasefile>>;
 export type GetCasefilesPayload = IQuery<ICasefileFilter, ICasefileSort>;
-export type GetCriminalPayload = IQuery<ICriminalFilter, ICriminalSort>;
-export type GetCriminalResponse = ApiResponse<PaginatedResponse<ICriminal>>;
+export type GetCriminalsPayload = IQuery<ICriminalFilter, ICriminalSort>;
+export type GetCriminalsResponse = ApiResponse<PaginatedResponse<ICriminal>>;
 export type AccessPermission = 'read' | 'write' | 'update' | 'delete';
 
 export interface CreateAccessPayload {

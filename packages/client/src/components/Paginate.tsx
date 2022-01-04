@@ -26,14 +26,14 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
 
   if (data) {
     return <div className="flex justify-center gap-10 py-5 w-full h-full">
-      <div className="h-full px-5">
+      {checkboxGroups.length !== 0 && <div className="h-full">
         <FilterForm<ClientQuery> clientFilter={dummyQuery.filter} setClientFilter={(clientFilter) => {
           setDummyQuery({
             ...clientQuery,
             filter: clientFilter as ClientQuery["filter"]
           })
         }} setClientQuery={setClientQuery} checkboxGroups={checkboxGroups} resetFilter={() => clientQueryFn().filter} />
-      </div>
+      </div>}
 
       <div className="flex gap-2 flex-col w-full h-full">
         <Typography className="mb-5 uppercase" variant="h4">{label}</Typography>
@@ -66,7 +66,9 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
             {dataListComponentFn(allItems)}
           </div>
         </div>
-        <LoadMoreButton payload={clientQuery} fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allItems.length !== totalItems} />
+        <div style={{ marginTop: 15 }}>
+          <LoadMoreButton payload={clientQuery} fetchNextPage={fetchNextPage} isQueryFetching={isFetching} lastFetchedPage={lastFetchedPage} hasNextPage={hasNextPage && allItems.length !== totalItems} />
+        </div>
       </div>
     </div>;
   }

@@ -4,7 +4,7 @@ import { usePostMutation } from '../../hooks/usePostMutation';
 import { useGetCasefilesQueryData } from '../queries/useGetCasefilesQuery';
 
 export function useDeleteCasefileMutationCache() {
-	const getAccessesQueryData = useGetCasefilesQueryData();
+	const getCasefilesQueryData = useGetCasefilesQueryData();
 	const postMutation = usePostMutation<any, DeleteCasefileResponse>(
 		'Successfully deleted casefile',
 		"Couldn't delete casefile"
@@ -12,7 +12,7 @@ export function useDeleteCasefileMutationCache() {
 
 	return (caseNo: number, postCacheUpdateCb?: () => void) => {
 		return postMutation(() => {
-			getAccessesQueryData((page, pages) => {
+			getCasefilesQueryData((page, pages) => {
 				if (page?.status === 'success') {
 					const policeIndex = page.data.items.findIndex((casefile) => casefile.case_no === caseNo);
 					if (policeIndex !== -1) {

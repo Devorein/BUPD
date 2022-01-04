@@ -39,7 +39,7 @@ export function DeleteModal<Data>(props: DeleteModalProps<Data>) {
               onDelete(selectedData, resetState)
             }
           }} />
-          <Button disabled={isMutationLoading || !selectedData} content="Cancel" />
+          <Button disabled={isMutationLoading || !selectedData} content="Cancel" onClick={() => resetState()} />
         </div>
       </div>
     </TransitionedModal>
