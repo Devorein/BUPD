@@ -17,7 +17,7 @@ export function useGetAccessesQuery(query: GetAccessesPayload) {
 	const clonedQuery = JSON.parse(JSON.stringify(query));
 	delete clonedQuery.next;
 	return useApiInfiniteQuery<IAccessPopulated, GetAccessesPayload>(
-		['access', qs.stringify(clonedQuery)],
+		['access', decodeURIComponent(qs.stringify(clonedQuery))],
 		`access`,
 		query,
 		{

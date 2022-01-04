@@ -17,7 +17,7 @@ export function useGetCriminalsQuery(query: GetCriminalsPayload) {
 	const clonedQuery = JSON.parse(JSON.stringify(query));
 	delete clonedQuery.next;
 	return useApiInfiniteQuery<ICriminal, GetCriminalsPayload>(
-		['criminal', qs.stringify(clonedQuery)],
+		['criminal', decodeURIComponent(qs.stringify(clonedQuery))],
 		`criminal`,
 		query,
 		{

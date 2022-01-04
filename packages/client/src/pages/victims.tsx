@@ -10,7 +10,7 @@ const createInitialGetVictimsQuery = (): GetVictimsPayload => ({
   next: null,
   sort: ['name', -1],
   filter: {
-    age: [undefined, undefined]
+    age: [10, 120]
   },
 });
 
@@ -20,10 +20,21 @@ export default function Criminals() {
   return (
     <div className="flex justify-center w-full h-full">
       <Paginate<GetVictimsPayload, IVictimSort, IVictim>
-        checkboxGroups={[]}
+        filterGroups={[
+          {
+            type: "numberrange",
+            props: {
+              label: "Age",
+              max: 120,
+              min: 10,
+              stateKey: "age",
+              step: 5
+            }
+          }
+        ]}
         clientQueryFn={createInitialGetVictimsQuery}
         dataListComponentFn={(victims) => (
-          <div className="grid grid-cols-5 gap-5 pr-5">
+          <div className="grid grid-cols-3 gap-5 pr-5">
             {victims.map((victim) => (
               <div
                 className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3"

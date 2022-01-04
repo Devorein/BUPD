@@ -12,11 +12,11 @@ interface PaginateProps<ClientQuery extends IQuery<any, any>, Data> {
   label: string
   sortLabelRecord: Record<string, string>
   dataListComponentFn: (items: Data[]) => JSX.Element
-  checkboxGroups: FilterFormProps<ClientQuery>["checkboxGroups"]
+  filterGroups: FilterFormProps<ClientQuery>["filterGroups"]
 }
 
 export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [string, -1 | 1], Data>(props: PaginateProps<ClientQuery, Data>) {
-  const { dataListComponentFn, checkboxGroups, label, clientQueryFn, dataFetcher, sortLabelRecord } = props;
+  const { dataListComponentFn, filterGroups, label, clientQueryFn, dataFetcher, sortLabelRecord } = props;
   const [clientQuery, setClientQuery] = useState<ClientQuery>(clientQueryFn());
   const [dummyQuery, setDummyQuery] = useState<ClientQuery>(
     clientQuery,
@@ -26,13 +26,13 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
 
   if (data) {
     return <div className="flex justify-center gap-10 py-5 w-full h-full">
-      {checkboxGroups.length !== 0 && <div className="h-full">
+      {filterGroups.length !== 0 && <div className="h-full">
         <FilterForm<ClientQuery> clientFilter={dummyQuery.filter} setClientFilter={(clientFilter) => {
           setDummyQuery({
             ...clientQuery,
             filter: clientFilter as ClientQuery["filter"]
           })
-        }} setClientQuery={setClientQuery} checkboxGroups={checkboxGroups} resetFilter={() => clientQueryFn().filter} />
+        }} setClientQuery={setClientQuery} filterGroups={filterGroups} resetFilter={() => clientQueryFn().filter} />
       </div>}
 
       <div className="flex gap-2 flex-col w-full h-full">

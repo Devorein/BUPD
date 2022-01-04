@@ -17,7 +17,7 @@ export function useGetPolicesQuery(query: GetPolicesPayload) {
 	const clonedQuery = JSON.parse(JSON.stringify(query));
 	delete clonedQuery.next;
 	return useApiInfiniteQuery<IPolice, GetPolicesPayload>(
-		['police', qs.stringify(clonedQuery)],
+		['police', decodeURIComponent(qs.stringify(clonedQuery))],
 		`police`,
 		query,
 		{

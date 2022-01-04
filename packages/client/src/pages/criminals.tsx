@@ -41,7 +41,7 @@ export default function Criminals() {
       >
         {({ setSelectedData, setIsModalOpen }) => (
           <Paginate<GetCriminalsPayload, ICriminalSort, ICriminal>
-            checkboxGroups={[]}
+            filterGroups={[]}
             clientQueryFn={createInitialGetCriminalsQuery}
             dataListComponentFn={(criminals) => (
               <div className="grid grid-cols-5 gap-5 pr-5">
