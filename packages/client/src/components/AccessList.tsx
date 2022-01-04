@@ -1,109 +1,14 @@
-import { IAccess, IAccessPopulated, TAccessPermission } from "@bupd/types";
+import { IAccessPopulated } from "@bupd/types";
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import WorkIcon from '@mui/icons-material/Work';
-import { green, red } from "@mui/material/colors";
 import React, { Dispatch, SetStateAction } from "react";
-import { useUpdateAccessMutation, useUpdateAccessMutationCache } from "../api/mutations/useUpdateAccessMutation";
-import { svgIconSx } from "../constants";
+import { PermissionIconRecord } from "../constants";
 import { AccessDetailsProps } from "./AccessDetails";
+import { ApprovalIcons } from "./ApprovalIcons";
 
 interface AccessListProps {
   accesses: IAccessPopulated[]
   setAccessDetail: Dispatch<SetStateAction<AccessDetailsProps["data"]>>
-}
-
-const PermissionIconRecord: Record<TAccessPermission, JSX.Element> = {
-  delete: <DeleteIcon fontSize="small" />,
-  update: <EditIcon fontSize="small" />,
-  read: <VisibilityIcon fontSize="small" />,
-  write: <EditIcon fontSize="small" />,
-}
-
-interface ApprovalIconsProps {
-  approved: IAccess["approved"]
-  accessId: number
-}
-
-function ApprovalIcons(props: ApprovalIconsProps) {
-  const { approved, accessId } = props;
-  const updateAccessMutation = useUpdateAccessMutation(accessId);
-  const updateAccessMutationCache = useUpdateAccessMutationCache();
-
-  let approvalIcons: JSX.Element | null = null;
-
-  switch (approved) {
-    case 0: {
-      approvalIcons = <>
-        <ThumbDownIcon onClick={() => {
-          updateAccessMutation.mutate({
-            approved: 2
-          }, updateAccessMutationCache(accessId))
-        }} className="cursor-pointer" fontSize="small" sx={{
-          fill: red[500],
-          ...svgIconSx
-        }} />
-        <ThumbUpOutlinedIcon onClick={() => {
-          updateAccessMutation.mutate({
-            approved: 1
-          }, updateAccessMutationCache(accessId))
-        }} className="cursor-pointer" fontSize="small" sx={{
-          fill: green[500],
-          ...svgIconSx
-        }} />
-      </>
-      break;
-    }
-    case 1: {
-      approvalIcons = <>
-        <ThumbDownOutlinedIcon onClick={() => {
-          updateAccessMutation.mutate({
-            approved: 0
-          }, updateAccessMutationCache(accessId))
-        }} className="cursor-pointer" fontSize="small" sx={{
-          fill: red[500],
-          ...svgIconSx
-        }} />
-        <ThumbUpIcon onClick={() => {
-          updateAccessMutation.mutate({
-            approved: 2
-          }, updateAccessMutationCache(accessId))
-        }} className="cursor-pointer" fontSize="small" sx={{
-          fill: green[500],
-          ...svgIconSx
-        }} />
-      </>
-      break;
-    }
-    default: {
-      approvalIcons = <>
-        <ThumbDownOutlinedIcon onClick={() => {
-          updateAccessMutation.mutate({
-            approved: 0
-          }, updateAccessMutationCache(accessId))
-        }} className="cursor-pointer" fontSize="small" sx={{
-          fill: red[500],
-          ...svgIconSx
-        }} />
-        <ThumbUpOutlinedIcon onClick={() => {
-          updateAccessMutation.mutate({
-            approved: 1
-          }, updateAccessMutationCache(accessId))
-        }} className="cursor-pointer" fontSize="small" sx={{
-          fill: green[500],
-          ...svgIconSx
-        }} />
-      </>
-      break;
-    }
-  }
-  return <div className="flex gap-2 items-center">{approvalIcons}</div>
 }
 
 export function AccessList(props: AccessListProps) {
