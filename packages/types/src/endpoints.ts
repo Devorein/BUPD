@@ -131,6 +131,12 @@ export interface CreateAccessPayload {
 	permission: AccessPermission;
 }
 export interface CreateAccessResponse {}
+export interface DeleteVictimPayload {
+	name: string;
+	case_no: number;
+}
+
+export type DeleteVictimResponse = ApiResponse<IVictim>;
 
 // Removing confidential information from jwt payload
 export interface AdminJwtPayload extends Omit<IAdmin, 'password'> {

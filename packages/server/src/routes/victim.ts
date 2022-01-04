@@ -13,4 +13,12 @@ VictimRouter.get(
 	VictimController.findMany
 );
 
+VictimRouter.delete(
+	'/',
+	isAuthenticated,
+	isAuthorized(['admin']),
+	validatePayload(VictimRequest.delete),
+	VictimController.delete
+);
+
 export default VictimRouter;

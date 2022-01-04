@@ -19,4 +19,11 @@ export const VictimRequest = {
 			}),
 		})
 		.concat(paginationSchema(/^(case_no|age|name)$/)),
+	delete: yup
+		.object({
+			case_no: yup.number().required(),
+			name: yup.string().required(),
+		})
+		.strict()
+		.noUnknown(),
 };

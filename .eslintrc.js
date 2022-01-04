@@ -28,6 +28,7 @@ module.exports = {
 		'no-console': 'off',
 		'import/extensions': 'off',
 		'no-lonely-if': 'off',
+		camelcase: 'off',
 		'import/no-extraneous-dependencies': [
 			'error',
 			{
