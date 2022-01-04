@@ -1,14 +1,14 @@
 import { GetAccessesPayload, IAccessPopulated, IAccessSort } from '@bupd/types';
 import { useState } from 'react';
-import { useGetAccessesQuery } from '../api';
-import { AccessDetails, AccessDetailsProps } from '../components/AccessDetails';
-import { AccessList } from '../components/AccessList';
-import { Paginate } from '../components/Paginate';
+import { useGetAccessesQuery } from '../../api';
+import { AccessDetails, AccessDetailsProps } from '../../components/AccessDetails';
+import { AccessList } from '../../components/AccessList';
+import { Paginate } from '../../components/Paginate';
 import {
   AccessesFilterGroup,
   accessSortLabelRecord,
   createInitialGetAccessesQuery
-} from '../constants';
+} from '../../constants';
 
 export default function Accesses() {
   const [currentDetail, setAccessDetail] = useState<AccessDetailsProps['data']>(null);

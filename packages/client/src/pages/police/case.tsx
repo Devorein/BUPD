@@ -3,11 +3,11 @@ import { CreateCasefilePayload, TCasefilePriority, TCasefileStatus } from "@bupd
 import { Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useSnackbar } from "notistack";
-import { useCreateCasefileMutation } from "../api";
-import { Button, FormikSelectInput, FormikTextInput } from "../components";
-import { CaseCriminalsForm } from '../components/CaseForm/CaseCriminalsForm';
-import { CaseVictimsForm } from "../components/CaseForm/CaseVictimsForm";
-import { useIsAuthenticated, useIsAuthorized } from "../hooks";
+import { useCreateCasefileMutation } from "../../api";
+import { Button, FormikSelectInput, FormikTextInput } from "../../components";
+import { CaseCriminalsForm } from '../../components/CaseForm/CaseCriminalsForm';
+import { CaseVictimsForm } from "../../components/CaseForm/CaseVictimsForm";
+import { useIsAuthenticated, useIsAuthorized } from "../../hooks";
 
 const createCasefileInitialPayload = (): CreateCasefilePayload => ({
   categories: [],
