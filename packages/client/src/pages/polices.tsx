@@ -1,10 +1,11 @@
 import { POLICE_RANKS } from "@bupd/constants";
-import { GetPolicesPayload, IPolice, IPoliceSort } from "@bupd/types";
+import { GetPolicesPayload, IPolice, IPoliceSort, UpdatePolicePayload } from "@bupd/types";
 import { PoliceRequest } from "@bupd/validation";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { blue, grey, red } from "@mui/material/colors";
 import { useDeletePoliceMutation, useDeletePoliceMutationCache } from "../api/mutations/useDeletePoliceMutation";
+import { useUpdatePoliceMutation, useUpdatePoliceMutationCache } from "../api/mutations/useUpdatePoliceMutation";
 import { useGetPolicesQuery } from "../api/queries/useGetPolicesQuery";
 import { DeleteModal } from "../components/DeleteModal";
 import { DetailsList } from "../components/DetailsList";
@@ -35,6 +36,8 @@ export default function Polices() {
 
   const deletePoliceMutation = useDeletePoliceMutation();
   const deletePoliceMutationCache = useDeletePoliceMutationCache();
+  const updatePoliceMutation = useUpdatePoliceMutation();
+  const updatePoliceMutationCache = useUpdatePoliceMutationCache();
 
   return <div className="flex justify-center w-full h-full">
     <DeleteModal<IPolice> isMutationLoading={deletePoliceMutation.isLoading} onDelete={(selectedData, closeModal) => {
@@ -48,7 +51,19 @@ export default function Polices() {
         openModal
       }) => <>
           <TransitionedModal isModalOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
-            <PoliceForm showPassword={false} header="Update police" submitButtonText="Update" initialValues={selectedUpdateData!} isMutationLoading={false} onSubmit={() => { }} validationSchema={updatePolicePayloadValidationSchema} />
+            <PoliceForm<UpdatePolicePayload> showNid={false} showPassword={false} header="Update police" submitButtonText="Update" initialValues={selectedUpdateData!} isMutationLoading={updatePoliceMutation.isLoading} onSubmit={(values) => {
+              if (selectedUpdateData) {
+                updatePoliceMutation.mutate({
+                  address: values.address,
+                  designation: values.designation,
+                  email: values.email,
+                  name: values.name,
+                  phone: values.phone,
+                  rank: values.rank,
+                  endpoint: `police/${selectedUpdateData.nid}`
+                }, updatePoliceMutationCache(selectedUpdateData.nid))
+              }
+            }} validationSchema={updatePolicePayloadValidationSchema} />
           </TransitionedModal>
           <Paginate<GetPolicesPayload, IPoliceSort, IPolice> filterGroups={[{
             type: "checkbox_group",

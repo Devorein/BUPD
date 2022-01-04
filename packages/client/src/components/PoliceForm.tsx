@@ -7,19 +7,20 @@ import { Button } from "./Button";
 import { FormikSelectInput } from "./FormikSelectInput";
 import { FormikTextInput } from "./FormikTextInput";
 
-interface PoliceFormProps {
-  initialValues: IPolice,
+interface PoliceFormProps<PoliceData> {
+  initialValues: PoliceData,
   validationSchema: AnySchema
   isMutationLoading: boolean
-  onSubmit: FormikConfig<IPolice>["onSubmit"]
+  onSubmit: FormikConfig<PoliceData>["onSubmit"]
   header: string
   submitButtonText: string
   className?: string
   showPassword: boolean
+  showNid: boolean
 }
 
-export function PoliceForm(props: PoliceFormProps) {
-  const { showPassword, header, submitButtonText, initialValues, className, onSubmit, validationSchema, isMutationLoading } = props;
+export function PoliceForm<PoliceData = IPolice>(props: PoliceFormProps<PoliceData>) {
+  const { showNid, showPassword, header, submitButtonText, initialValues, className, onSubmit, validationSchema, isMutationLoading } = props;
 
   return (
     <Formik
@@ -68,13 +69,13 @@ export function PoliceForm(props: PoliceFormProps) {
               label="Designation"
               placeholder="Police Station"
             />
-            <FormikTextInput
+            {showNid && <FormikTextInput
               disabled={isMutationLoading}
               name="nid"
               label="NID"
               placeholder="123456"
               type="number"
-            />
+            />}
             <FormikTextInput
               disabled={isMutationLoading}
               name="address"
@@ -84,7 +85,7 @@ export function PoliceForm(props: PoliceFormProps) {
               rows={2}
             />
           </div>
-          <div className="flex justify-between my-5">
+          <div className="flex justify-between mt-5">
             <Button
               color="secondary"
               content={submitButtonText}

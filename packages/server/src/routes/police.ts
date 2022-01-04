@@ -6,13 +6,7 @@ import validateQuery from '../middlewares/validateQuery';
 
 const PoliceRouter = express.Router();
 
-PoliceRouter.put(
-	'/',
-	validatePayload(PoliceRequest.update('server')),
-	isAuthenticated,
-	isAuthorized(['police']),
-	PoliceController.update
-).get(
+PoliceRouter.get(
 	'/',
 	validateQuery(PoliceRequest.get),
 	isAuthenticated,
@@ -20,12 +14,20 @@ PoliceRouter.put(
 	PoliceController.get
 );
 
-PoliceRouter.delete('/:nid', isAuthenticated, isAuthorized(['admin']), PoliceController.delete).get(
-	'/:nid',
-	validateQuery(PoliceRequest.get),
-	isAuthenticated,
-	isAuthorized(['admin', 'police']),
-	PoliceController.getOnNid
-);
+PoliceRouter.delete('/:nid', isAuthenticated, isAuthorized(['admin']), PoliceController.delete)
+	.get(
+		'/:nid',
+		validateQuery(PoliceRequest.get),
+		isAuthenticated,
+		isAuthorized(['admin', 'police']),
+		PoliceController.getOnNid
+	)
+	.put(
+		'/:nid',
+		validatePayload(PoliceRequest.update('server')),
+		isAuthenticated,
+		isAuthorized(['admin', 'police']),
+		PoliceController.update
+	);
 
 export default PoliceRouter;

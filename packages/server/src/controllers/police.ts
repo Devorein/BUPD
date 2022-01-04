@@ -6,7 +6,6 @@ import {
 	GetPolicesPayload,
 	GetPolicesResponse,
 	IPolice,
-	PoliceJwtPayload,
 	UpdatePolicePayload,
 	UpdatePoliceResponse,
 } from '@bupd/types';
@@ -20,38 +19,43 @@ import Logger from '../utils/logger';
 
 const PoliceController = {
 	async update(
-		req: Request<any, any, UpdatePolicePayload>,
+		req: Request<any, any, UpdatePolicePayload, { nid: number }>,
 		res: Response<ApiResponse<UpdatePoliceResponse>>
 	) {
 		try {
-			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
+			const jwtPayload = req.jwt_payload!;
 			const payload = req.body;
-			const [police] = await PoliceModel.find({ filter: [{ email: jwtPayload.email }] });
+			const [police] = await PoliceModel.find({ filter: [{ nid: req.query.nid }] });
 			if (!police) {
-				handleError(res, 404, `No Police exists with email ${jwtPayload.email}`);
+				handleError(res, 404, `No Police exists with nid ${req.query.nid}`);
 			} else {
-				await PoliceModel.update(
-					[
-						{
-							nid: jwtPayload.nid,
-							email: jwtPayload.email,
-						},
-					],
-					payload
-				);
-				res.json({
-					status: 'success',
-					data: {
-						...removeFields(
+				// If its not admin and a police, we need to check if the current police's nid is the same as the requested nid
+				if (jwtPayload.type === 'admin' || jwtPayload.nid === req.query.nid) {
+					await PoliceModel.update(
+						[
 							{
-								...police,
-								...payload,
+								nid: req.query.nid,
+								email: jwtPayload.email,
 							},
-							['password']
-						),
-						token: generatePoliceJwtToken(police),
-					},
-				});
+						],
+						payload
+					);
+					res.json({
+						status: 'success',
+						data: {
+							...removeFields(
+								{
+									...police,
+									...payload,
+								},
+								['password']
+							),
+							token: generatePoliceJwtToken(police),
+						},
+					});
+				} else {
+					handleError(res, 401, 'Unauthorized');
+				}
 			}
 		} catch (err) {
 			logger.error(err);

@@ -27,7 +27,7 @@ export default function Register() {
   const registerMutation = useRegisterMutation();
 
   return <div className="flex items-center justify-center w-full h-full">
-    <PoliceForm showPassword className="max-w-[450px]" header="Register A police" submitButtonText="Register" initialValues={registerInputInitialValue()} isMutationLoading={registerMutation.isLoading} onSubmit={async (values, { resetForm }) => {
+    <PoliceForm showNid showPassword className="max-w-[450px]" header="Register A police" submitButtonText="Register" initialValues={registerInputInitialValue()} isMutationLoading={registerMutation.isLoading} onSubmit={async (values, { resetForm }) => {
       try {
         registerMutation.mutate(
           values,
