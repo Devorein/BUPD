@@ -10,3 +10,5 @@ VictimRouter.get(
 	isAuthorized(['admin', 'police']),
 	VictimController.findMany
 );
+
+export default VictimRouter;

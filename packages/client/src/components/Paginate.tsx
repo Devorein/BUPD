@@ -45,13 +45,15 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
               <Select<number> value={parseInt(clientQuery.limit?.toString() ?? "5", 10)} items={[5, 10, 15, 20, 25]} renderValue={(value) => `${value} per page`} onChange={(event) => {
                 setClientQuery({
                   ...clientQuery,
-                  limit: event.target.value as number
+                  limit: event.target.value as number,
+                  next: null
                 })
               }} />
               <Select<string> value={clientQuery.sort.join(".")} items={Object.keys(sortLabelRecord)} menuItemRender={(value) => sortLabelRecord[value]} renderValue={(value) => sortLabelRecord[value]} onChange={(event) => {
                 setClientQuery({
                   ...clientQuery,
-                  sort: event.target.value.split(".") as Sort
+                  sort: event.target.value.split(".") as Sort,
+                  next: null
                 })
               }} />
             </div>

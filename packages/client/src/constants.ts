@@ -1,4 +1,4 @@
-import { IAccessSort, ICasefileSort, ICriminalSort, IPoliceSort } from '@bupd/types';
+import { IAccessSort, ICasefileSort, ICriminalSort, IPoliceSort, IVictimSort } from '@bupd/types';
 import { Theme } from '@emotion/react';
 import { SxProps } from '@mui/material';
 
@@ -47,6 +47,15 @@ export const casefileSortLabelRecord: Record<`${ICasefileSort[0]}.${ICasefileSor
 export const criminalSortLabelRecord: Record<`${ICriminalSort[0]}.${ICriminalSort[1]}`, string> = {
 	'criminal_id.-1': 'Highest criminal id',
 	'criminal_id.1': 'Lowest criminal id',
+	'name.-1': 'Name desc',
+	'name.1': 'Name asc',
+};
+
+export const victimsSortLabelRecord: Record<`${IVictimSort[0]}.${IVictimSort[1]}`, string> = {
+	'age.-1': 'Highest age',
+	'age.1': 'Lowest age',
+	'case_no.-1': 'Highest case no',
+	'case_no.1': 'Lowest case no',
 	'name.-1': 'Name desc',
 	'name.1': 'Name asc',
 };
