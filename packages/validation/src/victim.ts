@@ -1,6 +1,18 @@
 import * as yup from 'yup';
 import { paginationSchema } from './utils/paginationSchema';
 
+export const VictimEntitySchema = yup
+	.object({
+		name: yup.string().default('John Doe'),
+		address: yup.string().nullable(),
+		age: yup.number().max(120).nullable(),
+		phone_no: yup.string().nullable(),
+		description: yup.string().nullable(),
+	})
+	.required()
+	.strict()
+	.noUnknown();
+
 export const VictimRequest = {
 	get: yup
 		.object({
@@ -26,4 +38,5 @@ export const VictimRequest = {
 		})
 		.strict()
 		.noUnknown(),
+	update: VictimEntitySchema,
 };

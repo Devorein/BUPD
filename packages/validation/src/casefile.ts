@@ -1,5 +1,6 @@
 import { CASEFILE_PRIORITIES, CASEFILE_STATUSES } from '@bupd/constants';
 import * as yup from 'yup';
+import { VictimEntitySchema } from './victim';
 
 export const CasefilePayload = {
 	create: yup
@@ -23,19 +24,7 @@ export const CasefilePayload = {
 				.default([])
 				.strict(),
 			priority: yup.number().oneOf(CASEFILE_PRIORITIES).strict().required(),
-			victims: yup.array().of(
-				yup
-					.object({
-						name: yup.string().default('John Doe'),
-						address: yup.string().nullable(),
-						age: yup.number().max(120).nullable(),
-						phone_no: yup.string().nullable(),
-						description: yup.string().nullable(),
-					})
-					.required()
-					.strict()
-					.noUnknown()
-			),
+			victims: yup.array().of(VictimEntitySchema),
 		})
 		.strict()
 		.noUnknown(),

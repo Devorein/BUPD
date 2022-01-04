@@ -40,14 +40,9 @@ const PoliceModel = {
 	},
 
 	async update(filterQuery: SqlFilter, payload: UpdatePolicePayload) {
-		// Making sure that we are updating at least one field
-		if (Object.keys(payload).length !== 0) {
-			await query(generateUpdateQuery(filterQuery, payload, 'Police'));
-			// return the payload if the update operation was successful
-			return payload as Partial<IPolice>;
-		} else {
-			return null;
-		}
+		await query(generateUpdateQuery(filterQuery, payload, 'Police'));
+		// return the payload if the update operation was successful
+		return payload as Partial<IPolice>;
 	},
 
 	async delete(nid: number) {

@@ -85,7 +85,7 @@ const VictimController = {
 			}
 		} catch (err) {
 			Logger.error(err);
-			handleError(res, 500, "Couldn't delete victim");
+			handleError(res, 500, "Couldn't update victim");
 		}
 	},
 };
