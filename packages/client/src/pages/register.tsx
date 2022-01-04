@@ -26,22 +26,24 @@ export default function Register() {
   const { enqueueSnackbar } = useSnackbar();
   const registerMutation = useRegisterMutation();
 
-  return <PoliceForm initialValues={registerInputInitialValue()} isMutationLoading={registerMutation.isLoading} onSubmit={async (values, { resetForm }) => {
-    try {
-      registerMutation.mutate(
-        values,
-        {
-          onSuccess() {
-            enqueueSnackbar(`Successfully registered ${values.name}`, { variant: 'success' });
-            resetForm()
-          },
-          onError(response) {
-            enqueueSnackbar((response as any).message, { variant: 'error' });
+  return <div className="flex items-center justify-center w-full h-full">
+    <PoliceForm showPassword className="max-w-[450px]" header="Register A police" submitButtonText="Register" initialValues={registerInputInitialValue()} isMutationLoading={registerMutation.isLoading} onSubmit={async (values, { resetForm }) => {
+      try {
+        registerMutation.mutate(
+          values,
+          {
+            onSuccess() {
+              enqueueSnackbar(`Successfully registered ${values.name}`, { variant: 'success' });
+              resetForm()
+            },
+            onError(response) {
+              enqueueSnackbar((response as any).message, { variant: 'error' });
+            }
           }
-        }
-      );
-    } catch (err: any) {
-      enqueueSnackbar(err.message, { variant: 'error' });
-    }
-  }} validationSchema={createPolicePayloadValidationSchema} />
+        );
+      } catch (err: any) {
+        enqueueSnackbar(err.message, { variant: 'error' });
+      }
+    }} validationSchema={createPolicePayloadValidationSchema} />
+  </div>
 }
