@@ -22,7 +22,7 @@ export default function Criminals() {
       <Paginate<GetVictimsPayload, IVictimSort, IVictim>
         filterGroups={[
           {
-            type: "numberrange",
+            type: "number_range",
             props: {
               label: "Age",
               max: 120,

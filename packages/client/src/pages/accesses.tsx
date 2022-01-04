@@ -21,7 +21,7 @@ export default function Accesses() {
   const [currentDetail, setAccessDetail] = useState<AccessDetailsProps["data"]>(null)
   return <div className="flex gap-5 h-full">
     <Paginate<GetAccessesPayload, IAccessSort, IAccessPopulated> filterGroups={[{
-      type: "checkboxgroup",
+      type: "checkbox_group",
       props: {
         items: [
           ['2', <div key="unapproved">Unapproved</div>],
@@ -32,7 +32,7 @@ export default function Accesses() {
         stateKey: "approved"
       }
     }, {
-      type: "checkboxgroup",
+      type: "checkbox_group",
       props: {
         items: [
           ['case', <div key="case">Case</div>],
@@ -42,7 +42,7 @@ export default function Accesses() {
         stateKey: "type"
       }
     }, {
-      type: "checkboxgroup",
+      type: "checkbox_group",
       props: {
         items: [
           ['read', <div key="read">View</div>],

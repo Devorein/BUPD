@@ -1,7 +1,8 @@
 import { POLICE_RANKS } from "@bupd/constants";
 import { GetPolicesPayload, IPolice, IPoliceSort } from "@bupd/types";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { grey, red } from "@mui/material/colors";
+import EditIcon from '@mui/icons-material/Edit';
+import { blue, grey, red } from "@mui/material/colors";
 import { useDeletePoliceMutation, useDeletePoliceMutationCache } from "../api/mutations/useDeletePoliceMutation";
 import { useGetPolicesQuery } from "../api/queries/useGetPolicesQuery";
 import { DeleteModal } from "../components/DeleteModal";
@@ -39,7 +40,7 @@ export default function Polices() {
         setIsModalOpen,
         setSelectedData
       }) => <Paginate<GetPolicesPayload, IPoliceSort, IPolice> filterGroups={[{
-        type: "checkboxgroup",
+        type: "checkbox_group",
         props: {
           items: POLICE_RANKS.map(policeRank => ([policeRank, <div key={policeRank}>{policeRank}</div>])),
           label: "Rank",
@@ -47,12 +48,15 @@ export default function Polices() {
         }
       }]} clientQueryFn={createInitialGetPolicesQuery} dataListComponentFn={(polices) => <div className="grid grid-cols-3 gap-5 pr-5">
         {polices.map(police => <div className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3" key={police.nid}>
-          <div>
-            <DeleteIcon sx={svgIconSx} className="cursor-pointer absolute" style={{
+          <div className="flex gap-1 absolute">
+            <DeleteIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
               fill: red[500]
             }} onClick={() => {
               setIsModalOpen(true);
               setSelectedData(police);
+            }} />
+            <EditIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
+              fill: blue[500]
             }} />
           </div>
           <div className="flex justify-center w-full">
@@ -60,7 +64,7 @@ export default function Polices() {
           </div>
           <div className="justify-center flex font-bold text-2xl">{police.name}</div>
           <div className="flex justify-center mb-3">
-            <span className="border-2 px-2 py-1 font-semibold text-sm rounded-md" style={{
+            <span className="border-2 px-2 py-1 font-semibold text-sm rounded-md shadow-sm" style={{
               backgroundColor: grey[100]
             }}>
               {police.rank}

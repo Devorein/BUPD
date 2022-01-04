@@ -50,7 +50,7 @@ export default function Casefiles() {
           <Paginate<GetCasefilesPayload, ICasefileSort, ICasefile>
             filterGroups={[
               {
-                type: "checkboxgroup",
+                type: "checkbox_group",
                 props: {
                   items: [
                     [0, 'Low'],
@@ -62,7 +62,7 @@ export default function Casefiles() {
                 }
               },
               {
-                type: "checkboxgroup",
+                type: "checkbox_group",
                 props: {
                   items: ['solved', 'open', 'closed'],
                   label: 'Status',
