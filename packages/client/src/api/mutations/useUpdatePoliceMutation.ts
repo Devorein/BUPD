@@ -1,5 +1,3 @@
-/* eslint-disable arrow-body-style */
-
 import { UpdatePolicePayload, UpdatePoliceResponse } from '@bupd/types';
 import { useApiMutation } from '../../hooks';
 import { usePostMutation } from '../../hooks/usePostMutation';
