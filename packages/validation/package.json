@@ -19,7 +19,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "@bupd/constants": "1.0.0"
   },
   "devDependencies": {}
 }

@@ -3,17 +3,24 @@ import { Typography } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "./Button";
 import { CheckboxGroup, CheckboxGroupProps } from "./CheckboxGroup";
+import { NumberRange, NumberRangeProps } from "./NumberRange";
 
 export interface FilterFormProps<ClientQuery extends IQuery<any, any>> {
   setClientQuery: Dispatch<SetStateAction<ClientQuery>>
   clientFilter: ClientQuery["filter"],
   setClientFilter: Dispatch<SetStateAction<ClientQuery["filter"]>>
   resetFilter: () => ClientQuery["filter"]
-  checkboxGroups: Omit<CheckboxGroupProps<ClientQuery["filter"]>, "setState" | "state">[]
+  filterGroups: ({
+    type: "checkboxgroup",
+    props: Omit<CheckboxGroupProps<ClientQuery["filter"]>, "setState" | "state">
+  } | {
+    type: "numberrange",
+    props: Omit<NumberRangeProps<ClientQuery["filter"]>, "setState" | "state">
+  })[]
 }
 
 export function FilterForm<ClientQuery extends IQuery<any, any>>(props: FilterFormProps<ClientQuery>) {
-  const { checkboxGroups, resetFilter, setClientQuery, clientFilter, setClientFilter } = props;
+  const { filterGroups, resetFilter, setClientQuery, clientFilter, setClientFilter } = props;
 
   return <div className="flex flex-col justify-between h-full">
     <div className="flex flex-col gap-5">
@@ -21,11 +28,22 @@ export function FilterForm<ClientQuery extends IQuery<any, any>>(props: FilterFo
         Filter
       </Typography>
       <div className="flex flex-col gap-5">
-        {checkboxGroups.map(checkboxGroup => <CheckboxGroup<ClientQuery["filter"]> key={checkboxGroup.label} items={checkboxGroup.items} label={checkboxGroup.label} setState={setClientFilter} state={clientFilter} stateKey={checkboxGroup.stateKey} />
-        )}
+        {filterGroups.map(filterGroup => {
+          switch (filterGroup.type) {
+            case "checkboxgroup": {
+              return <CheckboxGroup<ClientQuery["filter"]> key={filterGroup.props.label} {...filterGroup.props} setState={setClientFilter} state={clientFilter} />
+            }
+            case "numberrange": {
+              return <NumberRange<ClientQuery["filter"]> key={filterGroup.props.label} {...filterGroup.props} setState={setClientFilter} state={clientFilter} />
+            }
+            default: {
+              return null;
+            }
+          }
+        })}
       </div>
     </div>
-    <div className="mt-3 flex gap-3">
+    <div className="flex gap-3">
       <Button color="secondary" content="Apply" onClick={() => {
         setClientQuery(clientQuery => ({ ...clientQuery, filter: clientFilter }))
       }} />

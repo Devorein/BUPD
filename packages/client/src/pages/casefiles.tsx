@@ -48,20 +48,26 @@ export default function Casefiles() {
       >
         {({ setSelectedData, setIsModalOpen }) => (
           <Paginate<GetCasefilesPayload, ICasefileSort, ICasefile>
-            checkboxGroups={[
+            filterGroups={[
               {
-                items: [
-                  [0, 'Low'],
-                  [1, 'Medium'],
-                  [2, 'High'],
-                ],
-                label: 'Priority',
-                stateKey: 'priority',
+                type: "checkboxgroup",
+                props: {
+                  items: [
+                    [0, 'Low'],
+                    [1, 'Medium'],
+                    [2, 'High'],
+                  ],
+                  label: 'Priority',
+                  stateKey: 'priority',
+                }
               },
               {
-                items: ['solved', 'open', 'closed'],
-                label: 'Status',
-                stateKey: 'status',
+                type: "checkboxgroup",
+                props: {
+                  items: ['solved', 'open', 'closed'],
+                  label: 'Status',
+                  stateKey: 'status',
+                }
               },
             ]}
             dataListComponentFn={(casefiles) => (

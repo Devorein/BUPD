@@ -1,3 +1,4 @@
+import { CASEFILE_PRIORITIES, CASEFILE_STATUSES } from '@bupd/constants';
 import * as yup from 'yup';
 
 export const CasefilePayload = {
@@ -6,7 +7,7 @@ export const CasefilePayload = {
 			categories: yup.array(yup.string()).default([]).strict(),
 			weapons: yup.array(yup.string()).default([]).strict(),
 			time: yup.number().required().strict(),
-			status: yup.string().oneOf(['solved', 'open', 'closed']).nullable().strict(),
+			status: yup.string().oneOf(CASEFILE_STATUSES).nullable().strict(),
 			location: yup.string().required().strict(),
 			criminals: yup
 				.array()
@@ -21,7 +22,7 @@ export const CasefilePayload = {
 				)
 				.default([])
 				.strict(),
-			priority: yup.number().oneOf([0, 1, 2]).strict().required(),
+			priority: yup.number().oneOf(CASEFILE_PRIORITIES).strict().required(),
 			victims: yup.array().of(
 				yup
 					.object({
@@ -42,9 +43,9 @@ export const CasefilePayload = {
 		.object({
 			police_nid: yup.number().strict(),
 			time: yup.number().strict(),
-			status: yup.string().oneOf(['solved', 'open', 'closed']).nullable().strict(),
+			status: yup.string().oneOf(CASEFILE_STATUSES).nullable().strict(),
 			location: yup.string().strict(),
-			priority: yup.number().oneOf([0, 1, 2]).strict().required(),
+			priority: yup.number().oneOf(CASEFILE_PRIORITIES).strict().required(),
 		})
 		.strict()
 		.noUnknown(),

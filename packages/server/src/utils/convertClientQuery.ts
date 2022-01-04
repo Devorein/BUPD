@@ -1,4 +1,9 @@
-import { GetAccessesPayload, GetCasefilesPayload, GetPolicesPayload } from '@bupd/types';
+import {
+	GetAccessesPayload,
+	GetCasefilesPayload,
+	GetPolicesPayload,
+	GetVictimsPayload,
+} from '@bupd/types';
 import { SqlFilter } from '../types';
 
 export function convertAccessFilter(clientFilter: GetAccessesPayload['filter']) {
@@ -68,5 +73,29 @@ export function convertCaseFilter(clientFilter: GetCasefilesPayload['filter']) {
 			},
 		});
 	}
+	return filter;
+}
+
+export function convertVictimFilter(clientFilter: GetVictimsPayload['filter']) {
+	const filter: SqlFilter = [];
+	if (clientFilter?.age) {
+		const [min, max] = clientFilter.age;
+		if (min) {
+			filter.push({
+				age: {
+					$gte: min,
+				},
+			});
+		}
+
+		if (max) {
+			filter.push({
+				age: {
+					$lte: max,
+				},
+			});
+		}
+	}
+
 	return filter;
 }
