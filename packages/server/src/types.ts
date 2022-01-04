@@ -73,7 +73,10 @@ export type SqlSort = Array<[string, -1 | 1]>;
 export type SqlJoins = [string, string, string, string, ('LEFT' | 'RIGHT' | 'INNER')?][];
 export type SqlSelect = (
 	| string
-	| { aggregation: 'COUNT' | 'GROUP_CONCAT' | 'MIN' | 'MAX' | 'SUM'; attribute: string }
+	| {
+			aggregation: ('COUNT' | 'GROUP_CONCAT' | 'MIN' | 'MAX' | 'SUM' | 'DISTINCT')[];
+			attribute: string;
+	  }
 )[];
 
 export interface SqlClause {

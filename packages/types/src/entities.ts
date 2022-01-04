@@ -77,6 +77,9 @@ export interface ICasefileIntermediate extends ICasefile {
 	crime_weapon: {
 		weapon: string;
 	};
+	crime_category: {
+		category: string;
+	};
 }
 
 export interface ICasefilePopulated extends ICasefile {

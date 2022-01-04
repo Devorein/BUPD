@@ -251,9 +251,13 @@ const CasefileController = {
 						next: req.query.next,
 						select: [
 							...getCasefileAttributes('Casefile'),
-							{ aggregation: 'GROUP_CONCAT', attribute: 'Crime_Weapon.weapon' },
+							{ aggregation: ['DISTINCT', 'GROUP_CONCAT'], attribute: 'Crime_Weapon.weapon' },
+							{ aggregation: ['DISTINCT', 'GROUP_CONCAT'], attribute: 'Crime_Category.category' },
 						],
-						joins: [['Casefile', 'Crime_Weapon', 'case_no', 'case_no']],
+						joins: [
+							['Casefile', 'Crime_Weapon', 'case_no', 'case_no', 'LEFT'],
+							['Casefile', 'Crime_Category', 'case_no', 'case_no', 'LEFT'],
+						],
 						groups: ['Casefile.case_no'],
 					},
 					'Casefile',
@@ -273,6 +277,10 @@ const CasefileController = {
 								victims: [],
 								weapons: [],
 							};
+
+							casefile.categories = inflatedObject.crime_category.category
+								?.split(',')
+								.map((category) => ({ category, case_no: inflatedObject.case_no }));
 
 							casefile.weapons = inflatedObject.crime_weapon.weapon
 								?.split(',')

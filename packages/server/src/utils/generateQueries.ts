@@ -214,7 +214,11 @@ export function generateSelectClause(selects: SqlSelect, hasJoins: boolean) {
 				attributes.push(`\`${select}\``);
 			}
 		} else {
-			attributes.push(`${select.aggregation}(${select.attribute}) as \`${select.attribute}\``);
+			let expression = select.attribute;
+			for (let index = 0; index < select.aggregation.length; index += 1) {
+				expression = `${select.aggregation[index]}(${expression})`;
+			}
+			attributes.push(`${expression} as \`${select.attribute}\``);
 		}
 	});
 
@@ -224,9 +228,9 @@ export function generateSelectClause(selects: SqlSelect, hasJoins: boolean) {
 export function generateSelectQuery(sqlClause: SqlClause, table: string) {
 	const clauses: string[] = [];
 	const hasJoins = Boolean(sqlClause.joins && sqlClause.joins.length !== 0);
-	if (sqlClause.groups) clauses.push(generateGroupClause(sqlClause.groups));
 	if (sqlClause.filter)
 		clauses.push(generateWhereClause(sqlClause.filter, hasJoins ? table : undefined));
+	if (sqlClause.groups) clauses.push(generateGroupClause(sqlClause.groups));
 
 	if (sqlClause.sort)
 		clauses.push(generateOrderbyClause(sqlClause.sort, hasJoins ? table : undefined));
