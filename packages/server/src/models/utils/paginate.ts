@@ -5,12 +5,12 @@ import { generateCountQuery, query } from '../../utils';
 import { generatePaginationQuery } from '../../utils/generatePaginationQuery';
 import find from './find';
 
-export async function paginate<Data>(
+export async function paginate<Data, IntermediateData = Data>(
 	sqlClause: SqlClause & { next?: NextKey },
 	table: string,
 	nextCursorProperty: keyof Data,
 	// eslint-disable-next-line
-	rowTransform?: (rows: Data[]) => Data[],
+	rowTransform?: (rows: IntermediateData[]) => Data[],
 	nullableSortFields?: Record<string, string>
 ) {
 	const sortField = sqlClause.sort?.[0]?.[0];
@@ -30,7 +30,7 @@ export async function paginate<Data>(
 	let rows = await find<Data>(paginationQuery, table);
 
 	if (rowTransform) {
-		rows = rowTransform(rows);
+		rows = rowTransform(rows as unknown as IntermediateData[]);
 	}
 
 	// Get the last row

@@ -73,13 +73,17 @@ export interface ICasefile {
 	police_nid: number;
 }
 
+export interface ICasefileIntermediate extends ICasefile {
+	crime_weapon: {
+		weapon: string;
+	};
+}
+
 export interface ICasefilePopulated extends ICasefile {
-	time: string;
 	weapons: ICrimeWeapon[];
 	categories: ICrimeCategory[];
 	victims: IVictim[];
 	criminals: ICriminal[];
-	police: IPolice;
 }
 
 export interface IAccessPopulated extends IAccess {

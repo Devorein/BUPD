@@ -71,11 +71,16 @@ export type SqlSort = Array<[string, -1 | 1]>;
 
 // Left table, right table, Left table join attribute, right table join attribute, join type
 export type SqlJoins = [string, string, string, string, ('LEFT' | 'RIGHT' | 'INNER')?][];
+export type SqlSelect = (
+	| string
+	| { aggregation: 'COUNT' | 'GROUP_CONCAT' | 'MIN' | 'MAX' | 'SUM'; attribute: string }
+)[];
 
 export interface SqlClause {
 	filter?: SqlFilter;
 	sort?: SqlSort;
 	limit?: number;
-	select?: string[];
+	select?: SqlSelect;
 	joins?: SqlJoins;
+	groups?: string[];
 }

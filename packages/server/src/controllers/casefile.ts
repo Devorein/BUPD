@@ -6,7 +6,8 @@ import {
 	GetCasefileResponse,
 	GetCasefilesPayload,
 	GetCasefilesResponse,
-	ICasefile,
+	ICasefileIntermediate,
+	ICasefilePopulated,
 	ICrimeCategory,
 	ICrimeWeapon,
 	ICriminal,
@@ -22,6 +23,8 @@ import CrimeWeaponModel from '../models/CrimeWeapon';
 import { paginate } from '../models/utils/paginate';
 import { handleError, logger, pool } from '../utils';
 import { convertCaseFilter } from '../utils/convertClientQuery';
+import { getCasefileAttributes } from '../utils/generateAttributes';
+import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
 
 const CasefileController = {
@@ -240,19 +243,47 @@ const CasefileController = {
 		try {
 			res.json({
 				status: 'success',
-				data: await paginate<ICasefile>(
+				data: await paginate<ICasefilePopulated, ICasefileIntermediate>(
 					{
 						filter: convertCaseFilter(req.query.filter),
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
 						next: req.query.next,
+						select: [
+							...getCasefileAttributes('Casefile'),
+							{ aggregation: 'GROUP_CONCAT', attribute: 'Crime_Weapon.weapon' },
+						],
+						joins: [['Casefile', 'Crime_Weapon', 'case_no', 'case_no']],
+						groups: ['Casefile.case_no'],
 					},
 					'Casefile',
-					'case_no'
+					'case_no',
+					(rows) =>
+						rows.map((row) => {
+							const inflatedObject = inflateObject<ICasefileIntermediate>(row, 'Casefile');
+							const casefile: ICasefilePopulated = {
+								case_no: inflatedObject.case_no,
+								location: inflatedObject.location,
+								priority: inflatedObject.priority,
+								status: inflatedObject.status,
+								police_nid: inflatedObject.police_nid,
+								time: inflatedObject.time,
+								categories: [],
+								criminals: [],
+								victims: [],
+								weapons: [],
+							};
+
+							casefile.weapons = inflatedObject.crime_weapon.weapon
+								?.split(',')
+								.map((weapon) => ({ weapon, case_no: inflatedObject.case_no }));
+							return casefile;
+						})
 				),
 			});
 		} catch (err) {
 			Logger.error(err);
+			handleError(res);
 		}
 	},
 };
