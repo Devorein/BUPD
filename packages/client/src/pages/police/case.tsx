@@ -1,5 +1,6 @@
 import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS } from "@bupd/constants";
 import { CreateCasefilePayload, TCasefilePriority, TCasefileStatus } from "@bupd/types";
+import { CasefilePayload } from "@bupd/validation";
 import { Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useSnackbar } from "notistack";
@@ -29,6 +30,7 @@ export default function Case() {
     <Formik
       validateOnMount
       initialValues={createCasefileInitialPayload()}
+      validationSchema={CasefilePayload.create}
       onSubmit={async (values, { setValues }) => {
         createCasefileMutation.mutate(values, {
           onSuccess() {

@@ -1,12 +1,15 @@
 import { GetVictimsPayload, IVictim, IVictimSort } from '@bupd/types';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { red } from '@mui/material/colors';
+import EditIcon from '@mui/icons-material/Edit';
+import { blue, red } from '@mui/material/colors';
 import { useDeleteVictimMutation, useDeleteVictimMutationCache } from '../../api/mutations/useDeleteVictimMutation';
 import { useUpdateVictimMutation, useUpdateVictimMutationCache } from '../../api/mutations/useUpdateVictimMutation';
 import { useGetVictimsQuery } from '../../api/queries/useGetVictimsQuery';
 import { DeleteModal } from '../../components/DeleteModal';
 import { DetailsList } from '../../components/DetailsList';
+import { TransitionedModal } from '../../components/Modal';
 import { Paginate } from '../../components/Paginate';
+import { VictimForm } from '../../components/VictimForm';
 import { svgIconSx, victimsSortLabelRecord } from '../../constants';
 import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
 import { useModal } from '../../hooks/useModal';
@@ -44,6 +47,19 @@ export default function Criminals() {
         }))
       }}>
         {({ openModal }) => <>
+          <TransitionedModal isModalOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
+            <VictimForm
+              initialValues={selectedUpdateData ? { ...selectedUpdateData, name: selectedUpdateData.name } : {} as any}
+              isMutationLoading={updateVictimMutation.isLoading}
+              onSubmit={(values) => {
+                if (selectedUpdateData) {
+                  updateVictimMutation.mutate({ ...values, old_name: selectedUpdateData.name }, updateVictimMutationCache((victim) => victim.case_no === selectedUpdateData.case_no && victim.name === selectedUpdateData.name, () => {
+                    closeUpdateModal()
+                  }))
+                }
+              }}
+            />
+          </TransitionedModal>
           <Paginate<GetVictimsPayload, IVictimSort, IVictim>
             filterGroups={[
               {
@@ -70,6 +86,11 @@ export default function Criminals() {
                         fill: red[500]
                       }} onClick={() => {
                         openModal(victim)
+                      }} />
+                      <EditIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
+                        fill: blue[500]
+                      }} onClick={() => {
+                        openUpdateModal(victim)
                       }} />
                     </div>
                     <div className="justify-center flex font-bold text-2xl my-2">

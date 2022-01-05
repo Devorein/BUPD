@@ -23,7 +23,7 @@ VictimRouter.delete(
 	'/',
 	isAuthenticated,
 	isAuthorized(['admin']),
-	validatePayload(VictimRequest.update),
+	validatePayload(VictimRequest.update('server')),
 	VictimController.update
 );
 

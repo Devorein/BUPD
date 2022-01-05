@@ -75,7 +75,7 @@ const VictimController = {
 							case_no: payload.case_no,
 						},
 					],
-					removeFields(payload, ['case_no'])
+					removeFields(payload, ['case_no', 'old_name'])
 				);
 
 				res.json({
