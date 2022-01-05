@@ -19,26 +19,25 @@ import Logger from '../utils/logger';
 
 const PoliceController = {
 	async update(
-		req: Request<any, any, UpdatePolicePayload, { nid: number }>,
+		req: Request<{ nid: number }, any, UpdatePolicePayload>,
 		res: Response<ApiResponse<UpdatePoliceResponse>>
 	) {
 		try {
 			const jwtPayload = req.jwt_payload!;
 			const payload = req.body;
-			const [police] = await PoliceModel.find({ filter: [{ nid: req.query.nid }] });
+			const [police] = await PoliceModel.find({ filter: [{ nid: req.params.nid }] });
 			if (!police) {
-				handleError(res, 404, `No Police exists with nid ${req.query.nid}`);
+				handleError(res, 404, `No Police exists with nid ${req.params.nid}`);
 			} else {
 				// If its not admin and a police, we need to check if the current police's nid is the same as the requested nid
-				if (jwtPayload.type === 'admin' || jwtPayload.nid === req.query.nid) {
+				if (jwtPayload.type === 'admin' || jwtPayload.nid === req.params.nid) {
 					await PoliceModel.update(
 						[
 							{
-								nid: req.query.nid,
-								email: jwtPayload.email,
+								nid: req.params.nid,
 							},
 						],
-						payload
+						removeFields(payload, ['email'])
 					);
 					res.json({
 						status: 'success',
