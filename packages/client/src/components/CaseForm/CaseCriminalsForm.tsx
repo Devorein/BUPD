@@ -11,14 +11,16 @@ export function CaseCriminalsForm() {
   return <div className="flex flex-col">
     <div className="font-bold text-3xl">Criminals</div>
     {(values.criminals).length !== 0 ? <div className="flex gap-1 flex-col">{(values.criminals as NewCriminalPayload[]).map((_, criminalNumber) => <div key={criminalNumber} className="flex flex-col w-full items-end">
-      <div className="mt-5 text-xl w-full font-bold">Criminal {criminalNumber + 1}</div>
-      <FormikTextInput
-        rightIcon={<DeleteIcon sx={svgIconSx} className="cursor-pointer" color="error" onClick={() => {
+      <div className="mt-3 flex justify-between w-full items-center">
+        <div className="mt-5 text-xl w-full font-bold">Criminal {criminalNumber + 1}</div>
+        <DeleteIcon sx={svgIconSx} className="cursor-pointer" color="error" onClick={() => {
           values.criminals.splice(criminalNumber, 1);
           setValues({
             ...values,
           }, true)
-        }} />}
+        }} />
+      </div>
+      <FormikTextInput
         name={`criminals.[${criminalNumber}].name`}
         label={`Criminal name`}
         placeholder={`Criminal ${criminalNumber + 1} name`}
