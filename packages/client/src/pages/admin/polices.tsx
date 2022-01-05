@@ -75,7 +75,7 @@ export default function Polices() {
             }
           }]} clientQueryFn={createInitialGetPolicesQuery} dataListComponentFn={(polices) => <div className="grid grid-cols-3 gap-5 pr-5">
             {polices.map(police => <div className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3" key={police.nid}>
-              <div className="flex gap-1 absolute">
+              <div className="flex gap-1 absolute items-center">
                 <DeleteIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
                   fill: red[500]
                 }} onClick={() => {

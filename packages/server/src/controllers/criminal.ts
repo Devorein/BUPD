@@ -100,7 +100,10 @@ const CriminalController = {
 					(rows) =>
 						rows.map((row) => {
 							const inflatedObject = inflateObject<ICriminalPopulated>(row, 'Criminal');
-							return inflatedObject;
+							return {
+								...inflatedObject,
+								total_cases: row.total_cases,
+							};
 						})
 				),
 			});

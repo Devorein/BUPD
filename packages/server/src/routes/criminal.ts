@@ -9,7 +9,7 @@ CriminalRouter.put(
 	'/:criminal_id',
 	validatePayload(CriminalPayload.update),
 	isAuthenticated,
-	isAuthorized(['police']),
+	isAuthorized(['police', 'admin']),
 	hasAccess('criminal', ['update', 'delete']),
 	CriminalController.update
 ).delete(
