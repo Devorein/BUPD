@@ -22,6 +22,10 @@ export interface ICriminal {
 	photo: string | null;
 }
 
+export interface ICriminalPopulated extends ICriminal {
+	total_cases: number;
+}
+
 export interface IVictim {
 	name: string;
 	address: string | null;

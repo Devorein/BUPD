@@ -215,10 +215,13 @@ export function generateSelectClause(selects: SqlSelect, hasJoins: boolean) {
 			}
 		} else {
 			let expression = `\`${select.attribute}\``;
+			if (hasJoins && select.namespace) {
+				expression = `${select.namespace}.\`${select.attribute}\``;
+			}
 			for (let index = 0; index < select.aggregation.length; index += 1) {
 				expression = `${select.aggregation[index]}(${expression})`;
 			}
-			attributes.push(`${expression} as \`${select.attribute}\``);
+			attributes.push(`${expression} as \`${select.alias ?? select.attribute}\``);
 		}
 	});
 

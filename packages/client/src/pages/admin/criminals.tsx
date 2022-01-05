@@ -1,4 +1,4 @@
-import { GetCriminalsPayload, ICriminal, ICriminalSort } from '@bupd/types';
+import { GetCriminalsPayload, ICriminalPopulated, ICriminalSort } from '@bupd/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red } from '@mui/material/colors';
 import {
@@ -27,7 +27,7 @@ export default function Criminals() {
 
   return (
     <div className="flex justify-center w-full h-full">
-      <DeleteModal<ICriminal>
+      <DeleteModal<ICriminalPopulated>
         isMutationLoading={deleteCriminalMutation.isLoading}
         onDelete={(selectedData, closeModal) => {
           deleteCriminalMutation.mutate(
@@ -41,7 +41,7 @@ export default function Criminals() {
         }}
       >
         {({ openModal }) => (
-          <Paginate<GetCriminalsPayload, ICriminalSort, ICriminal>
+          <Paginate<GetCriminalsPayload, ICriminalSort, ICriminalPopulated>
             filterGroups={[]}
             clientQueryFn={createInitialGetCriminalsQuery}
             dataListComponentFn={(criminals) => (
@@ -76,6 +76,7 @@ export default function Criminals() {
                       items={[
                         ['Name', criminal.name],
                         ['ID', criminal.criminal_id],
+                        ['Total Cases', criminal.total_cases],
                       ]}
                     />
                   </div>

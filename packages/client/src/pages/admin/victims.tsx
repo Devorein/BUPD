@@ -101,7 +101,8 @@ export default function Criminals() {
                       items={[
                         ['Age', victim.age ?? "N/A"],
                         ['Address', victim.address ?? "N/A"],
-                        ['Phone', victim.phone_no ?? "N/A"]
+                        ['Phone', victim.phone_no ?? "N/A"],
+                        ['Case', victim.case_no],
                       ]}
                     />
                   </div>
