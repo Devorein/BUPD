@@ -4,7 +4,7 @@ import { useGetCriminalsQueryData } from '../queries/useGetCriminalsQuery';
 import { useUpdateMutationCache } from '../utils/useUpdateMutationCache';
 
 export function useUpdateCriminalMutationCache() {
-	return useUpdateMutationCache('criminal', useGetCriminalsQueryData, 'criminal_id');
+	return useUpdateMutationCache(useGetCriminalsQueryData, 'criminal_id');
 }
 
 export function useUpdateCriminalMutation() {

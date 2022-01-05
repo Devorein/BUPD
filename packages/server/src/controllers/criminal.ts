@@ -88,8 +88,8 @@ const CriminalController = {
 							{
 								aggregation: ['COUNT'],
 								attribute: `criminal_id`,
-								namespace: 'Casefile_Criminal',
 								alias: 'total_cases',
+								namespace: 'Criminal',
 							},
 						],
 						joins: [['Criminal', 'Casefile_Criminal', 'criminal_id', 'criminal_id']],
@@ -100,7 +100,6 @@ const CriminalController = {
 					(rows) =>
 						rows.map((row) => {
 							const inflatedObject = inflateObject<ICriminalPopulated>(row, 'Criminal');
-							inflatedObject.total_cases = row.total_cases;
 							return inflatedObject;
 						})
 				),
