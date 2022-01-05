@@ -5,16 +5,17 @@ import {
 	GetPoliceResponse,
 	GetPolicesPayload,
 	GetPolicesResponse,
-	IPolice,
 	UpdatePolicePayload,
 	UpdatePoliceResponse,
 } from '@bupd/types';
+import { IPolicePopulated } from '@bupd/types/src/entities';
 import { Request, Response } from 'express';
 import { PoliceModel } from '../models';
 import { paginate } from '../models/utils/paginate';
 import { generatePoliceJwtToken, handleError, logger, removeFields } from '../utils';
 import { convertPoliceFilter } from '../utils/convertClientQuery';
 import { getPoliceAttributes } from '../utils/generateAttributes';
+import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
 
 const PoliceController = {
@@ -61,20 +62,42 @@ const PoliceController = {
 			handleError(res, 500, "Couldn't update your profile");
 		}
 	},
-	async get(req: Request<any, any, any, GetPolicesPayload>, res: Response<GetPolicesResponse>) {
+	async findMany(
+		req: Request<any, any, any, GetPolicesPayload>,
+		res: Response<GetPolicesResponse>
+	) {
 		try {
 			res.json({
 				status: 'success',
-				data: await paginate<IPolice>(
+				data: await paginate<IPolicePopulated>(
 					{
-						...req.query,
+						limit: req.query.limit,
+						next: req.query.next,
 						sort: req.query.sort ? [req.query.sort] : [],
 						filter: convertPoliceFilter(req.query.filter),
 						// Custom select to remove password field
-						select: getPoliceAttributes(undefined, ['password']),
+						select: [
+							...getPoliceAttributes('Police', ['password']),
+							{
+								aggregation: ['COUNT'],
+								attribute: 'case_no',
+								alias: 'reported_cases',
+								namespace: 'Casefile',
+							},
+						],
+						joins: [['Police', 'Casefile', 'nid', 'police_nid']],
+						groups: ['Police.nid'],
 					},
 					'Police',
-					'nid'
+					'nid',
+					(rows) =>
+						rows.map((row) => {
+							const inflatedObject = inflateObject<IPolicePopulated>(row, 'Police');
+							return {
+								...inflatedObject,
+								reported_cases: row.reported_cases,
+							};
+						})
 				),
 			});
 		} catch (err) {

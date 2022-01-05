@@ -8,6 +8,7 @@ import {
 	ICriminal,
 	ICriminalPopulated,
 	IPolice,
+	IPolicePopulated,
 	IVictim,
 	TAccessPermission,
 	TAccessType,
@@ -117,7 +118,7 @@ export interface DeleteCasefilePayload {
 export interface DeleteCriminalPayload {
 	criminal_id: number;
 }
-export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolice>>;
+export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolicePopulated>>;
 export type DeletePoliceResponse = ApiResponse<IPolice>;
 export type GetPoliceResponse = ApiResponse<Omit<IPolice, 'password'>>;
 export type DeleteCasefileResponse = ApiResponse<ICasefile>;
