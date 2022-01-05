@@ -1,6 +1,35 @@
 import * as yup from 'yup';
 import { paginationSchema } from './utils/paginationSchema';
 
+function victimValidationSchema(domain?: 'server' | 'client') {
+	const baseSchema = {
+		name: yup.string().required('Required'),
+		address: yup.string().required(),
+		age: yup.number().max(120).required(),
+		phone_no: yup.string().required(),
+		description: yup.string().required(),
+	};
+
+	if (domain === 'client') {
+		Object.keys(baseSchema).forEach((key) => {
+			(baseSchema as any)[key] = baseSchema[key as keyof typeof baseSchema].required('Required');
+		});
+
+		return yup.object(baseSchema).strict().noUnknown();
+	}
+
+	return yup
+		.object({
+			...baseSchema,
+			case_no: yup.number().required(),
+			old_name: yup.string().required(),
+		})
+		.strict()
+		.noUnknown();
+}
+
+export const VictimEntitySchema = yup.object({}).required().strict().noUnknown();
+
 export const VictimRequest = {
 	get: yup
 		.object({
@@ -26,4 +55,5 @@ export const VictimRequest = {
 		})
 		.strict()
 		.noUnknown(),
+	update: (domain: 'server' | 'client') => victimValidationSchema(domain),
 };

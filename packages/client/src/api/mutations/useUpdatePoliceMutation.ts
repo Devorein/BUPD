@@ -1,31 +1,10 @@
 import { UpdatePolicePayload, UpdatePoliceResponse } from '@bupd/types';
 import { useApiMutation } from '../../hooks';
-import { usePostMutation } from '../../hooks/usePostMutation';
 import { useGetPolicesQueryData } from '../queries/useGetPolicesQuery';
+import { useUpdateMutationCache } from '../utils/useUpdateMutationCache';
 
 export function useUpdatePoliceMutationCache() {
-	const getPolicesQueryData = useGetPolicesQueryData();
-	const postMutation = usePostMutation<UpdatePolicePayload, UpdatePoliceResponse>(
-		'Successfully updated police',
-		"Couldn't update police"
-	);
-
-	return (policeNid: number, postCacheUpdateCb?: () => void) => {
-		return postMutation((mutationResponse) => {
-			getPolicesQueryData((page) => {
-				if (page?.status === 'success') {
-					const policeIndex = page.data.items.findIndex((police) => police.nid === policeNid);
-					if (policeIndex !== -1 && page.data.items[policeIndex]) {
-						page.data.items[policeIndex] = mutationResponse as any;
-					}
-				}
-				return page;
-			});
-			if (postCacheUpdateCb) {
-				postCacheUpdateCb();
-			}
-		});
-	};
+	return useUpdateMutationCache('police', useGetPolicesQueryData, 'nid');
 }
 
 export function useUpdatePoliceMutation() {

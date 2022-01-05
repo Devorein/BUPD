@@ -20,6 +20,11 @@ export interface RegisterPoliceResponse extends Omit<IPolice, 'password'> {}
 // You shouldn't be able to update police password using this endpoint
 // there should be a separate endpoint for that as you need to provide your current password if you want to update it
 export interface UpdatePolicePayload extends Omit<IPolice, 'password' | 'nid'> {}
+export interface UpdateVictimPayload extends IVictim {
+	old_name: string;
+}
+export type UpdateVictimResponse = IVictim;
+
 export interface UpdateCriminalPayload extends Omit<ICriminal, 'criminal_id'> {}
 export interface UpdateCriminalResponse extends ICriminal {}
 export interface UpdatePoliceResponse extends Omit<IPolice, 'password'> {
