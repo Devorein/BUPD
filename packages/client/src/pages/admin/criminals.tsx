@@ -5,7 +5,6 @@ import {
   useDeleteCriminalMutation,
   useDeleteCriminalMutationCache
 } from '../../api/mutations/useDeleteCriminalMutation';
-import { useUpdateCriminalMutation, useUpdateCriminalMutationCache } from '../../api/mutations/useUpdateCriminalMutation';
 import { useGetCriminalsQuery } from '../../api/queries/useGetCriminalsQuery';
 import { DeleteModal } from '../../components/DeleteModal';
 import { DetailsList } from '../../components/DetailsList';
@@ -25,9 +24,6 @@ export default function Criminals() {
   useIsAuthorized(["admin"]);
   const deleteCriminalMutation = useDeleteCriminalMutation();
   const deleteCriminalMutationCache = useDeleteCriminalMutationCache();
-
-  const updateCriminalMutation = useUpdateCriminalMutation();
-  const updateCriminalMutationCache = useUpdateCriminalMutationCache();
 
   return (
     <div className="flex justify-center w-full h-full">

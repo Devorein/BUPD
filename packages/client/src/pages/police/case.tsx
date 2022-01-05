@@ -21,6 +21,8 @@ const createCasefileInitialPayload = (): CreateCasefilePayload => ({
   status: "open"
 });
 
+const createCasePayloadValidationSchema = CasefilePayload.create("client");
+
 export default function Case() {
   useIsAuthenticated();
   useIsAuthorized(["police"]);
@@ -30,7 +32,7 @@ export default function Case() {
     <Formik
       validateOnMount
       initialValues={createCasefileInitialPayload()}
-      validationSchema={CasefilePayload.create}
+      validationSchema={createCasePayloadValidationSchema}
       onSubmit={async (values, { setValues }) => {
         createCasefileMutation.mutate(values, {
           onSuccess() {
@@ -60,7 +62,7 @@ export default function Case() {
               label="Location of crime"
               placeholder="Dhaka"
             />
-            <FormikSelectInput<string[]> multiple defaultValue={[]} items={CRIME_CATEGORIES} label="Crime category" name="categories" />
+            <FormikSelectInput<string[]> multiple items={CRIME_CATEGORIES} label="Crime categories" name="categories" />
             <FormikSelectInput<TCasefilePriority> defaultValue={2} items={CASEFILE_PRIORITIES} menuItemRender={(value) => {
               if (value === 0) {
                 return "Low"
@@ -84,7 +86,7 @@ export default function Case() {
             <div className="border-b-2 border-gray-300 my-3"></div>
             <CaseVictimsForm />
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mr-7">
             <Button
               color="secondary"
               content="Create"
