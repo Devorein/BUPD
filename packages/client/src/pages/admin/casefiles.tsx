@@ -1,5 +1,4 @@
 import { GetCasefilesPayload, ICasefile, ICasefilePopulated, ICasefileSort } from '@bupd/types';
-import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
@@ -15,9 +14,10 @@ import {
 import { useGetCasefilesQuery } from '../../api/queries/useGetCasefilesQuery';
 import { DeleteModal } from '../../components/DeleteModal';
 import { DetailsList } from '../../components/DetailsList';
+import { MutateIcons } from '../../components/MutateIcons';
 import { Paginate } from '../../components/Paginate';
 import { Tags } from '../../components/Tags';
-import { casefileSortLabelRecord, svgIconSx } from '../../constants';
+import { casefileSortLabelRecord } from '../../constants';
 import { RootContext } from '../../contexts';
 import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
 
@@ -98,18 +98,9 @@ export default function Casefiles() {
                       className="border-2 shadow-md rounded-md p-5 flex flex-col gap-3 relative"
                       key={casefile.case_no}
                     >
-                      {currentUser?.type === "admin" ? <div>
-                        <DeleteIcon
-                          sx={svgIconSx}
-                          className="cursor-pointer absolute"
-                          style={{
-                            fill: red[500],
-                          }}
-                          onClick={() => {
-                            openModal(casefile)
-                          }}
-                        />
-                      </div> : <div className="flex gap-1 absolute items-center px-2 py-1 rounded-sm" style={{
+                      {currentUser?.type === "admin" ? <MutateIcons onDeleteIconClick={() => {
+                        openModal(casefile)
+                      }} onUpdateIconClick={() => { }} /> : <div className="flex gap-1 absolute items-center px-2 py-1 rounded-sm" style={{
                         backgroundColor: grey[100],
                       }}>
                         <VisibilityOutlinedIcon onClick={() => {

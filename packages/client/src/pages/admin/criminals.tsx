@@ -1,8 +1,5 @@
 import { GetCriminalsPayload, ICriminal, ICriminalPopulated, ICriminalSort, UpdateCriminalPayload } from '@bupd/types';
 import { CriminalPayload } from '@bupd/validation';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { blue, red } from '@mui/material/colors';
 import {
   useDeleteCriminalMutation,
   useDeleteCriminalMutationCache
@@ -13,8 +10,9 @@ import { CriminalForm } from '../../components/CriminalForm';
 import { DeleteModal } from '../../components/DeleteModal';
 import { DetailsList } from '../../components/DetailsList';
 import { TransitionedModal } from '../../components/Modal';
+import { MutateIcons } from '../../components/MutateIcons';
 import { Paginate } from '../../components/Paginate';
-import { criminalSortLabelRecord, svgIconSx } from '../../constants';
+import { criminalSortLabelRecord } from '../../constants';
 import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
 import { useModal } from '../../hooks/useModal';
 
@@ -75,23 +73,11 @@ export default function Criminals() {
                       className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3"
                       key={criminal.criminal_id}
                     >
-                      <div className="flex gap-1 absolute items-center">
-                        <DeleteIcon
-                          sx={svgIconSx}
-                          className="cursor-pointer"
-                          style={{
-                            fill: red[500],
-                          }}
-                          onClick={() => {
-                            openModal(criminal);
-                          }}
-                        />
-                        <EditIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
-                          fill: blue[500]
-                        }} onClick={() => {
-                          openUpdateModal(criminal)
-                        }} />
-                      </div>
+                      <MutateIcons onDeleteIconClick={() => {
+                        openModal(criminal);
+                      }} onUpdateIconClick={() => {
+                        openUpdateModal(criminal)
+                      }} />
                       <div className="flex justify-center w-full mb-5">
                         <img
                           className="h-[50px] w-[50px] rounded-full shadow-md"
