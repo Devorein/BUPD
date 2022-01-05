@@ -23,9 +23,14 @@ export const CRIME_WEAPONS = [
 
 export const POLICE_RANKS = [
 	'Constable',
+	'Assistant Sub Inspector',
 	'Sergeant',
+	'Sub Inspector',
 	'Inspector',
+	'Assistant Superintendent',
+	'Additional Superintendent',
 	'Superintendent',
+	'Deputy Inspector General',
 	'Inspector General',
 ];
 

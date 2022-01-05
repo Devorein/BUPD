@@ -13,10 +13,11 @@ interface PaginateProps<ClientQuery extends IQuery<any, any>, Data> {
   sortLabelRecord: Record<string, string>
   dataListComponentFn: (items: Data[]) => JSX.Element
   filterGroups: FilterFormProps<ClientQuery>["filterGroups"]
+  className?: string
 }
 
 export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [string, -1 | 1], Data>(props: PaginateProps<ClientQuery, Data>) {
-  const { dataListComponentFn, filterGroups, label, clientQueryFn, dataFetcher, sortLabelRecord } = props;
+  const { dataListComponentFn, filterGroups, label, clientQueryFn, dataFetcher, sortLabelRecord, className = "" } = props;
   const [clientQuery, setClientQuery] = useState<ClientQuery>(clientQueryFn());
   const [dummyQuery, setDummyQuery] = useState<ClientQuery>(
     clientQuery,
@@ -25,8 +26,8 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
   const { hasNextPage, lastFetchedPage, fetchNextPage, data, totalItems, allItems, isFetching, } = dataFetcher(clientQuery);
 
   if (data) {
-    return <div className="flex justify-center gap-10 py-5 w-full h-full">
-      {filterGroups.length !== 0 && <div className="h-full">
+    return <div className={`flex justify-center gap-10 py-5 w-full h-full ${className}`}>
+      {filterGroups.length !== 0 && <div className="h-full w-[250px]">
         <FilterForm<ClientQuery> clientFilter={dummyQuery.filter} setClientFilter={(clientFilter) => {
           setDummyQuery({
             ...clientQuery,
