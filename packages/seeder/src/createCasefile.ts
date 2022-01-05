@@ -1,4 +1,9 @@
-import { CASEFILE_PRIORITIES, CRIME_CATEGORIES, CRIME_WEAPONS } from '@bupd/constants';
+import {
+	CASEFILE_PRIORITIES,
+	CASEFILE_STATUSES,
+	CRIME_CATEGORIES,
+	CRIME_WEAPONS,
+} from '@bupd/constants';
 import { CreateCasefilePayload, CreateCasefileResponse } from '@bupd/types';
 import dayjs from 'dayjs';
 import faker from 'faker';
@@ -92,6 +97,7 @@ export async function createCasefile(
 					{
 						categories: Array.from(new Set(categories)),
 						criminals,
+						status: faker.random.arrayElement(CASEFILE_STATUSES),
 						location: `${faker.address.streetAddress()} ${faker.address.city()}`,
 						priority: faker.random.arrayElement(CASEFILE_PRIORITIES),
 						victims,
@@ -104,7 +110,7 @@ export async function createCasefile(
 					policeToken
 				)
 			);
-			await sleep(500);
+			await sleep(150);
 			console.log(`Created case ${caseNumber + 1}`);
 		}
 
