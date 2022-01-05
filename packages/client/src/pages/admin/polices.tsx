@@ -1,18 +1,17 @@
 import { POLICE_RANKS } from "@bupd/constants";
 import { GetPolicesPayload, IPolice, IPoliceSort, UpdatePolicePayload } from "@bupd/types";
 import { PoliceRequest } from "@bupd/validation";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { blue, grey, red } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import { useDeletePoliceMutation, useDeletePoliceMutationCache } from "../../api/mutations/useDeletePoliceMutation";
 import { useUpdatePoliceMutation, useUpdatePoliceMutationCache } from "../../api/mutations/useUpdatePoliceMutation";
 import { useGetPolicesQuery } from "../../api/queries/useGetPolicesQuery";
 import { DeleteModal } from "../../components/DeleteModal";
 import { DetailsList } from "../../components/DetailsList";
 import { TransitionedModal } from "../../components/Modal";
+import { MutateIcons } from "../../components/MutateIcons";
 import { Paginate } from "../../components/Paginate";
 import { PoliceForm } from "../../components/PoliceForm";
-import { policeSortLabelRecord, svgIconSx } from "../../constants";
+import { policeSortLabelRecord } from "../../constants";
 import { useIsAuthenticated, useIsAuthorized } from "../../hooks";
 import { useModal } from "../../hooks/useModal";
 
@@ -75,18 +74,11 @@ export default function Polices() {
             }
           }]} clientQueryFn={createInitialGetPolicesQuery} dataListComponentFn={(polices) => <div className="grid grid-cols-3 gap-5 pr-5">
             {polices.map(police => <div className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3" key={police.nid}>
-              <div className="flex gap-1 absolute items-center">
-                <DeleteIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
-                  fill: red[500]
-                }} onClick={() => {
-                  openModal(police)
-                }} />
-                <EditIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
-                  fill: blue[500]
-                }} onClick={() => {
-                  openUpdateModal(police)
-                }} />
-              </div>
+              <MutateIcons onDeleteIconClick={() => {
+                openModal(police)
+              }} onUpdateIconClick={() => {
+                openUpdateModal(police)
+              }} />
               <div className="flex justify-center w-full">
                 <img className="h-[50px] w-[50px] rounded-full shadow-md" alt="profile" src={"https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg"} />
               </div>
