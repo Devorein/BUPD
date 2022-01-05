@@ -7,6 +7,7 @@ import { useUpdatePoliceMutation, useUpdatePoliceMutationCache } from "../../api
 import { useGetPolicesQuery } from "../../api/queries/useGetPolicesQuery";
 import { DeleteModal } from "../../components/DeleteModal";
 import { DetailsList } from "../../components/DetailsList";
+import { SelectTags } from "../../components/FormikSelectInput";
 import { TransitionedModal } from "../../components/Modal";
 import { MutateIcons } from "../../components/MutateIcons";
 import { Paginate } from "../../components/Paginate";
@@ -66,11 +67,13 @@ export default function Polices() {
             }} validationSchema={updatePolicePayloadValidationSchema} />
           </TransitionedModal>
           <Paginate<GetPolicesPayload, IPoliceSort, IPolice> filterGroups={[{
-            type: "checkbox_group",
+            type: "select",
             props: {
-              items: POLICE_RANKS.map(policeRank => ([policeRank, <div key={policeRank}>{policeRank}</div>])),
+              items: POLICE_RANKS,
               label: "Rank",
-              stateKey: "rank"
+              stateKey: "rank",
+              multiple: true,
+              renderValue: (renderValues) => <SelectTags values={renderValues} />
             }
           }]} clientQueryFn={createInitialGetPolicesQuery} dataListComponentFn={(polices) => <div className="grid grid-cols-3 gap-5 pr-5">
             {polices.map(police => <div className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3" key={police.nid}>

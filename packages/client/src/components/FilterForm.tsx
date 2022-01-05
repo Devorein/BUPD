@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Button } from "./Button";
 import { CheckboxGroup, CheckboxGroupProps } from "./CheckboxGroup";
 import { NumberRange, NumberRangeProps } from "./NumberRange";
+import { Select, SelectProps } from "./Select";
 
 export interface FilterFormProps<ClientQuery extends IQuery<any, any>> {
   setClientQuery: Dispatch<SetStateAction<ClientQuery>>
@@ -16,6 +17,9 @@ export interface FilterFormProps<ClientQuery extends IQuery<any, any>> {
   } | {
     type: "number_range",
     props: Omit<NumberRangeProps<ClientQuery["filter"]>, "setState" | "state">
+  } | {
+    type: "select",
+    props: SelectProps<string[]> & { stateKey: keyof ClientQuery["filter"] }
   })[]
 }
 
@@ -35,6 +39,14 @@ export function FilterForm<ClientQuery extends IQuery<any, any>>(props: FilterFo
             }
             case "number_range": {
               return <NumberRange<ClientQuery["filter"]> key={filterGroup.props.label} {...filterGroup.props} setState={setClientFilter} state={clientFilter} />
+            }
+            case "select": {
+              return <Select<string[]> value={clientFilter[filterGroup.props.stateKey]} key={filterGroup.props.stateKey.toString()} {...filterGroup.props} onChange={(e) => {
+                setClientFilter({
+                  ...clientFilter,
+                  [filterGroup.props.stateKey]: e.target.value
+                })
+              }} />
             }
             default: {
               return null;
