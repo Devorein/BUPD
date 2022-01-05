@@ -80,7 +80,7 @@ export function generateTheme() {
 					},
 					root: {
 						'&.MuiInputBase-multiline': {
-							padding: 5,
+							padding: 0,
 						},
 					},
 				},

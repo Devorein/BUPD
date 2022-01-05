@@ -215,10 +215,19 @@ export function generateSelectClause(selects: SqlSelect, hasJoins: boolean) {
 			}
 		} else {
 			let expression = `\`${select.attribute}\``;
+			if (hasJoins && select.namespace) {
+				expression = `${select.namespace}.\`${select.attribute}\``;
+			}
 			for (let index = 0; index < select.aggregation.length; index += 1) {
 				expression = `${select.aggregation[index]}(${expression})`;
 			}
-			attributes.push(`${expression} as \`${select.attribute}\``);
+			if (select.alias) {
+				attributes.push(`${expression} as \`${select.alias}\``);
+			} else if (select.namespace) {
+				attributes.push(`${expression} as \`${select.namespace}.${select.attribute}\``);
+			} else {
+				attributes.push(`${expression} as \`${select.attribute}\``);
+			}
 		}
 	});
 

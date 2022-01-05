@@ -16,8 +16,8 @@ export function usePostMutation<Payload, Response>(successMessage?: string, erro
 						});
 				}
 			},
-			onError(err) {
-				enqueueSnackbar(errorMessage ?? err, {
+			onError(err: any) {
+				enqueueSnackbar(errorMessage ?? err.message, {
 					variant: 'error',
 				});
 			},

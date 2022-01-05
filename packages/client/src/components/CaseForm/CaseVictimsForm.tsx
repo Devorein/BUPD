@@ -9,9 +9,9 @@ export function CaseVictimsForm() {
   const { setValues, values } = useFormikContext<CreateCasefilePayload>();
 
   return <div className="flex flex-col">
-    <div className="font-bold text-3xl">Victims</div>
+    <div className="font-bold text-2xl">Victims</div>
     {(values.victims).length !== 0 ? <div className="flex gap-1 flex-col">{(values.victims).map((_, victimNumber) => <div key={victimNumber} className="flex flex-col w-full items-end">
-      <div className="mt-3 flex justify-between w-full items-center ">
+      <div className="mt-3 flex justify-between w-full items-center">
         <div className="text-xl w-full font-bold">Victim {victimNumber + 1}</div>
         <DeleteIcon sx={svgIconSx} className="cursor-pointer" color="error" onClick={() => {
           values.victims.splice(victimNumber, 1);
@@ -48,7 +48,7 @@ export function CaseVictimsForm() {
         label={`Victim Description`}
         placeholder={`Victim ${victimNumber + 1} description`}
       />
-    </div>)}</div> : <div className="text-lg text-gray-600">No Victims added</div>}
+    </div>)}</div> : <div className="text-gray-600">No Victims added</div>}
     <div className="flex my-3 gap-3 items-center justify-center flex-col">
       <div className="font-bold text-xl">Add a victim</div>
       <AddCircleIcon sx={svgIconSx} fontSize='large' className="cursor-pointer" color="secondary" onClick={() => {

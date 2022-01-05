@@ -251,8 +251,16 @@ const CasefileController = {
 						next: req.query.next,
 						select: [
 							...getCasefileAttributes('Casefile'),
-							{ aggregation: ['DISTINCT', 'GROUP_CONCAT'], attribute: 'Crime_Weapon.weapon' },
-							{ aggregation: ['DISTINCT', 'GROUP_CONCAT'], attribute: 'Crime_Category.category' },
+							{
+								aggregation: ['DISTINCT', 'GROUP_CONCAT'],
+								attribute: 'weapon',
+								namespace: 'Crime_Weapon',
+							},
+							{
+								aggregation: ['DISTINCT', 'GROUP_CONCAT'],
+								attribute: 'category',
+								namespace: 'Crime_Category',
+							},
 						],
 						joins: [
 							['Casefile', 'Crime_Weapon', 'case_no', 'case_no', 'LEFT'],

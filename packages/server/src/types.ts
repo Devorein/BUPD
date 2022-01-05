@@ -76,6 +76,8 @@ export type SqlSelect = (
 	| {
 			aggregation: ('COUNT' | 'GROUP_CONCAT' | 'MIN' | 'MAX' | 'SUM' | 'DISTINCT')[];
 			attribute: string;
+			namespace?: string;
+			alias?: string;
 	  }
 )[];
 

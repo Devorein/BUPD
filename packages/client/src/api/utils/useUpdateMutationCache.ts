@@ -3,14 +3,10 @@ import { usePostMutation } from '../../hooks/usePostMutation';
 import { CacheHitFunction } from '../../hooks/useQueryClientSetData';
 
 export function useUpdateMutationCache<Data, Response>(
-	entity: 'access' | 'police' | 'casefile' | 'criminal' | 'victim',
 	queryDataGenerator: () => (cacheHitCb: CacheHitFunction<PaginatedResponse<Data>>) => void,
 	key: keyof Data
 ) {
-	const postMutation = usePostMutation<any, Response>(
-		`Successfully updated ${entity}`,
-		`Couldn't updated ${entity}`
-	);
+	const postMutation = usePostMutation<any, Response>();
 
 	const queryData = queryDataGenerator();
 	return (identifier: number | ((data: Data) => boolean), postCacheUpdateCb?: () => void) => {

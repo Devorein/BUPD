@@ -3,7 +3,7 @@ import {
 	DeleteCriminalResponse,
 	GetCriminalsPayload,
 	GetCriminalsResponse,
-	ICriminal,
+	ICriminalPopulated,
 	UpdateCriminalPayload,
 	UpdateCriminalResponse,
 } from '@bupd/types';
@@ -11,6 +11,8 @@ import { Request, Response } from 'express';
 import { CriminalModel } from '../models';
 import { paginate } from '../models/utils/paginate';
 import { handleError, logger } from '../utils';
+import { getCriminalAttributes } from '../utils/generateAttributes';
+import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
 
 const CriminalController = {
@@ -75,15 +77,34 @@ const CriminalController = {
 		try {
 			res.json({
 				status: 'success',
-				data: await paginate<ICriminal>(
+				data: await paginate<ICriminalPopulated>(
 					{
 						filter: [],
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
 						next: req.query.next,
+						select: [
+							...getCriminalAttributes('Criminal'),
+							{
+								aggregation: ['COUNT'],
+								attribute: `criminal_id`,
+								alias: 'total_cases',
+								namespace: 'Criminal',
+							},
+						],
+						joins: [['Criminal', 'Casefile_Criminal', 'criminal_id', 'criminal_id']],
+						groups: ['Criminal.criminal_id'],
 					},
 					'Criminal',
-					'criminal_id'
+					'criminal_id',
+					(rows) =>
+						rows.map((row) => {
+							const inflatedObject = inflateObject<ICriminalPopulated>(row, 'Criminal');
+							return {
+								...inflatedObject,
+								total_cases: row.total_cases,
+							};
+						})
 				),
 			});
 		} catch (err) {

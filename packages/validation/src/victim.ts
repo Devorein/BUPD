@@ -3,7 +3,7 @@ import { paginationSchema } from './utils/paginationSchema';
 
 function victimValidationSchema(domain?: 'server' | 'client') {
 	const baseSchema = {
-		name: yup.string().required('Required'),
+		name: yup.string().required(),
 		address: yup.string().required(),
 		age: yup.number().max(120).required(),
 		phone_no: yup.string().required(),
@@ -28,9 +28,8 @@ function victimValidationSchema(domain?: 'server' | 'client') {
 		.noUnknown();
 }
 
-export const VictimEntitySchema = yup.object({}).required().strict().noUnknown();
-
 export const VictimRequest = {
+	create: victimValidationSchema('client'),
 	get: yup
 		.object({
 			filter: yup.object({
