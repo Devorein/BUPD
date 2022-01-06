@@ -88,14 +88,19 @@ export interface ICasefileIntermediate extends ICasefile {
 	permissions: string;
 }
 
-export type ICasefilePermissionsRecord = Partial<Record<TAccessPermission, TAccessApproval>>;
+export interface ICriminalIntermediate extends ICriminal {
+	permissions: string;
+	total_cases: number;
+}
+
+export type IPermissionsRecord = Partial<Record<TAccessPermission, TAccessApproval>>;
 
 export interface ICasefilePopulated extends ICasefile {
 	weapons: string[];
 	categories: string[];
 	victims: IVictim[];
 	criminals: ICriminal[];
-	permissions?: ICasefilePermissionsRecord;
+	permissions?: IPermissionsRecord;
 }
 
 export interface IAccessPopulated extends IAccess {
@@ -106,5 +111,5 @@ export interface IAccessPopulated extends IAccess {
 
 export interface ICriminalPopulated extends ICriminal {
 	total_cases: number;
-	permissions?: ICasefilePermissionsRecord;
+	permissions?: IPermissionsRecord;
 }

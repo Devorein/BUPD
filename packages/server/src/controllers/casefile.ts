@@ -7,9 +7,9 @@ import {
 	GetCasefilesPayload,
 	GetCasefilesResponse,
 	ICasefileIntermediate,
-	ICasefilePermissionsRecord,
 	ICasefilePopulated,
 	ICriminal,
+	IPermissionsRecord,
 	IVictim,
 	PoliceJwtPayload,
 	TAccessApproval,
@@ -334,7 +334,7 @@ const CasefileController = {
 								permissions: undefined,
 							};
 
-							const permissionRecord: ICasefilePermissionsRecord = {};
+							const permissionRecord: IPermissionsRecord = {};
 							if (permissions) {
 								permissions.split(',').forEach((permissionApproval) => {
 									const [permission, approval] = permissionApproval.split(' ');

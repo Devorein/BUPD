@@ -3,13 +3,19 @@ import {
 	DeleteCriminalResponse,
 	GetCriminalsPayload,
 	GetCriminalsResponse,
+	ICriminalIntermediate,
 	ICriminalPopulated,
+	IPermissionsRecord,
+	PoliceJwtPayload,
+	TAccessApproval,
+	TAccessPermission,
 	UpdateCriminalPayload,
 	UpdateCriminalResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { CriminalModel } from '../models';
 import { paginate } from '../models/utils/paginate';
+import { SqlSelect } from '../types';
 import { handleError, logger } from '../utils';
 import { convertCriminalFilter } from '../utils/convertClientQuery';
 import { getCriminalAttributes } from '../utils/generateAttributes';
@@ -75,24 +81,33 @@ const CriminalController = {
 		req: Request<any, any, any, GetCriminalsPayload>,
 		res: Response<GetCriminalsResponse>
 	) {
+		const select: SqlSelect = [];
+
+		if (req.jwt_payload!.type === 'police') {
+			select.push({
+				raw: `(SELECT GROUP_CONCAT(CONCAT(permission, " ", approved)) from Access where Access.criminal_id = Criminal.\`criminal_id\` AND police_nid = ${
+					(req.jwt_payload as PoliceJwtPayload).nid
+				}) as permissions`,
+			});
+		}
+
+		select.push(...getCriminalAttributes('Criminal'), {
+			aggregation: ['COUNT'],
+			attribute: `criminal_id`,
+			alias: 'total_cases',
+			namespace: 'Criminal',
+		});
+
 		try {
 			res.json({
 				status: 'success',
-				data: await paginate<ICriminalPopulated>(
+				data: await paginate<ICriminalPopulated, ICriminalIntermediate>(
 					{
 						filter: convertCriminalFilter(req.query.filter),
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
 						next: req.query.next,
-						select: [
-							...getCriminalAttributes('Criminal'),
-							{
-								aggregation: ['COUNT'],
-								attribute: `criminal_id`,
-								alias: 'total_cases',
-								namespace: 'Criminal',
-							},
-						],
+						select,
 						joins: [['Criminal', 'Casefile_Criminal', 'criminal_id', 'criminal_id']],
 						groups: ['Criminal.criminal_id'],
 					},
@@ -100,11 +115,31 @@ const CriminalController = {
 					'criminal_id',
 					(rows) =>
 						rows.map((row) => {
-							const inflatedObject = inflateObject<ICriminalPopulated>(row, 'Criminal');
-							return {
-								...inflatedObject,
+							const { permissions } = row;
+
+							const inflatedObject = inflateObject<ICriminalIntermediate>(row, 'Criminal');
+							const permissionRecord: IPermissionsRecord = {};
+							if (permissions) {
+								permissions.split(',').forEach((permissionApproval) => {
+									const [permission, approval] = permissionApproval.split(' ');
+									permissionRecord[permission as TAccessPermission] = parseInt(
+										approval,
+										10
+									) as TAccessApproval;
+								});
+							}
+
+							const criminal: ICriminalPopulated = {
+								criminal_id: inflatedObject.criminal_id,
+								name: inflatedObject.name,
+								photo: inflatedObject.photo,
 								total_cases: row.total_cases,
+								permissions: undefined,
 							};
+
+							criminal.permissions = permissionRecord;
+
+							return criminal;
 						})
 				),
 			});

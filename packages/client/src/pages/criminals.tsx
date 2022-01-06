@@ -4,22 +4,22 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { blue, green, grey, red } from '@mui/material/colors';
-import { useCreateAccessMutation, useCreateAccessMutationCache } from '../../api/mutations/useCreateAccessMutation';
+import { useCreateAccessMutation, useCreateAccessMutationCache } from '../api/mutations/useCreateAccessMutation';
 import {
   useDeleteCriminalMutation,
   useDeleteCriminalMutationCache
-} from '../../api/mutations/useDeleteCriminalMutation';
-import { useUpdateCriminalMutation, useUpdateCriminalMutationCache } from '../../api/mutations/useUpdateCriminalMutation';
-import { useGetCriminalsQuery } from '../../api/queries/useGetCriminalsQuery';
-import { CriminalForm } from '../../components/CriminalForm';
-import { DeleteModal } from '../../components/DeleteModal';
-import { DetailsList } from '../../components/DetailsList';
-import { TransitionedModal } from '../../components/Modal';
-import { MutateIcons } from '../../components/MutateIcons';
-import { Paginate } from '../../components/Paginate';
-import { criminalSortLabelRecord } from '../../constants';
-import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
-import { useModal } from '../../hooks/useModal';
+} from '../api/mutations/useDeleteCriminalMutation';
+import { useUpdateCriminalMutation, useUpdateCriminalMutationCache } from '../api/mutations/useUpdateCriminalMutation';
+import { useGetCriminalsQuery } from '../api/queries/useGetCriminalsQuery';
+import { CriminalForm } from '../components/CriminalForm';
+import { DeleteModal } from '../components/DeleteModal';
+import { DetailsList } from '../components/DetailsList';
+import { TransitionedModal } from '../components/Modal';
+import { MutateIcons } from '../components/MutateIcons';
+import { Paginate } from '../components/Paginate';
+import { criminalSortLabelRecord } from '../constants';
+import { useIsAuthenticated } from '../hooks';
+import { useModal } from '../hooks/useModal';
 
 const createInitialGetCriminalsQuery = (): GetCriminalsPayload => ({
   limit: 10,
@@ -30,7 +30,6 @@ const createInitialGetCriminalsQuery = (): GetCriminalsPayload => ({
 
 export default function Criminals() {
   const currentUser = useIsAuthenticated();
-  useIsAuthorized(["admin"]);
   const deleteCriminalMutation = useDeleteCriminalMutation();
   const deleteCriminalMutationCache = useDeleteCriminalMutationCache();
   const createAccessMutation = useCreateAccessMutation();
@@ -127,7 +126,7 @@ export default function Criminals() {
                       </div>
                       <div className="flex justify-center w-full mb-5">
                         <img
-                          className="h-[50px] w-[50px] rounded-full shadow-md"
+                          className="h-[50px] w-[50px] rounded-full shadow-md object-cover"
                           alt="profile"
                           src={
                             criminal.photo ?? 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg'
