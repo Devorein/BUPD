@@ -1,4 +1,4 @@
-import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS } from "@bupd/constants";
+import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS, PRIORITY_RECORD } from "@bupd/constants";
 import { TCasefilePriority, TCasefileStatus } from "@bupd/types";
 import { Typography } from "@mui/material";
 import { Form, Formik, FormikConfig } from "formik";
@@ -13,6 +13,11 @@ interface CasefileFormProps<Values> {
   initialValues: Values
   validationSchema: BaseSchema
   onSubmit: FormikConfig<Values>["onSubmit"]
+  showExtra?: boolean
+  isMutationLoading: boolean
+  submitButtonText: string
+  className?: string
+  header: string
 }
 
 export function CasefileForm<Values>(props: CasefileFormProps<Values>) {
@@ -38,22 +43,7 @@ export function CasefileForm<Values>(props: CasefileFormProps<Values>) {
               placeholder="Dhaka"
             />
             <FormikSelectInput<string[]> multiple items={CRIME_CATEGORIES} label="Crime categories" name="categories" />
-            <FormikSelectInput<TCasefilePriority> defaultValue={2} items={CASEFILE_PRIORITIES} menuItemRender={(value) => {
-              if (value === 0) {
-                return "Low"
-              } else if (value === 1) {
-                return "Medium"
-              }
-              return "High"
-            }} label="Priority" name="priority" renderValue={(value) => {
-              let priority: string = "High";
-              if (value === 0) {
-                priority = "Low"
-              } else if (value === 1) {
-                priority = "Medium"
-              }
-              return <SelectTags values={[priority]} />
-            }} />
+            <FormikSelectInput<TCasefilePriority> defaultValue={2} items={CASEFILE_PRIORITIES} menuItemRender={(value) => PRIORITY_RECORD[value]} label="Priority" name="priority" renderValue={(value) => <SelectTags values={[PRIORITY_RECORD[value]]} />} />
             <FormikSelectInput<TCasefileStatus> defaultValue="open" items={CASEFILE_STATUSES} label="Status" name="status" />
             <FormikSelectInput<string[]> multiple defaultValue={[]} items={CRIME_WEAPONS} label="Crime weapons" name="weapons" />
             <div className="border-b-2 border-gray-300 my-3"></div>

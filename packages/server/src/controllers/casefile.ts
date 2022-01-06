@@ -217,7 +217,7 @@ const CasefileController = {
 			}
 		} catch (err) {
 			logger.error(err);
-			handleError(res, 500, "Couldn't update the casefile");
+			handleError(res, 500, "Couldn't update casefile");
 		}
 	},
 	async get(req: Request<{ case_no: number }>, res: Response<GetCasefileResponse>) {
