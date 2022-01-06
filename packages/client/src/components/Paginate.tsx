@@ -4,6 +4,7 @@ import { useState } from "react";
 import { UseApiInfiniteQuery } from "../hooks/useApiInfiniteQuery";
 import { FilterForm, FilterFormProps } from "./FilterForm";
 import { LoadMoreButton } from "./LoadMoreButton";
+import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
 
 interface PaginateProps<ClientQuery extends IQuery<any, any>, Data> {
@@ -55,6 +56,15 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
                   ...clientQuery,
                   sort: event.target.value.split(".") as Sort,
                   next: null
+                })
+              }} />
+              <SearchBar placeHolder="Search by case no. Eg:- 1 2 10" onClick={(searchTerm) => {
+                setClientQuery({
+                  ...clientQuery,
+                  filter: {
+                    ...clientQuery.filter,
+                    search: searchTerm.split(" ")
+                  }
                 })
               }} />
             </div>
