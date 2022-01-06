@@ -11,7 +11,13 @@ CasefileRouter.post(
 	isAuthenticated,
 	isAuthorized(['police']),
 	CasefileController.create
-).get('/', isAuthenticated, isAuthorized(['admin', 'police']), CasefileController.findMany);
+).get(
+	'/',
+	isAuthenticated,
+	isAuthorized(['admin', 'police']),
+	validatePayload(CasefilePayload.get),
+	CasefileController.findMany
+);
 
 CasefileRouter.delete<{ case_no: number }>(
 	'/:case_no',
