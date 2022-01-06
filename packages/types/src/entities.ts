@@ -91,8 +91,8 @@ export interface ICasefileIntermediate extends ICasefile {
 }
 
 export interface ICasefilePopulated extends ICasefile {
-	weapons: ICrimeWeapon[];
-	categories: ICrimeCategory[];
+	weapons: string[];
+	categories: string[];
 	victims: IVictim[];
 	criminals: ICriminal[];
 }

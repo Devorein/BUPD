@@ -64,7 +64,10 @@ export interface CreateCasefilePayload {
 		description?: string | null;
 	}[];
 }
-export interface UpdateCasefilePayload extends Omit<ICasefile, 'case_no' | 'police_nid' | 'time'> {}
+export interface UpdateCasefilePayload extends Omit<ICasefile, 'case_no' | 'police_nid' | 'time'> {
+	categories: string[];
+	weapons: string[];
+}
 export interface UpdateCasefileResponse extends ICasefile {}
 
 export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police'> {}

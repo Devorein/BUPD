@@ -38,9 +38,11 @@ export const CasefilePayload = {
 	create: (domain: 'server' | 'client') => casefileValidationSchema(domain),
 	update: yup
 		.object({
-			status: yup.string().oneOf(CASEFILE_STATUSES).nullable().strict(),
-			location: yup.string().strict(),
-			priority: yup.number().oneOf(CASEFILE_PRIORITIES).strict().required(),
+			status: yup.string().oneOf(CASEFILE_STATUSES).nullable().required(),
+			location: yup.string().required(),
+			categories: yup.array().of(yup.string().oneOf(CRIME_CATEGORIES)).required(),
+			weapons: yup.array(yup.string()).default([]).required(),
+			priority: yup.number().oneOf(CASEFILE_PRIORITIES).required(),
 		})
 		.strict()
 		.noUnknown(),

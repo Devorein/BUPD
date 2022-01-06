@@ -8,8 +8,6 @@ import {
 	GetCasefilesResponse,
 	ICasefileIntermediate,
 	ICasefilePopulated,
-	ICrimeCategory,
-	ICrimeWeapon,
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
@@ -48,8 +46,8 @@ const CasefileController = {
 			const newCriminalPayloads: Omit<ICriminal, 'criminal_id'>[] = [];
 			const allCriminalIds: number[] = [];
 			const victims: IVictim[] = [],
-				categories: ICrimeCategory[] = [],
-				weapons: ICrimeWeapon[] = [];
+				categories: string[] = [],
+				weapons: string[] = [];
 			payload.criminals.forEach((criminal) => {
 				if ('id' in criminal) {
 					existingCriminalIds.push(criminal.id);
@@ -90,25 +88,25 @@ const CasefileController = {
 			);
 
 			for (let index = 0; index < payload.weapons.length; index += 1) {
-				const weapon = await CrimeWeaponModel.create(
+				await CrimeWeaponModel.create(
 					{
 						case_no: maxCaseNo,
 						weapon: payload.weapons[index],
 					},
 					connection
 				);
-				weapons.push(weapon);
+				weapons.push(payload.weapons[index]);
 			}
 
 			for (let index = 0; index < payload.categories.length; index += 1) {
-				const category = await CrimeCategoryModel.create(
+				await CrimeCategoryModel.create(
 					{
 						case_no: maxCaseNo,
 						category: payload.categories[index],
 					},
 					connection
 				);
-				categories.push(category);
+				categories.push(payload.categories[index]);
 			}
 
 			for (let index = 0; index < payload.victims.length; index += 1) {
@@ -326,13 +324,9 @@ const CasefileController = {
 								weapons: [],
 							};
 
-							casefile.categories = inflatedObject.crime_category.category
-								?.split(',')
-								.map((category) => ({ category, case_no: inflatedObject.case_no }));
+							casefile.categories = inflatedObject.crime_category.category?.split(',');
 
-							casefile.weapons = inflatedObject.crime_weapon.weapon
-								?.split(',')
-								.map((weapon) => ({ weapon, case_no: inflatedObject.case_no }));
+							casefile.weapons = inflatedObject.crime_weapon.weapon?.split(',');
 							return casefile;
 						})
 				),
