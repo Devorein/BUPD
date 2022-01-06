@@ -110,7 +110,6 @@ export default function Casefiles() {
               },
             ]}
             dataListComponentFn={(casefiles) => {
-
               return <div className="grid grid-cols-3 gap-5 pr-5">
                 {casefiles.map((casefile) => {
                   let permissionIcons: null | JSX.Element = null;
