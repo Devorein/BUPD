@@ -1,26 +1,15 @@
 import { CASEFILE_PRIORITIES, CASEFILE_STATUSES, CRIME_CATEGORIES, CRIME_WEAPONS, PRIORITY_RECORD } from "@bupd/constants";
-import { TCasefilePriority, TCasefileStatus } from "@bupd/types";
+import { ICasefile, TCasefilePriority, TCasefileStatus } from "@bupd/types";
 import { Typography } from "@mui/material";
-import { Form, Formik, FormikConfig } from "formik";
-import { BaseSchema } from "yup";
+import { Form, Formik } from "formik";
+import { FormProps } from "../types";
 import { Button } from "./Button";
 import { CaseCriminalsForm } from "./CaseForm/CaseCriminalsForm";
 import { CaseVictimsForm } from "./CaseForm/CaseVictimsForm";
 import { FormikSelectInput, SelectTags } from "./FormikSelectInput";
 import { FormikTextInput } from "./FormikTextInput";
 
-interface CasefileFormProps<Values> {
-  initialValues: Values
-  validationSchema: BaseSchema
-  onSubmit: FormikConfig<Values>["onSubmit"]
-  showExtra?: boolean
-  isMutationLoading: boolean
-  submitButtonText: string
-  className?: string
-  header: string
-}
-
-export function CasefileForm<Values>(props: CasefileFormProps<Values>) {
+export function CasefileForm<CasefileData = ICasefile>(props: FormProps<CasefileData>) {
   const { initialValues, onSubmit, validationSchema } = props;
   return <div className="flex items-center justify-center w-full h-full">
     <Formik

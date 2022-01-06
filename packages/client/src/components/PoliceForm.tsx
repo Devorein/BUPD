@@ -1,20 +1,13 @@
 import { POLICE_RANKS } from "@bupd/constants";
 import { IPolice } from "@bupd/types";
 import { Typography } from "@mui/material";
-import { Form, Formik, FormikConfig } from "formik";
-import { AnySchema } from "yup";
+import { Form, Formik } from "formik";
+import { FormProps } from "../types";
 import { Button } from "./Button";
 import { FormikSelectInput } from "./FormikSelectInput";
 import { FormikTextInput } from "./FormikTextInput";
 
-interface PoliceFormProps<PoliceData> {
-  initialValues: PoliceData,
-  validationSchema: AnySchema
-  isMutationLoading: boolean
-  onSubmit: FormikConfig<PoliceData>["onSubmit"]
-  header: string
-  submitButtonText: string
-  className?: string
+interface PoliceFormProps<PoliceData> extends FormProps<PoliceData> {
   showPassword: boolean
   showNid: boolean
 }
