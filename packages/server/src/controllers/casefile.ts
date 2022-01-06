@@ -17,7 +17,13 @@ import {
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
-import { CasefileModel, CrimeCategoryModel, CriminalModel, VictimModel } from '../models';
+import {
+	AccessModel,
+	CasefileModel,
+	CrimeCategoryModel,
+	CriminalModel,
+	VictimModel,
+} from '../models';
 import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
 import { paginate } from '../models/utils/paginate';
@@ -139,6 +145,40 @@ const CasefileController = {
 				);
 			}
 
+			// The reporting officer should have read, update and delete access to the casefile
+			const accessData = {
+				admin_id: null,
+				approved: 1,
+				case_no: maxCaseNo,
+				criminal_id: null,
+				police_nid: jwtPayload.nid,
+				type: 'case',
+			} as const;
+
+			await AccessModel.create(
+				{
+					...accessData,
+					permission: 'read',
+				},
+				connection
+			);
+
+			await AccessModel.create(
+				{
+					...accessData,
+					permission: 'update',
+				},
+				connection
+			);
+
+			await AccessModel.create(
+				{
+					...accessData,
+					permission: 'delete',
+				},
+				connection
+			);
+
 			const joinedData = (await connection.query(`
         SELECT
           CR.name,
@@ -160,7 +200,7 @@ const CasefileController = {
 					categories,
 					victims,
 					weapons,
-					criminals: joinedData[0] as ICriminal[],
+					criminals: allCriminalIds.length !== 0 ? (joinedData[0] as ICriminal[]) : [],
 				},
 			});
 		} catch (err) {

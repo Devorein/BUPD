@@ -11,7 +11,6 @@ import { FormikTextInput } from "./FormikTextInput";
 
 export function CasefileForm<CasefileData = ICasefile>(props: FormProps<CasefileData> & { showExtra?: boolean }) {
   const { initialValues, onSubmit, showExtra, validationSchema, header, isMutationLoading, submitButtonText, className = "" } = props;
-  console.log({ props });
   return <div className="flex items-center justify-center w-full h-full">
     <Formik
       validateOnMount
