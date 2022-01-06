@@ -45,7 +45,8 @@ export function FilterForm<ClientQuery extends IQuery<any, any>>(props: FilterFo
               return <NumberRange<ClientQuery["filter"]> key={filterGroup.props.label} {...filterGroup.props} setState={setClientFilter} state={clientFilter} />
             }
             case "select": {
-              return <Select<string[]> value={clientFilter[filterGroup.props.stateKey]} key={filterGroup.props.stateKey.toString()} {...filterGroup.props} onChange={(e) => {
+              const { stateKey, ...rest } = filterGroup.props;
+              return <Select<string[]> value={clientFilter[stateKey]} key={stateKey.toString()} {...rest} onChange={(e) => {
                 setClientFilter({
                   ...clientFilter,
                   [filterGroup.props.stateKey]: e.target.value
