@@ -5,7 +5,6 @@ export interface FormProps<Values> {
 	initialValues: Values;
 	validationSchema: BaseSchema;
 	onSubmit: FormikConfig<Values>['onSubmit'];
-	showExtra?: boolean;
 	isMutationLoading: boolean;
 	submitButtonText: string;
 	className?: string;

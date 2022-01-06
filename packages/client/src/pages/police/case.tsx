@@ -24,7 +24,7 @@ export default function Case() {
   const { enqueueSnackbar } = useSnackbar();
   const createCasefileMutation = useCreateCasefileMutation();
 
-  return <CasefileForm<CreateCasefilePayload> initialValues={createCasefileInitialPayload()} onSubmit={async (values, { setValues }) => {
+  return <CasefileForm<CreateCasefilePayload> header={"Report a case"} isMutationLoading={createCasefileMutation.isLoading} showExtra submitButtonText="Create" initialValues={createCasefileInitialPayload()} onSubmit={async (values, { setValues }) => {
     createCasefileMutation.mutate(values, {
       onSuccess() {
         enqueueSnackbar("Successfully created case", {
@@ -32,8 +32,8 @@ export default function Case() {
         })
         setValues(createCasefileInitialPayload())
       },
-      onError(err) {
-        enqueueSnackbar(err, {
+      onError(err: any) {
+        enqueueSnackbar(err.message, {
           variant: "error"
         })
       }

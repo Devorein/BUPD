@@ -1,4 +1,5 @@
-import { GetCasefilesPayload, ICasefile, ICasefilePopulated, ICasefileSort, UpdateCasefileResponse } from '@bupd/types';
+import { GetCasefilesPayload, ICasefile, ICasefilePopulated, ICasefileSort, UpdateCasefilePayload } from '@bupd/types';
+import { CasefilePayload } from '@bupd/validation';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
@@ -13,6 +14,7 @@ import {
 } from '../../api/mutations/useDeleteCasefileMutation';
 import { useUpdateCasefileMutation, useUpdateCasefileMutationCache } from '../../api/mutations/useUpdateCasefileMutation';
 import { useGetCasefilesQuery } from '../../api/queries/useGetCasefilesQuery';
+import { CasefileForm } from '../../components/CasefileForm';
 import { DeleteModal } from '../../components/DeleteModal';
 import { DetailsList } from '../../components/DetailsList';
 import { TransitionedModal } from '../../components/Modal';
@@ -40,7 +42,7 @@ export default function Casefiles() {
   useIsAuthenticated();
   useIsAuthorized(["admin"]);
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
-  } = useModal<UpdateCasefileResponse>();
+  } = useModal<ICasefile>();
 
   const deleteCasefileMutation = useDeleteCasefileMutation();
   const deleteCasefileMutationCache = useDeleteCasefileMutationCache();
@@ -71,7 +73,16 @@ export default function Casefiles() {
             <TransitionedModal sx={{
               height: 'calc(100% - 150px)'
             }} isModalOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
-              <div>Hello World</div>
+              <CasefileForm<UpdateCasefilePayload> showExtra={false} header={"Update case"} isMutationLoading={updateCasefileMutation.isLoading} submitButtonText="Update" initialValues={selectedUpdateData!} onSubmit={async (values) => {
+                if (selectedUpdateData) {
+                  updateCasefileMutation.mutate({
+                    endpoint: `casefile/${selectedUpdateData.case_no}`,
+                    location: values.location,
+                    priority: values.priority,
+                    status: values.status,
+                  }, updateCasefileMutationCache(selectedUpdateData.case_no, () => closeUpdateModal()))
+                }
+              }} validationSchema={CasefilePayload.update} />
             </TransitionedModal>
             <Paginate<GetCasefilesPayload, ICasefileSort, ICasefilePopulated>
               filterGroups={[
