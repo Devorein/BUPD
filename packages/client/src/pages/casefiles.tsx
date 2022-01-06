@@ -37,7 +37,7 @@ const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
 export default function Casefiles() {
   const currentUser = useIsAuthenticated();
   const createAccessMutation = useCreateAccessMutation();
-  const createAccessMutationCache = useCreateAccessMutationCache();
+  const createAccessMutationCache = useCreateAccessMutationCache("casefile");
 
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
   } = useModal<ICasefilePopulated>();

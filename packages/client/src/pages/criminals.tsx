@@ -33,15 +33,13 @@ export default function Criminals() {
   const deleteCriminalMutation = useDeleteCriminalMutation();
   const deleteCriminalMutationCache = useDeleteCriminalMutationCache();
   const createAccessMutation = useCreateAccessMutation();
-  const createAccessMutationCache = useCreateAccessMutationCache();
+  const createAccessMutationCache = useCreateAccessMutationCache("criminal");
 
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
   } = useModal<ICriminal>();
 
   const updateCriminalMutation = useUpdateCriminalMutation();
   const updateCriminalMutationCache = useUpdateCriminalMutationCache();
-
-
 
   return (
     <div className="flex justify-center w-full h-full">
