@@ -11,6 +11,8 @@ import { FormikTextInput } from "./FormikTextInput";
 
 export function CasefileForm<CasefileData = ICasefile>(props: FormProps<CasefileData> & { showExtra?: boolean }) {
   const { initialValues, onSubmit, showExtra, validationSchema, header, isMutationLoading, submitButtonText, className = "" } = props;
+  console.log({ initialValues });
+
   return <div className="flex items-center justify-center w-full h-full">
     <Formik
       validateOnMount
@@ -33,9 +35,9 @@ export function CasefileForm<CasefileData = ICasefile>(props: FormProps<Casefile
             />
             <FormikSelectInput<TCasefilePriority> defaultValue={2} items={CASEFILE_PRIORITIES} menuItemRender={(value) => PRIORITY_RECORD[value]} label="Priority" name="priority" renderValue={(value) => <SelectTags values={[PRIORITY_RECORD[value]!]} />} />
             <FormikSelectInput<TCasefileStatus> defaultValue="open" items={CASEFILE_STATUSES} label="Status" name="status" />
+            <FormikSelectInput<string[]> multiple items={CRIME_CATEGORIES} label="Crime categories" name="categories" />
+            <FormikSelectInput<string[]> multiple defaultValue={[]} items={CRIME_WEAPONS} label="Crime weapons" name="weapons" />
             {showExtra && <>
-              <FormikSelectInput<string[]> multiple items={CRIME_CATEGORIES} label="Crime categories" name="categories" />
-              <FormikSelectInput<string[]> multiple defaultValue={[]} items={CRIME_WEAPONS} label="Crime weapons" name="weapons" />
               <div className="border-b-2 border-gray-300 my-3"></div>
               <CaseCriminalsForm />
               <div className="border-b-2 border-gray-300 my-3"></div>

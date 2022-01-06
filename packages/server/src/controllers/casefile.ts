@@ -8,8 +8,6 @@ import {
 	GetCasefilesResponse,
 	ICasefileIntermediate,
 	ICasefilePopulated,
-	ICrimeCategory,
-	ICrimeWeapon,
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
@@ -48,8 +46,8 @@ const CasefileController = {
 			const newCriminalPayloads: Omit<ICriminal, 'criminal_id'>[] = [];
 			const allCriminalIds: number[] = [];
 			const victims: IVictim[] = [],
-				categories: ICrimeCategory[] = [],
-				weapons: ICrimeWeapon[] = [];
+				categories: string[] = [],
+				weapons: string[] = [];
 			payload.criminals.forEach((criminal) => {
 				if ('id' in criminal) {
 					existingCriminalIds.push(criminal.id);
@@ -90,25 +88,25 @@ const CasefileController = {
 			);
 
 			for (let index = 0; index < payload.weapons.length; index += 1) {
-				const weapon = await CrimeWeaponModel.create(
+				await CrimeWeaponModel.create(
 					{
 						case_no: maxCaseNo,
 						weapon: payload.weapons[index],
 					},
 					connection
 				);
-				weapons.push(weapon);
+				weapons.push(payload.weapons[index]);
 			}
 
 			for (let index = 0; index < payload.categories.length; index += 1) {
-				const category = await CrimeCategoryModel.create(
+				await CrimeCategoryModel.create(
 					{
 						case_no: maxCaseNo,
 						category: payload.categories[index],
 					},
 					connection
 				);
-				categories.push(category);
+				categories.push(payload.categories[index]);
 			}
 
 			for (let index = 0; index < payload.victims.length; index += 1) {
@@ -212,12 +210,12 @@ const CasefileController = {
 	async delete(req: Request<{ case_no: number }>, res: Response<DeleteCasefileResponse>) {
 		try {
 			const file = await CasefileModel.findByCaseNo(req.params.case_no);
-			if (file[0]) {
+			if (file) {
 				const result = await CasefileModel.delete(req.params.case_no);
 				if (result) {
 					res.json({
 						status: 'success',
-						data: file[0],
+						data: file,
 					});
 				}
 			} else {
@@ -235,24 +233,17 @@ const CasefileController = {
 	) {
 		try {
 			const payload = req.body;
-			const [casefile] = await CasefileModel.find({ filter: [{ case_no: req.params.case_no }] });
+			const casefile = await CasefileModel.update([{ case_no: req.params.case_no }], {
+				...payload,
+				case_no: req.params.case_no,
+			});
+
 			if (!casefile) {
 				handleError(res, 404, "Casefile doesn't exist");
 			} else {
-				await CasefileModel.update(
-					[
-						{
-							case_no: req.params.case_no,
-						},
-					],
-					payload
-				);
 				res.json({
 					status: 'success',
-					data: {
-						...casefile,
-						...payload,
-					},
+					data: casefile,
 				});
 			}
 		} catch (err) {
@@ -262,14 +253,14 @@ const CasefileController = {
 	},
 	async get(req: Request<{ case_no: number }>, res: Response<GetCasefileResponse>) {
 		try {
-			const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
-			if (file) {
+			const casefile = await CasefileModel.findByCaseNo(req.params.case_no);
+			if (casefile) {
 				res.json({
 					status: 'success',
-					data: file,
+					data: casefile,
 				});
 			} else {
-				handleError(res, 404, `No casefile with id, ${req.params.case_no} found`);
+				handleError(res, 404, `Casefile doesn't exist`);
 			}
 		} catch (err) {
 			Logger.error(err);
@@ -325,14 +316,8 @@ const CasefileController = {
 								victims: [],
 								weapons: [],
 							};
-
-							casefile.categories = inflatedObject.crime_category.category
-								?.split(',')
-								.map((category) => ({ category, case_no: inflatedObject.case_no }));
-
-							casefile.weapons = inflatedObject.crime_weapon.weapon
-								?.split(',')
-								.map((weapon) => ({ weapon, case_no: inflatedObject.case_no }));
+							casefile.categories = inflatedObject.crime_category.category?.split(',') ?? [];
+							casefile.weapons = inflatedObject.crime_weapon.weapon?.split(',') ?? [];
 							return casefile;
 						})
 				),

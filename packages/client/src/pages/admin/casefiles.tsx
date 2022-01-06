@@ -43,7 +43,7 @@ export default function Casefiles() {
   useIsAuthenticated();
   useIsAuthorized(["admin"]);
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
-  } = useModal<ICasefile>();
+  } = useModal<ICasefilePopulated>();
 
   const deleteCasefileMutation = useDeleteCasefileMutation();
   const deleteCasefileMutationCache = useDeleteCasefileMutationCache();
@@ -81,6 +81,8 @@ export default function Casefiles() {
                     location: values.location,
                     priority: values.priority,
                     status: values.status,
+                    categories: values.categories,
+                    weapons: values.weapons
                   }, updateCasefileMutationCache(selectedUpdateData.case_no, () => closeUpdateModal()))
                 }
               }} validationSchema={CasefilePayload.update} />
@@ -165,11 +167,11 @@ export default function Casefiles() {
                         </div>
                         {casefile.categories && casefile.categories.length !== 0 && <div className="flex flex-col gap-2">
                           <div className="text-center font-semibold text-lg">Categories</div>
-                          <Tags tags={casefile.categories.map(({ category }) => category)} />
+                          <Tags tags={casefile.categories} />
                         </div>}
                         {casefile.weapons && casefile.weapons.length !== 0 && <div className="flex flex-col gap-2 mb-2">
                           <div className="text-center font-semibold text-lg">Weapons</div>
-                          <Tags tags={casefile.weapons.map(({ weapon }) => weapon)} />
+                          <Tags tags={casefile.weapons} />
                         </div>}
                         <DetailsList
                           items={[
