@@ -1,4 +1,12 @@
-import { GetDashboardResponse, IDashboard, TCasefilePriority, TCasefileStatus } from '@bupd/types';
+import {
+	GetDashboardResponse,
+	IAccess,
+	IDashboard,
+	TAccessPermission,
+	TAccessType,
+	TCasefilePriority,
+	TCasefileStatus,
+} from '@bupd/types';
 import { Request, Response } from 'express';
 import { find } from '../models/utils';
 import { SqlClause } from '../types';
@@ -46,6 +54,51 @@ export const Dashboard = {
 				'Crime_Weapon'
 			);
 
+			const accessTypesCount: { type: TAccessType; total: number }[] = await find(
+				generateAggregateGroupByQuery('type'),
+				'Access'
+			);
+
+			const accessPermissionsCount: { permission: TAccessPermission; total: number }[] = await find(
+				generateAggregateGroupByQuery('permission'),
+				'Access'
+			);
+
+			const accessApprovalsCount: { approved: IAccess['approved']; total: number }[] = await find(
+				generateAggregateGroupByQuery('approved'),
+				'Access'
+			);
+
+			const accessApprovalsRecord: IDashboard['accesses']['approval'] = {
+				0: 0,
+				1: 0,
+				2: 0,
+			};
+
+			accessApprovalsCount.forEach((accessApprovalCount) => {
+				accessApprovalsRecord[accessApprovalCount.approved] = accessApprovalCount.total;
+			});
+
+			const accessTypesRecord: IDashboard['accesses']['type'] = {
+				case: 0,
+				criminal: 0,
+			};
+
+			accessTypesCount.forEach((accessTypeCount) => {
+				accessTypesRecord[accessTypeCount.type] = accessTypeCount.total;
+			});
+
+			const accessPermissionsRecord: IDashboard['accesses']['permission'] = {
+				delete: 0,
+				read: 0,
+				update: 0,
+				write: 0,
+			};
+
+			accessPermissionsCount.forEach((accessPermissionCount) => {
+				accessPermissionsRecord[accessPermissionCount.permission] = accessPermissionCount.total;
+			});
+
 			const policeRecord: IDashboard['polices'] = {};
 			policeRanksCount.forEach((policeRankCount) => {
 				policeRecord[policeRankCount.rank] = policeRankCount.total;
@@ -61,12 +114,12 @@ export const Dashboard = {
 				casefileStatusRecord[casefileStatusCount.status] = casefileStatusCount.total;
 			});
 
-			const crimeCategoriesRecord: IDashboard['crimes']['categories'] = {};
+			const crimeCategoriesRecord: IDashboard['crimes']['category'] = {};
 			crimeCategoriesCount.forEach((crimeCategoryCount) => {
 				crimeCategoriesRecord[crimeCategoryCount.category] = crimeCategoryCount.total;
 			});
 
-			const crimeWeaponsRecord: IDashboard['crimes']['weapons'] = {};
+			const crimeWeaponsRecord: IDashboard['crimes']['weapon'] = {};
 			crimeWeaponsCount.forEach((crimeWeaponCount) => {
 				crimeWeaponsRecord[crimeWeaponCount.weapon] = crimeWeaponCount.total;
 			});
@@ -106,11 +159,16 @@ export const Dashboard = {
 						status: casefileStatusRecord,
 					},
 					crimes: {
-						categories: crimeCategoriesRecord,
-						weapons: crimeWeaponsRecord,
+						category: crimeCategoriesRecord,
+						weapon: crimeWeaponsRecord,
 					},
 					criminals: totalCriminals[0].total,
 					victims: totalVictims[0].total,
+					accesses: {
+						permission: accessPermissionsRecord,
+						type: accessTypesRecord,
+						approval: accessApprovalsRecord,
+					},
 				},
 			});
 		} catch (err) {

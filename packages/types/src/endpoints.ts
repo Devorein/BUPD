@@ -81,8 +81,13 @@ export interface IDashboard {
 	criminals: number;
 	victims: number;
 	crimes: {
-		categories: Record<string, number>;
-		weapons: Record<string, number>;
+		category: Record<string, number>;
+		weapon: Record<string, number>;
+	};
+	accesses: {
+		type: Record<TAccessType, number>;
+		permission: Record<TAccessPermission, number>;
+		approval: Record<IAccess['approved'], number>;
 	};
 }
 export type GetDashboardResponse = ApiResponse<IDashboard>;
