@@ -23,6 +23,7 @@ export default function Accesses() {
         dataFetcher={useGetAccessesQuery}
         label="Access Requests"
         sortLabelRecord={accessSortLabelRecord}
+        searchBarPlaceholder='Search by access id'
       />
       <div className="my-2">
         <AccessDetails data={currentDetail} />

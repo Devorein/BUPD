@@ -6,7 +6,7 @@ import { useGetAccessesQueryData } from '../queries/useGetAccessesQuery';
 import { useUpdateMutationCache } from '../utils/useUpdateMutationCache';
 
 export function useUpdateAccessMutationCache() {
-	return useUpdateMutationCache(useGetAccessesQueryData, 'access_id');
+	return useUpdateMutationCache('access', useGetAccessesQueryData, 'access_id');
 }
 
 export function useUpdateAccessMutation(accessId: number) {

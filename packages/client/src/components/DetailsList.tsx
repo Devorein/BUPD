@@ -7,7 +7,7 @@ interface DetailsListProps {
 }
 
 export function DetailsList(props: DetailsListProps) {
-  return <div className="flex h-full flex-col gap-5">
+  return <div className="flex h-full flex-col gap-5 flex-grow">
     {props.header && <div className="flex justify-center px-5 py-2 rounded-sm uppercase text-center" style={{
       background: grey[100]
     }}>
