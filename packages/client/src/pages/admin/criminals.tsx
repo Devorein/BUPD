@@ -1,5 +1,10 @@
 import { GetCriminalsPayload, ICriminal, ICriminalPopulated, ICriminalSort, UpdateCriminalPayload } from '@bupd/types';
 import { CriminalPayload } from '@bupd/validation';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { blue, green, grey, red } from '@mui/material/colors';
+import { useCreateAccessMutation, useCreateAccessMutationCache } from '../../api/mutations/useCreateAccessMutation';
 import {
   useDeleteCriminalMutation,
   useDeleteCriminalMutationCache
@@ -24,16 +29,20 @@ const createInitialGetCriminalsQuery = (): GetCriminalsPayload => ({
 });
 
 export default function Criminals() {
-  useIsAuthenticated();
+  const currentUser = useIsAuthenticated();
   useIsAuthorized(["admin"]);
   const deleteCriminalMutation = useDeleteCriminalMutation();
   const deleteCriminalMutationCache = useDeleteCriminalMutationCache();
+  const createAccessMutation = useCreateAccessMutation();
+  const createAccessMutationCache = useCreateAccessMutationCache();
 
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
   } = useModal<ICriminal>();
 
   const updateCriminalMutation = useUpdateCriminalMutation();
   const updateCriminalMutationCache = useUpdateCriminalMutationCache();
+
+
 
   return (
     <div className="flex justify-center w-full h-full">
@@ -69,16 +78,53 @@ export default function Criminals() {
               clientQueryFn={createInitialGetCriminalsQuery}
               dataListComponentFn={(criminals) => (
                 <div className="grid grid-cols-5 gap-5 pr-5">
-                  {criminals.map((criminal) => (
-                    <div
+                  {criminals.map((criminal) => {
+                    let permissionIcons: null | JSX.Element = null;
+                    let mutateIcons: null | JSX.Element = null;
+                    if (currentUser.type === "admin") {
+                      mutateIcons = <MutateIcons onDeleteIconClick={() => {
+                        openModal(criminal)
+                      }} onUpdateIconClick={() => { openUpdateModal(criminal) }} />
+                    } else {
+                      mutateIcons = <MutateIcons showDeleteIcon={criminal.permissions?.delete === 1} showUpdateIcon={criminal.permissions?.update === 1} onDeleteIconClick={() => {
+                        openModal(criminal)
+                      }} onUpdateIconClick={() => { openUpdateModal(criminal) }} />
+                    }
+
+                    if (currentUser.type === "police") {
+                      permissionIcons = <div className="flex gap-1">
+                        {criminal.permissions?.read ? <VisibilityOutlinedIcon style={{ fill: grey[500] }} fontSize="small" /> : <VisibilityOutlinedIcon onClick={() => {
+                          createAccessMutation.mutate({
+                            case_no: null,
+                            criminal_id: criminal.criminal_id,
+                            permission: "read"
+                          }, createAccessMutationCache(criminal.criminal_id, `Successfully sent read request for criminal ${criminal.criminal_id}`))
+                        }} className="cursor-pointer" style={{ fill: green[500] }} fontSize="small" />}
+                        {criminal.permissions?.update ? <EditOutlinedIcon style={{ fill: grey[500] }} fontSize="small" /> : <EditOutlinedIcon onClick={() => {
+                          createAccessMutation.mutate({
+                            case_no: null,
+                            criminal_id: criminal.criminal_id,
+                            permission: "update"
+                          }, createAccessMutationCache(criminal.criminal_id, `Successfully sent update request for criminal ${criminal.criminal_id}`))
+                        }} className="cursor-pointer" style={{ fill: blue[500] }} fontSize="small" />}
+                        {criminal.permissions?.delete ? <DeleteOutlinedIcon style={{ fill: grey[500] }} fontSize="small" /> : <DeleteOutlinedIcon onClick={() => {
+                          createAccessMutation.mutate({
+                            case_no: null,
+                            criminal_id: criminal.criminal_id,
+                            permission: "delete"
+                          }, createAccessMutationCache(criminal.criminal_id, `Successfully sent delete request for criminal ${criminal.criminal_id}`))
+                        }} className="cursor-pointer" style={{ fill: red[500] }} fontSize="small" />}
+                      </div>
+                    }
+
+                    return <div
                       className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3"
                       key={criminal.criminal_id}
                     >
-                      <MutateIcons onDeleteIconClick={() => {
-                        openModal(criminal);
-                      }} onUpdateIconClick={() => {
-                        openUpdateModal(criminal)
-                      }} />
+                      <div className="justify-between flex">
+                        {permissionIcons}
+                        {mutateIcons}
+                      </div>
                       <div className="flex justify-center w-full mb-5">
                         <img
                           className="h-[50px] w-[50px] rounded-full shadow-md"
@@ -96,7 +142,7 @@ export default function Criminals() {
                         ]}
                       />
                     </div>
-                  ))}
+                  })}
                 </div>
               )}
               label="Criminals"

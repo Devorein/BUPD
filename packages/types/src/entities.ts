@@ -26,10 +26,6 @@ export interface ICriminal {
 	photo: string | null;
 }
 
-export interface ICriminalPopulated extends ICriminal {
-	total_cases: number;
-}
-
 export interface IVictim {
 	name: string;
 	address: string | null;
@@ -106,4 +102,9 @@ export interface IAccessPopulated extends IAccess {
 	police: Omit<IPolice, 'password'>;
 	casefile: null | ICasefile;
 	criminal: null | ICriminal;
+}
+
+export interface ICriminalPopulated extends ICriminal {
+	total_cases: number;
+	permissions?: ICasefilePermissionsRecord;
 }

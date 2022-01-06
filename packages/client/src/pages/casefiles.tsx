@@ -183,7 +183,7 @@ export default function Casefiles() {
                       <DetailsList
                         items={[
                           ['Location', casefile.location],
-                          ['Casefile NID', casefile.police_nid],
+                          ['Police NID', casefile.police_nid],
                           ['Time', dayjs().to(dayjs(casefile.time))],
                           [
                             'Status',
