@@ -20,12 +20,13 @@ export function SearchBar(props: SearchBarProps) {
         }
       }}
       className="rounded-md w-full"
+      variant="outlined"
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value as string)}
       placeholder={placeHolder}
       InputProps={{
         endAdornment: (
-          <InputAdornment position="end" className="cursor-pointer p-2">
+          <InputAdornment position="end" className="cursor-pointer">
             <SearchIcon sx={{
               "&": {
                 transition: 'fill 150ms ease-in-out, font-size 150ms ease-in-out'

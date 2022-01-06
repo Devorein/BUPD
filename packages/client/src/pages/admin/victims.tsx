@@ -17,7 +17,8 @@ const createInitialGetVictimsQuery = (): GetVictimsPayload => ({
   next: null,
   sort: ['name', -1],
   filter: {
-    age: [10, 120]
+    age: [10, 120],
+    search: []
   },
 });
 

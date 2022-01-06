@@ -78,6 +78,13 @@ export function convertCaseFilter(clientFilter: GetCasefilesPayload['filter']) {
 
 export function convertVictimFilter(clientFilter: GetVictimsPayload['filter']) {
 	const filter: SqlFilter = [];
+	if (clientFilter.search) {
+		filter.push({
+			case_no: {
+				$in: clientFilter.search,
+			},
+		});
+	}
 	if (clientFilter?.age) {
 		const [min, max] = clientFilter.age;
 		if (min) {
