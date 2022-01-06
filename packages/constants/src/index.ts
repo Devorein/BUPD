@@ -14,6 +14,12 @@ export const PRIORITY_RECORD: Record<string | number, string> = {
 	1: 'Medium',
 	2: 'High',
 };
+
+export const APPROVAL_RECORD: Record<string | number, string> = {
+	0: 'Disapproved',
+	1: 'Approved',
+	2: 'Unapproved',
+};
 export const CASEFILE_STATUSES: TCasefileStatus[] = ['open', 'closed', 'solved'];
 export const CRIME_WEAPONS = [
 	'Machete',
