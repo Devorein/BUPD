@@ -37,7 +37,7 @@ const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
 export default function Casefiles() {
   const currentUser = useIsAuthenticated();
   const createAccessMutation = useCreateAccessMutation();
-  const createAccessMutationCache = useCreateAccessMutationCache();
+  const createAccessMutationCache = useCreateAccessMutationCache("casefile");
 
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
   } = useModal<ICasefilePopulated>();
@@ -183,7 +183,7 @@ export default function Casefiles() {
                       <DetailsList
                         items={[
                           ['Location', casefile.location],
-                          ['Casefile NID', casefile.police_nid],
+                          ['Police NID', casefile.police_nid],
                           ['Time', dayjs().to(dayjs(casefile.time))],
                           [
                             'Status',
