@@ -60,7 +60,7 @@ export function generateTheme() {
 				fontWeight: 800,
 			},
 			h5: {
-				fontSize: '1.75em',
+				fontSize: '1.5em',
 				fontWeight: 700,
 			},
 			h6: {
