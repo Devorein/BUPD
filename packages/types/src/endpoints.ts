@@ -71,7 +71,20 @@ export interface CreateCasefileResponse extends Omit<ICasefilePopulated, 'police
 
 export type UpdateAccessPayload = Pick<IAccess, 'approved'>;
 export interface UpdateAccessResponse extends IAccess {}
-
+export interface GetDashboardPayload {}
+export interface GetDashboardResponse {
+	polices: Record<string, number>;
+	casefiles: {
+		priority: Record<TCasefilePriority, number>;
+		status: Record<TCasefileStatus, number>;
+	};
+	criminals: number;
+	victims: number;
+	crimes: {
+		categories: Record<string, number>;
+		weapons: Record<string, number>;
+	};
+}
 export interface IAccessFilter {
 	approved: IAccess['approved'][];
 	permission: TAccessPermission[];

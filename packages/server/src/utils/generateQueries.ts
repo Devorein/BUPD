@@ -198,7 +198,7 @@ export function generateJoinClause(joins: SqlJoins) {
 
 export function generateGroupClause(groups: string[]) {
 	if (groups.length !== 0) {
-		return `GROUP BY ${groups.join(',')}`;
+		return `GROUP BY ${groups.map((group) => `\`${group}\``).join(',')}`;
 	}
 	return '';
 }
