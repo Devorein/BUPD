@@ -62,6 +62,7 @@ export default function Criminals() {
             />
           </TransitionedModal>
           <Paginate<GetVictimsPayload, IVictimSort, IVictim>
+            searchBarPlaceholder="Search by case no. Eg:- 1 2 10"
             filterGroups={[
               {
                 type: "number_range",

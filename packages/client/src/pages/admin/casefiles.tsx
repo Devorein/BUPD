@@ -85,6 +85,7 @@ export default function Casefiles() {
               }} validationSchema={CasefilePayload.update} />
             </TransitionedModal>
             <Paginate<GetCasefilesPayload, ICasefileSort, ICasefilePopulated>
+              searchBarPlaceholder="Search by case no. Eg:- 1 2 10"
               filterGroups={[
                 {
                   type: "checkbox_group",

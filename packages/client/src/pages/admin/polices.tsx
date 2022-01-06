@@ -23,6 +23,7 @@ const createInitialGetPolicesQuery = (): GetPolicesPayload => ({
   filter: {
     designation: [],
     rank: [],
+    search: []
   }
 })
 
@@ -68,7 +69,7 @@ export default function Polices() {
               }
             }} validationSchema={updatePolicePayloadValidationSchema} />
           </TransitionedModal>
-          <Paginate<GetPolicesPayload, IPoliceSort, IPolicePopulated> filterGroups={[{
+          <Paginate<GetPolicesPayload, IPoliceSort, IPolicePopulated> searchBarPlaceholder="Search by nid. Eg:- 10000 12340" filterGroups={[{
             type: "select",
             props: {
               items: POLICE_RANKS,

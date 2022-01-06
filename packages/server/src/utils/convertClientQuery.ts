@@ -8,6 +8,14 @@ import { SqlFilter } from '../types';
 
 export function convertAccessFilter(clientFilter: GetAccessesPayload['filter']) {
 	const filter: SqlFilter = [];
+	if (clientFilter?.search) {
+		filter.push({
+			access_id: {
+				$in: clientFilter.search,
+			},
+		});
+	}
+
 	if (clientFilter?.type && clientFilter.type.length !== 0) {
 		filter.push({
 			type: {
@@ -37,6 +45,15 @@ export function convertAccessFilter(clientFilter: GetAccessesPayload['filter']) 
 
 export function convertPoliceFilter(clientFilter: GetPolicesPayload['filter']) {
 	const filter: SqlFilter = [];
+
+	if (clientFilter?.search) {
+		filter.push({
+			nid: {
+				$in: clientFilter.search,
+			},
+		});
+	}
+
 	if (clientFilter?.designation && clientFilter.designation.length !== 0) {
 		filter.push({
 			designation: {
@@ -58,6 +75,15 @@ export function convertPoliceFilter(clientFilter: GetPolicesPayload['filter']) {
 
 export function convertCaseFilter(clientFilter: GetCasefilesPayload['filter']) {
 	const filter: SqlFilter = [];
+
+	if (clientFilter?.search) {
+		filter.push({
+			case_no: {
+				$in: clientFilter.search,
+			},
+		});
+	}
+
 	if (clientFilter?.status && clientFilter.status.length !== 0) {
 		filter.push({
 			status: {
@@ -78,7 +104,7 @@ export function convertCaseFilter(clientFilter: GetCasefilesPayload['filter']) {
 
 export function convertVictimFilter(clientFilter: GetVictimsPayload['filter']) {
 	const filter: SqlFilter = [];
-	if (clientFilter.search) {
+	if (clientFilter?.search) {
 		filter.push({
 			case_no: {
 				$in: clientFilter.search,

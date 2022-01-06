@@ -15,10 +15,11 @@ interface PaginateProps<ClientQuery extends IQuery<any, any>, Data> {
   dataListComponentFn: (items: Data[]) => JSX.Element
   filterGroups: FilterFormProps<ClientQuery>["filterGroups"]
   className?: string
+  searchBarPlaceholder: string
 }
 
 export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [string, -1 | 1], Data>(props: PaginateProps<ClientQuery, Data>) {
-  const { dataListComponentFn, filterGroups, label, clientQueryFn, dataFetcher, sortLabelRecord, className = "" } = props;
+  const { searchBarPlaceholder, dataListComponentFn, filterGroups, label, clientQueryFn, dataFetcher, sortLabelRecord, className = "" } = props;
   const [clientQuery, setClientQuery] = useState<ClientQuery>(clientQueryFn());
   const [dummyQuery, setDummyQuery] = useState<ClientQuery>(
     clientQuery,
@@ -58,12 +59,12 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
                   next: null
                 })
               }} />
-              <SearchBar placeHolder="Search by case no. Eg:- 1 2 10" onClick={(searchTerm) => {
+              <SearchBar placeHolder={searchBarPlaceholder} onClick={(searchTerm) => {
                 setClientQuery({
                   ...clientQuery,
                   filter: {
                     ...clientQuery.filter,
-                    search: searchTerm.split(" ")
+                    search: searchTerm.split(" ").map(Number)
                   }
                 })
               }} />
