@@ -95,7 +95,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="shadow-md border-2 flex-grow p-5 rounded-md flex flex-col gap-3 justify-between">
+      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
         <div className="flex flex-col gap-3">
           <Typography variant="h5" className="uppercase">
             Victims
@@ -107,7 +107,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="shadow-md border-2 flex-grow p-5 rounded-md flex flex-col gap-3 justify-between">
+      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
         <div className="flex flex-col gap-3">
           <Typography variant="h5" className="uppercase">
             Criminals
@@ -118,7 +118,6 @@ export function Dashboard() {
           <Button content="View criminals" onClick={() => router.push({ pathname: "/criminals" })} />
         </div>
       </div>
-
     </div>
   </div> : null
 }
