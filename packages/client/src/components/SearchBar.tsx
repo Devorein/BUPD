@@ -3,16 +3,20 @@ import {
   InputAdornment, TextField
 } from "@mui/material";
 import { grey } from '@mui/material/colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface SearchBarProps {
   onClick: (searchValue: string) => void
   placeHolder: string
+  value: string
 }
 
 export function SearchBar(props: SearchBarProps) {
-  const { onClick, placeHolder } = props;
   const [searchTerm, setSearchTerm] = useState("");
+  const { onClick, placeHolder, value } = props;
+  useEffect(() => {
+    setSearchTerm(value);
+  }, [value])
   return <div className="mr-3 w-full shadow-md">
     <TextField
       sx={{

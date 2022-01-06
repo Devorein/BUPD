@@ -59,7 +59,7 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
                   next: null
                 })
               }} />
-              <SearchBar placeHolder={searchBarPlaceholder} onClick={(searchTerm) => {
+              <SearchBar value={clientQuery.filter.search?.join(" ") ?? ""} placeHolder={searchBarPlaceholder} onClick={(searchTerm) => {
                 setClientQuery({
                   ...clientQuery,
                   filter: {
