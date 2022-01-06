@@ -1,6 +1,7 @@
 import {
 	GetAccessesPayload,
 	GetCasefilesPayload,
+	GetCriminalsPayload,
 	GetPolicesPayload,
 	GetVictimsPayload,
 } from '@bupd/types';
@@ -130,5 +131,17 @@ export function convertVictimFilter(clientFilter: GetVictimsPayload['filter']) {
 		}
 	}
 
+	return filter;
+}
+
+export function convertCriminalFilter(clientFilter: GetCriminalsPayload['filter']) {
+	const filter: SqlFilter = [];
+	if (clientFilter?.search) {
+		filter.push({
+			criminal_id: {
+				$in: clientFilter.search,
+			},
+		});
+	}
 	return filter;
 }
