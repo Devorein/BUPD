@@ -7,10 +7,13 @@ import {
 	GetCasefilesPayload,
 	GetCasefilesResponse,
 	ICasefileIntermediate,
+	ICasefilePermissionsRecord,
 	ICasefilePopulated,
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
+	TAccessApproval,
+	TAccessPermission,
 	UpdateCasefileResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
@@ -25,6 +28,7 @@ import {
 import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
 import { paginate } from '../models/utils/paginate';
+import { SqlSelect } from '../types';
 import { handleError, logger, pool } from '../utils';
 import { convertCaseFilter } from '../utils/convertClientQuery';
 import { getCasefileAttributes } from '../utils/generateAttributes';
@@ -271,6 +275,28 @@ const CasefileController = {
 		req: Request<any, any, any, GetCasefilesPayload>,
 		res: Response<GetCasefilesResponse>
 	) {
+		const select: SqlSelect = [];
+		if (req.jwt_payload!.type === 'police') {
+			select.push({
+				raw: `(SELECT GROUP_CONCAT(CONCAT(permission, " ", approved)) from Access where Access.case_no = Casefile.\`case_no\` AND police_nid = ${
+					(req.jwt_payload as PoliceJwtPayload).nid
+				}) as permissions`,
+			});
+		}
+
+		select.push(
+			...getCasefileAttributes('Casefile'),
+			{
+				aggregation: ['DISTINCT', 'GROUP_CONCAT'],
+				attribute: 'weapon',
+				namespace: 'Crime_Weapon',
+			},
+			{
+				aggregation: ['DISTINCT', 'GROUP_CONCAT'],
+				attribute: 'category',
+				namespace: 'Crime_Category',
+			}
+		);
 		try {
 			res.json({
 				status: 'success',
@@ -280,19 +306,7 @@ const CasefileController = {
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
 						next: req.query.next,
-						select: [
-							...getCasefileAttributes('Casefile'),
-							{
-								aggregation: ['DISTINCT', 'GROUP_CONCAT'],
-								attribute: 'weapon',
-								namespace: 'Crime_Weapon',
-							},
-							{
-								aggregation: ['DISTINCT', 'GROUP_CONCAT'],
-								attribute: 'category',
-								namespace: 'Crime_Category',
-							},
-						],
+						select,
 						joins: [
 							['Casefile', 'Crime_Weapon', 'case_no', 'case_no', 'LEFT'],
 							['Casefile', 'Crime_Category', 'case_no', 'case_no', 'LEFT'],
@@ -303,6 +317,8 @@ const CasefileController = {
 					'case_no',
 					(rows) =>
 						rows.map((row) => {
+							const { permissions } = row;
+
 							const inflatedObject = inflateObject<ICasefileIntermediate>(row, 'Casefile');
 							const casefile: ICasefilePopulated = {
 								case_no: inflatedObject.case_no,
@@ -315,9 +331,22 @@ const CasefileController = {
 								criminals: [],
 								victims: [],
 								weapons: [],
+								permissions: undefined,
 							};
+
+							const permissionRecord: ICasefilePermissionsRecord = {};
+							if (permissions) {
+								permissions.split(',').forEach((permissionApproval) => {
+									const [permission, approval] = permissionApproval.split(' ');
+									permissionRecord[permission as TAccessPermission] = parseInt(
+										approval,
+										10
+									) as TAccessApproval;
+								});
+							}
 							casefile.categories = inflatedObject.crime_category.category?.split(',') ?? [];
 							casefile.weapons = inflatedObject.crime_weapon.weapon?.split(',') ?? [];
+							casefile.permissions = permissionRecord;
 							return casefile;
 						})
 				),

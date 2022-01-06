@@ -41,11 +41,12 @@ export interface IVictim {
 
 export type TAccessPermission = 'read' | 'write' | 'update' | 'delete';
 export type TAccessType = 'case' | 'criminal';
+export type TAccessApproval = 1 | 0 | 2;
 
 export interface IAccess {
 	access_id: number;
 	permission: TAccessPermission;
-	approved: 1 | 0 | 2;
+	approved: TAccessApproval;
 	police_nid: number;
 	type: TAccessType;
 	criminal_id: number | null;
@@ -88,13 +89,17 @@ export interface ICasefileIntermediate extends ICasefile {
 	crime_category: {
 		category: string;
 	};
+	permissions: string;
 }
+
+export type ICasefilePermissionsRecord = Partial<Record<TAccessPermission, TAccessApproval>>;
 
 export interface ICasefilePopulated extends ICasefile {
 	weapons: string[];
 	categories: string[];
 	victims: IVictim[];
 	criminals: ICriminal[];
+	permissions?: ICasefilePermissionsRecord;
 }
 
 export interface IAccessPopulated extends IAccess {

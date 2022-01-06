@@ -1,6 +1,7 @@
 import mysql from 'mysql2';
 import {
 	PrimitiveValues,
+	SqlAggregationSelect,
 	SqlClause,
 	SqlFilter,
 	SqlFilterAnd,
@@ -15,6 +16,7 @@ import {
 	SqlFilterOperators,
 	SqlFilterOr,
 	SqlJoins,
+	SqlRawSelect,
 	SqlSelect,
 } from '../types';
 
@@ -214,19 +216,25 @@ export function generateSelectClause(selects: SqlSelect, hasJoins: boolean) {
 				attributes.push(`\`${select}\``);
 			}
 		} else {
-			let expression = `\`${select.attribute}\``;
-			if (hasJoins && select.namespace) {
-				expression = `${select.namespace}.\`${select.attribute}\``;
-			}
-			for (let index = 0; index < select.aggregation.length; index += 1) {
-				expression = `${select.aggregation[index]}(${expression})`;
-			}
-			if (select.alias) {
-				attributes.push(`${expression} as \`${select.alias}\``);
-			} else if (select.namespace) {
-				attributes.push(`${expression} as \`${select.namespace}.${select.attribute}\``);
-			} else {
-				attributes.push(`${expression} as \`${select.attribute}\``);
+			if ((select as SqlAggregationSelect).attribute) {
+				const { alias, aggregation, attribute, namespace } = select as SqlAggregationSelect;
+				let expression = Array.isArray(attribute) ? attribute.join(',') : `\`${attribute}\``;
+				if (hasJoins && namespace) {
+					expression = `${namespace}.\`${attribute}\``;
+				}
+				for (let index = 0; index < aggregation.length; index += 1) {
+					expression = `${aggregation[index]}(${expression})`;
+				}
+				if (alias) {
+					attributes.push(`${expression} as \`${alias}\``);
+				} else if (namespace) {
+					attributes.push(`${expression} as \`${namespace}.${attribute}\``);
+				} else {
+					attributes.push(`${expression} as \`${attribute}\``);
+				}
+			} else if ((select as SqlRawSelect).raw) {
+				const { raw } = select as SqlRawSelect;
+				attributes.push(raw);
 			}
 		}
 	});
