@@ -7,17 +7,23 @@ import { svgIconSx } from "../constants";
 interface MutateIconsProps {
   onUpdateIconClick: MouseEventHandler<SVGSVGElement>
   onDeleteIconClick: MouseEventHandler<SVGSVGElement>
+  showUpdateIcon?: boolean
+  showDeleteIcon?: boolean
 }
 
 export function MutateIcons(props: MutateIconsProps) {
-  const { onDeleteIconClick, onUpdateIconClick } = props;
+  const { showDeleteIcon = true, showUpdateIcon = true, onDeleteIconClick, onUpdateIconClick } = props;
 
-  return <div className="flex gap-1 absolute items-center">
-    <DeleteIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
+  if (!showDeleteIcon && !showUpdateIcon) {
+    return null;
+  }
+
+  return <div className="flex gap-1 items-center">
+    {showDeleteIcon && <DeleteIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
       fill: red[500]
-    }} onClick={onDeleteIconClick} />
-    <EditIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
+    }} onClick={onDeleteIconClick} />}
+    {showUpdateIcon && <EditIcon sx={svgIconSx} fontSize="small" className="cursor-pointer" style={{
       fill: blue[500]
-    }} onClick={onUpdateIconClick} />
+    }} onClick={onUpdateIconClick} />}
   </div>
 }
