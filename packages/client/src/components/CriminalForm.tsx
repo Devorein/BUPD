@@ -33,6 +33,11 @@ export function CriminalForm<Data>(props: CriminalFormProps<Data>) {
               label={`Name`}
               placeholder={`John Doe`}
             />
+            <FormikTextInput
+              name={`photo`}
+              label={`Photo`}
+              placeholder={`https://image.com/a.png?dim=600x400`}
+            />
           </div>
           <div className="flex justify-between mt-5">
             <Button

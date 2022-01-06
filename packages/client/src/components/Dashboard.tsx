@@ -17,17 +17,17 @@ export function Dashboard() {
 
   if (dashboardData) {
     Object.values(dashboardData.casefiles.status).forEach(total => {
-      totalCasefiles += total
+      totalCasefiles += total;
     })
 
     Object.values(dashboardData.polices).forEach(total => {
-      totalPolices += total
+      totalPolices += total;
     })
   }
 
-  return dashboardData && !isGetDashboardQueryLoading ? <div className="flex flex-col gap-5 w-full h-full">
-    <div className="flex gap-5">
-      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-5">
+  return dashboardData && !isGetDashboardQueryLoading ? <div className="flex gap-5 w-full h-full">
+    <div className="flex gap-5 flex-col">
+      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3">
         <Typography variant="h5" className="uppercase">
           Casefiles
         </Typography>
@@ -48,7 +48,34 @@ export function Dashboard() {
         </div>
         <Button content="View casefiles" onClick={() => router.push({ pathname: "/casefiles" })} />
       </div>
+
       <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
+        <div className="flex flex-col">
+          <Typography variant="h5" className="uppercase">
+            Victims
+          </Typography>
+          <div>Total: <span className="font-bold">{dashboardData.victims}</span></div>
+        </div>
+        <div className="max-w-[250px]">
+          <Button content="View victims" onClick={() => router.push({ pathname: "/victims" })} />
+        </div>
+      </div>
+
+      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
+        <div className="flex flex-col">
+          <Typography variant="h5" className="uppercase">
+            Criminals
+          </Typography>
+          <div>Total: <span className="font-bold">{dashboardData.criminals}</span></div>
+        </div>
+        <div className="max-w-[250px]">
+          <Button content="View criminals" onClick={() => router.push({ pathname: "/criminals" })} />
+        </div>
+      </div>
+    </div>
+
+    <div className="shadow-md border-2 p-5 rounded-md flex flex-col justify-between">
+      <div className="flex flex-col gap-3">
         <Typography variant="h5" className="uppercase">
           Polices
         </Typography>
@@ -56,19 +83,17 @@ export function Dashboard() {
         <div>
           <div className="flex flex-col gap-1">
             <Typography variant="h6">Rank</Typography>
-            <div className="grid grid-cols-2 gap-10">
-              <DetailsList items={Object.entries(dashboardData.polices).slice(0, 3)} />
-              <DetailsList items={Object.entries(dashboardData.polices).slice(4, 6)} />
-            </div>
+            <DetailsList items={Object.entries(dashboardData.polices)} />
           </div>
         </div>
-        <div className="w-[250px]">
-          <Button content="View polices" onClick={() => router.push({ pathname: "/polices" })} />
-        </div>
+      </div>
+      <div className="max-w-[250px]">
+        <Button content="View polices" onClick={() => router.push({ pathname: "/polices" })} />
       </div>
     </div>
-    <div className="flex gap-5">
-      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
+
+    <div className="shadow-md border-2 p-5 rounded-md flex flex-col justify-between">
+      <div className="flex flex-col gap-3">
         <Typography variant="h5" className="uppercase">
           Crimes
         </Typography>
@@ -76,48 +101,17 @@ export function Dashboard() {
         <div className="flex gap-10">
           <div className="flex flex-col gap-1">
             <Typography variant="h6">Category</Typography>
-            <div className="flex gap-5">
-              <DetailsList items={Object.entries(dashboardData.crimes.categories).slice(0, 3)} />
-              <DetailsList items={Object.entries(dashboardData.crimes.categories).slice(3)} />
-            </div>
+            <DetailsList items={Object.entries(dashboardData.crimes.categories)} />
           </div>
           <div className="flex flex-col gap-1">
             <Typography variant="h6">Weapon</Typography>
-            <div className="flex gap-5">
-              <DetailsList items={Object.entries(dashboardData.crimes.weapons).slice(0, 3)} />
-              <DetailsList items={Object.entries(dashboardData.crimes.weapons).slice(3, 6)} />
-              <DetailsList items={Object.entries(dashboardData.crimes.weapons).slice(6)} />
-            </div>
+            <DetailsList items={Object.entries(dashboardData.crimes.weapons)} />
           </div>
         </div>
-        <div className="w-[250px]">
-          <Button content="View casefiles" onClick={() => router.push({ pathname: "/casefiles" })} />
-        </div>
       </div>
-
-      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
-        <div className="flex flex-col gap-3">
-          <Typography variant="h5" className="uppercase">
-            Victims
-          </Typography>
-          <div>Total: <span className="font-bold">{dashboardData.victims}</span></div>
-        </div>
-        <div className="w-[250px]">
-          <Button content="View victims" onClick={() => router.push({ pathname: "/victims" })} />
-        </div>
-      </div>
-
-      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
-        <div className="flex flex-col gap-3">
-          <Typography variant="h5" className="uppercase">
-            Criminals
-          </Typography>
-          <div>Total: <span className="font-bold">{dashboardData.criminals}</span></div>
-        </div>
-        <div className="w-[250px]">
-          <Button content="View criminals" onClick={() => router.push({ pathname: "/criminals" })} />
-        </div>
+      <div className="max-w-[250px]">
+        <Button content="View casefiles" onClick={() => router.push({ pathname: "/casefiles" })} />
       </div>
     </div>
-  </div> : null
+  </div > : null
 }
