@@ -85,7 +85,7 @@ const PoliceController = {
 								namespace: 'Casefile',
 							},
 						],
-						joins: [['Police', 'Casefile', 'nid', 'police_nid']],
+						joins: [['Police', 'Casefile', 'nid', 'police_nid', 'LEFT']],
 						groups: ['Police.nid'],
 					},
 					'Police',
