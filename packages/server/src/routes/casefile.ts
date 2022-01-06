@@ -24,7 +24,7 @@ CasefileRouter.delete<{ case_no: number }>(
 		'/:case_no',
 		validatePayload(CasefilePayload.update),
 		isAuthenticated,
-		isAuthorized(['police']),
+		isAuthorized(['police', 'admin']),
 		hasAccess('case', ['update', 'delete']),
 		CasefileController.update
 	)

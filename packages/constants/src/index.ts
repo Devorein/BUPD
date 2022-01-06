@@ -9,7 +9,7 @@ import {
 
 export const CRIME_CATEGORIES = ['Murder', 'Robbery', 'Assault', 'Arson', 'Burglary', 'Theft'];
 export const CASEFILE_PRIORITIES: TCasefilePriority[] = [0, 1, 2];
-export const PRIORITY_RECORD: Record<TCasefilePriority, string> = {
+export const PRIORITY_RECORD: Record<string | number, string> = {
 	0: 'Low',
 	1: 'Medium',
 	2: 'High',

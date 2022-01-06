@@ -37,8 +37,6 @@ export const CasefilePayload = {
 	create: (domain: 'server' | 'client') => casefileValidationSchema(domain),
 	update: yup
 		.object({
-			police_nid: yup.number().strict(),
-			time: yup.number().strict(),
 			status: yup.string().oneOf(CASEFILE_STATUSES).nullable().strict(),
 			location: yup.string().strict(),
 			priority: yup.number().oneOf(CASEFILE_PRIORITIES).strict().required(),
