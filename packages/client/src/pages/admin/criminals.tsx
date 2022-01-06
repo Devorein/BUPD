@@ -83,7 +83,7 @@ export default function Criminals() {
                           className="h-[50px] w-[50px] rounded-full shadow-md"
                           alt="profile"
                           src={
-                            'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg'
+                            criminal.photo ?? 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg'
                           }
                         />
                       </div>

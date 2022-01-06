@@ -22,8 +22,13 @@ export function CaseCriminalsForm() {
       </div>
       <FormikTextInput
         name={`criminals.[${criminalNumber}].name`}
-        label={`Criminal name`}
-        placeholder={`Criminal ${criminalNumber + 1} name`}
+        label={`Name`}
+        placeholder={`John Doe`}
+      />
+      <FormikTextInput
+        name={`criminals.[${criminalNumber}].photo`}
+        label={`Photo`}
+        placeholder={`https://image.com/a.png?dim=600x400`}
       />
     </div>)}</div> : <div className=" text-gray-600">No Criminals added</div>}
     <div className="flex my-3 gap-3 items-center justify-center flex-col">
