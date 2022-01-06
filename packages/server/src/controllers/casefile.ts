@@ -210,12 +210,12 @@ const CasefileController = {
 	async delete(req: Request<{ case_no: number }>, res: Response<DeleteCasefileResponse>) {
 		try {
 			const file = await CasefileModel.findByCaseNo(req.params.case_no);
-			if (file[0]) {
+			if (file) {
 				const result = await CasefileModel.delete(req.params.case_no);
 				if (result) {
 					res.json({
 						status: 'success',
-						data: file[0],
+						data: file,
 					});
 				}
 			} else {
@@ -233,24 +233,17 @@ const CasefileController = {
 	) {
 		try {
 			const payload = req.body;
-			const [casefile] = await CasefileModel.find({ filter: [{ case_no: req.params.case_no }] });
+			const casefile = await CasefileModel.update([{ case_no: req.params.case_no }], {
+				...payload,
+				case_no: req.params.case_no,
+			});
+
 			if (!casefile) {
 				handleError(res, 404, "Casefile doesn't exist");
 			} else {
-				await CasefileModel.update(
-					[
-						{
-							case_no: req.params.case_no,
-						},
-					],
-					payload
-				);
 				res.json({
 					status: 'success',
-					data: {
-						...casefile,
-						...payload,
-					},
+					data: casefile,
 				});
 			}
 		} catch (err) {
@@ -260,14 +253,14 @@ const CasefileController = {
 	},
 	async get(req: Request<{ case_no: number }>, res: Response<GetCasefileResponse>) {
 		try {
-			const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
-			if (file) {
+			const casefile = await CasefileModel.findByCaseNo(req.params.case_no);
+			if (casefile) {
 				res.json({
 					status: 'success',
-					data: file,
+					data: casefile,
 				});
 			} else {
-				handleError(res, 404, `No casefile with id, ${req.params.case_no} found`);
+				handleError(res, 404, `Casefile doesn't exist`);
 			}
 		} catch (err) {
 			Logger.error(err);
@@ -323,10 +316,8 @@ const CasefileController = {
 								victims: [],
 								weapons: [],
 							};
-
-							casefile.categories = inflatedObject.crime_category.category?.split(',');
-
-							casefile.weapons = inflatedObject.crime_weapon.weapon?.split(',');
+							casefile.categories = inflatedObject.crime_category.category?.split(',') ?? [];
+							casefile.weapons = inflatedObject.crime_weapon.weapon?.split(',') ?? [];
 							return casefile;
 						})
 				),
