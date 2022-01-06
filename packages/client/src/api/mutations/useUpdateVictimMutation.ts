@@ -4,7 +4,11 @@ import { useGetVictimsQueryData } from '../queries/useGetVictimsQuery';
 import { useUpdateMutationCache } from '../utils/useUpdateMutationCache';
 
 export function useUpdateVictimMutationCache() {
-	return useUpdateMutationCache<IVictim, UpdateVictimResponse>(useGetVictimsQueryData, 'case_no');
+	return useUpdateMutationCache<IVictim, UpdateVictimResponse>(
+		'victim',
+		useGetVictimsQueryData,
+		'case_no'
+	);
 }
 
 export function useUpdateVictimMutation() {

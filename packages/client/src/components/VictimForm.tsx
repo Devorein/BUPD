@@ -26,7 +26,7 @@ export function VictimForm(props: VictimFormProps) {
       {({ isSubmitting, isValid }) => (
         <Form className={`p-5 shadow-md rounded-md h-full border-2 w-full`}>
           <div className="my-5 text-center uppercase">
-            <Typography variant="h5">Update Victim</Typography>
+            <Typography variant="h5">Victim</Typography>
           </div>
           <div className="flex flex-col overflow-auto pr-5" style={{
             height: 'calc(100% - 135px)'
@@ -54,7 +54,7 @@ export function VictimForm(props: VictimFormProps) {
             />
             <FormikTextInput
               multiline
-              rows={3}
+              rows={5}
               name={`description`}
               label={`Description`}
               placeholder={`Description ...`}
