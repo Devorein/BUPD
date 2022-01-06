@@ -6,7 +6,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { blue, green, grey, red } from '@mui/material/colors';
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useCreateAccessMutation } from "../api/mutations/useCreateAccessMutation";
+import { useCreateAccessMutation, useCreateAccessMutationCache } from "../api/mutations/useCreateAccessMutation";
 import { useDeleteCasefileMutation, useDeleteCasefileMutationCache } from "../api/mutations/useDeleteCasefileMutation";
 import { useUpdateCasefileMutation, useUpdateCasefileMutationCache } from "../api/mutations/useUpdateCasefileMutation";
 import { useGetCasefilesQuery } from "../api/queries/useGetCasefilesQuery";
@@ -37,6 +37,7 @@ const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
 export default function Casefiles() {
   const currentUser = useIsAuthenticated();
   const createAccessMutation = useCreateAccessMutation();
+  const createAccessMutationCache = useCreateAccessMutationCache();
 
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
   } = useModal<ICasefilePopulated>();
@@ -131,21 +132,21 @@ export default function Casefiles() {
                           case_no: casefile.case_no,
                           criminal_id: null,
                           permission: "read"
-                        })
+                        }, createAccessMutationCache(casefile.case_no, `Successfully sent read request for case ${casefile.case_no}`))
                       }} className="cursor-pointer" style={{ fill: green[500] }} fontSize="small" />}
                       {casefile.permissions?.update ? <EditOutlinedIcon style={{ fill: grey[500] }} fontSize="small" /> : <EditOutlinedIcon onClick={() => {
                         createAccessMutation.mutate({
                           case_no: casefile.case_no,
                           criminal_id: null,
                           permission: "update"
-                        })
+                        }, createAccessMutationCache(casefile.case_no, `Successfully sent update request for case ${casefile.case_no}`))
                       }} className="cursor-pointer" style={{ fill: blue[500] }} fontSize="small" />}
                       {casefile.permissions?.delete ? <DeleteOutlinedIcon style={{ fill: grey[500] }} fontSize="small" /> : <DeleteOutlinedIcon onClick={() => {
                         createAccessMutation.mutate({
                           case_no: casefile.case_no,
                           criminal_id: null,
                           permission: "delete"
-                        })
+                        }, createAccessMutationCache(casefile.case_no, `Successfully sent delete request for case ${casefile.case_no}`))
                       }} className="cursor-pointer" style={{ fill: red[500] }} fontSize="small" />}
                     </div>
                   }
