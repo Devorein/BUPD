@@ -1,5 +1,6 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
+import LockIcon from '@mui/icons-material/Lock';
 import MedicationIcon from '@mui/icons-material/Medication';
 import WorkIcon from '@mui/icons-material/Work';
 import router from 'next/router';
@@ -48,6 +49,7 @@ export function Header() {
                   <DropDownMenuItem iconComponent={<WorkIcon fontSize="small" />} key="casefiles" label="Casefiles" link={`${currentUser.type}/casefiles`} />,
                   <DropDownMenuItem iconComponent={<svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" data-darkreader-inline-stroke ><g><path fill="none" d="M0 0h24v24H0z" /><path d="M22.373 19.44a1.5 1.5 0 0 1-2.121 2.12l-4.596-4.596L12.12 20.5l-7.778-7.778a8 8 0 0 1-.174-11.135l.174-.179L22.373 19.44z" /></g></svg>} key="criminals" label="Criminals" link={`${currentUser.type}/criminals`} />,
                   <DropDownMenuItem iconComponent={<MedicationIcon fontSize="small" />} key="victims" label="Victims" link={`${currentUser.type}/victims`} />,
+                  <DropDownMenuItem iconComponent={<LockIcon fontSize="small" />} key="accesses" label="Accesses" link={`${currentUser.type}/accesses`} />,
                 ]}
                 menuLabel={<span className="font-bold text-lg">{currentUserName}</span>}
               />
