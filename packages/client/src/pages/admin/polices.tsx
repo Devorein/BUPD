@@ -1,5 +1,5 @@
 import { POLICE_RANKS } from "@bupd/constants";
-import { GetPolicesPayload, IPolice, IPoliceSort, UpdatePolicePayload } from "@bupd/types";
+import { GetPolicesPayload, IPolice, IPolicePopulated, IPoliceSort, UpdatePolicePayload } from "@bupd/types";
 import { PoliceRequest } from "@bupd/validation";
 import { grey } from "@mui/material/colors";
 import { useDeletePoliceMutation, useDeletePoliceMutationCache } from "../../api/mutations/useDeletePoliceMutation";
@@ -66,7 +66,7 @@ export default function Polices() {
               }
             }} validationSchema={updatePolicePayloadValidationSchema} />
           </TransitionedModal>
-          <Paginate<GetPolicesPayload, IPoliceSort, IPolice> filterGroups={[{
+          <Paginate<GetPolicesPayload, IPoliceSort, IPolicePopulated> filterGroups={[{
             type: "select",
             props: {
               items: POLICE_RANKS,
@@ -99,6 +99,7 @@ export default function Polices() {
                 ["Email", police.email],
                 ["NID", police.nid],
                 ["Phone", police.phone],
+                ["Reported Cases", police.reported_cases],
               ]} />
             </div>)}
           </div>} label="Polices" sortLabelRecord={policeSortLabelRecord} dataFetcher={useGetPolicesQuery} />

@@ -12,7 +12,7 @@ PoliceRouter.get(
 	validateQuery(PoliceRequest.get),
 	isAuthenticated,
 	isAuthorized(['admin', 'police']),
-	PoliceController.get
+	PoliceController.findMany
 )
 	.get<any, any, any, GetPoliceAccessesPayload>(
 		'/access',

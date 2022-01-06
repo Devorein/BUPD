@@ -16,6 +16,10 @@ export interface IPolice {
 	rank: string;
 }
 
+export interface IPolicePopulated extends IPolice {
+	reported_cases: number;
+}
+
 export interface ICriminal {
 	criminal_id: number;
 	name: string;
