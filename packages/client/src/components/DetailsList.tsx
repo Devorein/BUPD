@@ -13,7 +13,7 @@ export function DetailsList(props: DetailsListProps) {
     }}>
       <Typography variant="h5">{props.header}</Typography>
     </div>}
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       {
         props.items.map(([label, value]) => <div key={`${label}.${value}`} className="flex justify-between">
           <span className="text-md mr-5 capitalize">{label}:</span>
