@@ -4,6 +4,7 @@ import { useState } from "react";
 import { UseApiInfiniteQuery } from "../hooks/useApiInfiniteQuery";
 import { FilterForm, FilterFormProps } from "./FilterForm";
 import { LoadMoreButton } from "./LoadMoreButton";
+import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
 
 interface PaginateProps<ClientQuery extends IQuery<any, any>, Data> {
@@ -14,10 +15,11 @@ interface PaginateProps<ClientQuery extends IQuery<any, any>, Data> {
   dataListComponentFn: (items: Data[]) => JSX.Element
   filterGroups: FilterFormProps<ClientQuery>["filterGroups"]
   className?: string
+  searchBarPlaceholder: string
 }
 
 export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [string, -1 | 1], Data>(props: PaginateProps<ClientQuery, Data>) {
-  const { dataListComponentFn, filterGroups, label, clientQueryFn, dataFetcher, sortLabelRecord, className = "" } = props;
+  const { searchBarPlaceholder, dataListComponentFn, filterGroups, label, clientQueryFn, dataFetcher, sortLabelRecord, className = "" } = props;
   const [clientQuery, setClientQuery] = useState<ClientQuery>(clientQueryFn());
   const [dummyQuery, setDummyQuery] = useState<ClientQuery>(
     clientQuery,
@@ -55,6 +57,15 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
                   ...clientQuery,
                   sort: event.target.value.split(".") as Sort,
                   next: null
+                })
+              }} />
+              <SearchBar value={clientQuery.filter.search?.join(" ") ?? ""} placeHolder={searchBarPlaceholder} onClick={(searchTerm) => {
+                setClientQuery({
+                  ...clientQuery,
+                  filter: {
+                    ...clientQuery.filter,
+                    search: searchTerm.split(" ").map(Number)
+                  }
                 })
               }} />
             </div>

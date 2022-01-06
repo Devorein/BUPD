@@ -46,6 +46,7 @@ export const PoliceRequest = {
 	get: yup
 		.object({
 			filter: yup.object({
+				search: yup.array().of(yup.number()),
 				rank: yup.array().of(yup.string()),
 			}),
 		})

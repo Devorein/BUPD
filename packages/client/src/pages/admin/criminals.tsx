@@ -64,6 +64,7 @@ export default function Criminals() {
               }} validationSchema={CriminalPayload.update} />
             </TransitionedModal>
             <Paginate<GetCriminalsPayload, ICriminalSort, ICriminalPopulated>
+              searchBarPlaceholder="Search by criminal id. Eg:- 1 2 10"
               filterGroups={[]}
               clientQueryFn={createInitialGetCriminalsQuery}
               dataListComponentFn={(criminals) => (

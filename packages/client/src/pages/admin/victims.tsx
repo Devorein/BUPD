@@ -17,7 +17,8 @@ const createInitialGetVictimsQuery = (): GetVictimsPayload => ({
   next: null,
   sort: ['name', -1],
   filter: {
-    age: [10, 120]
+    age: [10, 120],
+    search: []
   },
 });
 
@@ -61,6 +62,7 @@ export default function Criminals() {
             />
           </TransitionedModal>
           <Paginate<GetVictimsPayload, IVictimSort, IVictim>
+            searchBarPlaceholder="Search by case no. Eg:- 1 2 10"
             filterGroups={[
               {
                 type: "number_range",

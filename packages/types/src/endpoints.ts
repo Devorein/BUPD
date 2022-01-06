@@ -118,7 +118,7 @@ export type IVictimSort = ['name' | 'age' | 'case_no', -1 | 1];
 export type IPoliceSort = ['designation' | 'rank' | 'name', -1 | 1];
 
 export interface IQuery<Filter, Sort> {
-	filter: Filter;
+	filter: Filter & { search?: number[] };
 	sort: Sort;
 	limit: number;
 	next: NextKey;

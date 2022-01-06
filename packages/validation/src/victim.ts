@@ -33,6 +33,7 @@ export const VictimRequest = {
 	get: yup
 		.object({
 			filter: yup.object({
+				search: yup.array().of(yup.number()),
 				age: yup
 					.array()
 					.of(yup.number())

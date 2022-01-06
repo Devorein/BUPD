@@ -11,6 +11,7 @@ import { Request, Response } from 'express';
 import { CriminalModel } from '../models';
 import { paginate } from '../models/utils/paginate';
 import { handleError, logger } from '../utils';
+import { convertCriminalFilter } from '../utils/convertClientQuery';
 import { getCriminalAttributes } from '../utils/generateAttributes';
 import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
@@ -79,7 +80,7 @@ const CriminalController = {
 				status: 'success',
 				data: await paginate<ICriminalPopulated>(
 					{
-						filter: [],
+						filter: convertCriminalFilter(req.query.filter),
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
 						next: req.query.next,
