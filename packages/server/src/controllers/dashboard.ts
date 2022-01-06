@@ -1,5 +1,4 @@
-import { ApiResponse, TCasefilePriority, TCasefileStatus } from '@bupd/types';
-import { GetDashboardResponse } from '@bupd/types/src/endpoints';
+import { GetDashboardResponse, IDashboard, TCasefilePriority, TCasefileStatus } from '@bupd/types';
 import { Request, Response } from 'express';
 import { find } from '../models/utils';
 import { SqlClause } from '../types';
@@ -20,7 +19,7 @@ function generateAggregateGroupByQuery(attribute: string): Partial<SqlClause> {
 }
 
 export const Dashboard = {
-	async get(_: Request, res: Response<ApiResponse<GetDashboardResponse>>) {
+	async get(_: Request, res: Response<GetDashboardResponse>) {
 		try {
 			const policeRanksCount: { rank: string; total: number }[] = await find(
 				generateAggregateGroupByQuery('rank'),
@@ -47,27 +46,27 @@ export const Dashboard = {
 				'Crime_Weapon'
 			);
 
-			const policeRecord: GetDashboardResponse['polices'] = {};
+			const policeRecord: IDashboard['polices'] = {};
 			policeRanksCount.forEach((policeRankCount) => {
 				policeRecord[policeRankCount.rank] = policeRankCount.total;
 			});
 
-			const casefilePriorityRecord: GetDashboardResponse['casefiles']['priority'] = {} as any;
+			const casefilePriorityRecord: IDashboard['casefiles']['priority'] = {} as any;
 			casefilePrioritiesCount.forEach((casefilePriorityCount) => {
 				casefilePriorityRecord[casefilePriorityCount.priority] = casefilePriorityCount.total;
 			});
 
-			const casefileStatusRecord: GetDashboardResponse['casefiles']['status'] = {} as any;
+			const casefileStatusRecord: IDashboard['casefiles']['status'] = {} as any;
 			casefileStatusesCount.forEach((casefileStatusCount) => {
 				casefileStatusRecord[casefileStatusCount.status] = casefileStatusCount.total;
 			});
 
-			const crimeCategoriesRecord: GetDashboardResponse['crimes']['categories'] = {};
+			const crimeCategoriesRecord: IDashboard['crimes']['categories'] = {};
 			crimeCategoriesCount.forEach((crimeCategoryCount) => {
 				crimeCategoriesRecord[crimeCategoryCount.category] = crimeCategoryCount.total;
 			});
 
-			const crimeWeaponsRecord: GetDashboardResponse['crimes']['weapons'] = {};
+			const crimeWeaponsRecord: IDashboard['crimes']['weapons'] = {};
 			crimeWeaponsCount.forEach((crimeWeaponCount) => {
 				crimeWeaponsRecord[crimeWeaponCount.weapon] = crimeWeaponCount.total;
 			});

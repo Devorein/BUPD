@@ -9,6 +9,11 @@ import {
 
 export const CRIME_CATEGORIES = ['Murder', 'Robbery', 'Assault', 'Arson', 'Burglary', 'Theft'];
 export const CASEFILE_PRIORITIES: TCasefilePriority[] = [0, 1, 2];
+export const PRIORITY_RECORD: Record<TCasefilePriority, string> = {
+	0: 'Low',
+	1: 'Medium',
+	2: 'High',
+};
 export const CASEFILE_STATUSES: TCasefileStatus[] = ['open', 'closed', 'solved'];
 export const CRIME_WEAPONS = [
 	'Machete',
@@ -23,15 +28,19 @@ export const CRIME_WEAPONS = [
 
 export const POLICE_RANKS = [
 	'Constable',
+	'Nayek',
 	'Assistant Sub Inspector',
 	'Sergeant',
 	'Sub Inspector',
 	'Inspector',
-	'Assistant Superintendent',
-	'Additional Superintendent',
-	'Superintendent',
-	'Deputy Inspector General',
-	'Inspector General',
+	'Assistant Superintendent of Police',
+	'Senior Assistant Superintendent of Police',
+	'Additional Superintendent of Police',
+	'Superintendent of Police',
+	'Additional Deputy Inspector General of Police',
+	'Deputy Inspector General of Police',
+	'Additional Inspector General of Police',
+	'Inspector General of Police',
 ];
 
 export const policeAttributes: (keyof IPolice)[] = [
