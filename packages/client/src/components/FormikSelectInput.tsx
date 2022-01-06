@@ -1,19 +1,12 @@
 
-import { FormControl, SelectProps as MuiSelectProps, useTheme } from "@mui/material";
+import { FormControl, SelectProps as MuiSelectProps } from "@mui/material";
 import { useField } from 'formik';
 import React, { SelectHTMLAttributes } from 'react';
 import { FormLabelWithHelper } from './FormLabelWithHelper';
 import { Select, SelectProps } from './Select';
+import { SelectTags } from "./SelectTags";
 
 type FormikSelectInputProps<Value> = SelectHTMLAttributes<HTMLSelectElement> & { defaultValue?: Value, items: SelectProps<Value>["items"], renderValue?: SelectProps<Value>["renderValue"], menuItemRender?: SelectProps<Value>["menuItemRender"], name: string, label: string };
-
-export function SelectTags<Value extends (string | string[] | number | number[])>(props: { values: Value }) {
-  const theme = useTheme();
-  if (Array.isArray(props.values)) {
-    return <div className="flex gap-2 flex-wrap">{props.values.map(value => <span key={value} className={`px-2 py-1 rounded-sm text-white font-normal`} style={{ background: theme.palette.primary.main }}>{value}</span>)}</div>
-  }
-  return <span className={`px-2 py-1 rounded-sm text-white font-normal`} style={{ background: theme.palette.primary.main }}>{props.values}</span>
-}
 
 export function FormikSelectInput<Value extends (string | string[] | number | number[]) = string>({ defaultValue, items, label, ...props }: FormikSelectInputProps<Value>) {
   const [field, { error }, { setValue }] = useField(props);

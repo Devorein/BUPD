@@ -21,7 +21,7 @@ export function useGetPolicesQuery(query: GetPolicesPayload) {
 		`police`,
 		query,
 		{
-			enabled: currentUser?.type === 'admin',
+			enabled: Boolean(currentUser),
 		}
 	);
 }
