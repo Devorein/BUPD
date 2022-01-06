@@ -28,7 +28,7 @@ export function TransitionedModal(props: TransitionedModalProps) {
   const { isModalOpen, children, onClose, sx } = props;
 
   return (
-    <div>
+    <div className="absolute">
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
