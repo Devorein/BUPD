@@ -37,7 +37,7 @@ describe('.generateGroupClause', () => {
 	});
 
 	it(`Should generate group clause for non empty array`, () => {
-		expect(generateGroupClause(['name', 'age'])).toBe(`GROUP BY name,age`);
+		expect(generateGroupClause(['name', 'age'])).toBe('GROUP BY `name`,`age`');
 	});
 });
 
@@ -256,7 +256,7 @@ describe('.generateSelectQuery', () => {
 				'Police'
 			)
 		).toBe(
-			"SELECT `attribute1` FROM Police WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') GROUP BY col1 ORDER BY `rank` DESC LIMIT 10;"
+			"SELECT `attribute1` FROM Police WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') GROUP BY `col1` ORDER BY `rank` DESC LIMIT 10;"
 		);
 	});
 
