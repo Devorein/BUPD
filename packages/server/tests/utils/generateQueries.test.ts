@@ -279,7 +279,7 @@ describe('.generateSelectQuery', () => {
 				'Police'
 			)
 		).toBe(
-			"SELECT Police.attribute1 as `Police.attribute1` FROM Police as Police INNER JOIN Criminal as Criminal on Police.nid = Criminal.criminal_nid WHERE (Police.`filter1`='value1' AND Police.`filter2`='value2' AND Police.`rank`='Nayak') ORDER BY Police.`rank` DESC LIMIT 10;"
+			"SELECT Police.attribute1 as `Police.attribute1` FROM Police as Police LEFT JOIN Criminal as Criminal on Police.nid = Criminal.criminal_nid WHERE (Police.`filter1`='value1' AND Police.`filter2`='value2' AND Police.`rank`='Nayak') ORDER BY Police.`rank` DESC LIMIT 10;"
 		);
 	});
 });
@@ -315,14 +315,14 @@ describe('.generateJoinClause', () => {
 		expect(generateJoinClause([])).toBe('');
 	});
 
-	it(`Should work when joins is empty`, () => {
+	it(`Should work when joins is not empty`, () => {
 		expect(
 			generateJoinClause([
 				['Access', 'Police', 'police_nid', 'nid', 'LEFT'],
 				['Access', 'Criminal', 'criminal_id', 'criminal_id'],
 			])
 		).toBe(
-			`Access as Access LEFT JOIN Police as Police on Access.police_nid = Police.nid INNER JOIN Criminal as Criminal on Access.criminal_id = Criminal.criminal_id`
+			`Access as Access LEFT JOIN Police as Police on Access.police_nid = Police.nid LEFT JOIN Criminal as Criminal on Access.criminal_id = Criminal.criminal_id`
 		);
 	});
 });
