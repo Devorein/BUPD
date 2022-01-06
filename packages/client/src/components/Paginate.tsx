@@ -15,7 +15,7 @@ interface PaginateProps<ClientQuery extends IQuery<any, any>, Data> {
   dataListComponentFn: (items: Data[]) => JSX.Element
   filterGroups: FilterFormProps<ClientQuery>["filterGroups"]
   className?: string
-  searchBarPlaceholder: string
+  searchBarPlaceholder?: string
 }
 
 export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [string, -1 | 1], Data>(props: PaginateProps<ClientQuery, Data>) {
@@ -59,7 +59,7 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
                   next: null
                 })
               }} />
-              <SearchBar value={clientQuery.filter.search?.join(" ") ?? ""} placeHolder={searchBarPlaceholder} onClick={(searchTerm) => {
+              {searchBarPlaceholder && <SearchBar value={clientQuery.filter.search?.join(" ") ?? ""} placeHolder={searchBarPlaceholder} onClick={(searchTerm) => {
                 setClientQuery({
                   ...clientQuery,
                   filter: {
@@ -67,7 +67,7 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
                     search: searchTerm.split(" ").map(Number)
                   }
                 })
-              }} />
+              }} />}
             </div>
             <div className="flex gap-3 text-lg">
               Total: <span className="font-bold">{allItems.length}/{totalItems}</span>

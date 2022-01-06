@@ -85,6 +85,24 @@ export function convertCaseFilter(clientFilter: GetCasefilesPayload['filter']) {
 		});
 	}
 
+	if (clientFilter?.time) {
+		if (clientFilter.time?.[0]) {
+			filter.push({
+				time: {
+					$gte: clientFilter.time[0],
+				},
+			});
+		}
+
+		if (clientFilter.time?.[1]) {
+			filter.push({
+				time: {
+					$lte: clientFilter.time[1],
+				},
+			});
+		}
+	}
+
 	if (clientFilter?.status && clientFilter.status.length !== 0) {
 		filter.push({
 			status: {

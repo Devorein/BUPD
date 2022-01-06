@@ -3,6 +3,7 @@ import { Typography } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "./Button";
 import { CheckboxGroup, CheckboxGroupProps } from "./CheckboxGroup";
+import { DateRange, DateRangeProps } from "./DateRange";
 import { NumberRange, NumberRangeProps } from "./NumberRange";
 import { Select, SelectProps } from "./Select";
 
@@ -20,13 +21,16 @@ export interface FilterFormProps<ClientQuery extends IQuery<any, any>> {
   } | {
     type: "select",
     props: SelectProps<string[]> & { stateKey: keyof ClientQuery["filter"] }
+  } | {
+    type: "date_range",
+    props: Omit<DateRangeProps<ClientQuery["filter"]>, "setState" | "state"> & { stateKey: keyof ClientQuery["filter"] }
   })[]
 }
 
 export function FilterForm<ClientQuery extends IQuery<any, any>>(props: FilterFormProps<ClientQuery>) {
   const { filterGroups, resetFilter, setClientQuery, clientFilter, setClientFilter } = props;
 
-  return <div className="flex flex-col justify-between h-full">
+  return <div className="flex flex-col justify-between h-full min-w-[250px]">
     <div className="flex flex-col gap-5">
       <Typography variant="h4">
         Filter
@@ -47,6 +51,9 @@ export function FilterForm<ClientQuery extends IQuery<any, any>>(props: FilterFo
                   [filterGroup.props.stateKey]: e.target.value
                 })
               }} />
+            }
+            case "date_range": {
+              return <DateRange<ClientQuery["filter"]> key={filterGroup.props.label} setState={setClientFilter} state={clientFilter} {...filterGroup.props} />
             }
             default: {
               return null;

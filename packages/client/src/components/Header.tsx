@@ -35,7 +35,7 @@ export function Header() {
         className="flex gap-1 items-center cursor-pointer"
       >
         <Logo />
-        <span className="font-bold text-xl">BUPD</span>
+        <span className="font-bold text-2xl">BUPD</span>
       </div>
       <div className="flex gap-3 items-center">
         {currentUser ? (

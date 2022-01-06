@@ -35,6 +35,7 @@ const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
   filter: {
     priority: [],
     status: [],
+    time: ["2000-01-01 00:00:00", new Date(Date.now()).toISOString().slice(0, 19).replace('T', ' ')]
   },
 });
 
@@ -105,6 +106,13 @@ export default function Casefiles() {
                     items: ['solved', 'open', 'closed'],
                     label: 'Status',
                     stateKey: 'status',
+                  }
+                },
+                {
+                  type: "date_range",
+                  props: {
+                    label: "Time",
+                    stateKey: "time"
                   }
                 },
               ]}
