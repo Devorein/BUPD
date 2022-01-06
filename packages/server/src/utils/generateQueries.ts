@@ -179,7 +179,7 @@ export function generateJoinClause(joins: SqlJoins) {
 						joinClauseChunks.push(`${leftTable} as ${leftTable}`);
 					}
 
-					joinClauseChunks.push(joinType ? `${joinType} JOIN` : 'INNER JOIN');
+					joinClauseChunks.push(joinType ? `${joinType} JOIN` : 'LEFT JOIN');
 					joinClauseChunks.push(rightTable);
 					if (!tablesSet.has(rightTable)) {
 						joinClauseChunks.push(`as ${rightTable}`);
