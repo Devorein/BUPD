@@ -48,7 +48,7 @@ export function Dashboard() {
         </div>
         <Button content="View casefiles" onClick={() => router.push({ pathname: "/casefiles" })} />
       </div>
-      <div className="shadow-md border-2 flex-grow p-5 rounded-md flex flex-col gap-3 justify-between">
+      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
         <Typography variant="h5" className="uppercase">
           Polices
         </Typography>
@@ -56,10 +56,9 @@ export function Dashboard() {
         <div>
           <div className="flex flex-col gap-1">
             <Typography variant="h6">Rank</Typography>
-            <div className="grid grid-cols-3 gap-10">
+            <div className="grid grid-cols-2 gap-10">
               <DetailsList items={Object.entries(dashboardData.polices).slice(0, 3)} />
               <DetailsList items={Object.entries(dashboardData.polices).slice(4, 6)} />
-              <DetailsList items={Object.entries(dashboardData.polices).slice(7)} />
             </div>
           </div>
         </div>
@@ -69,7 +68,7 @@ export function Dashboard() {
       </div>
     </div>
     <div className="flex gap-5">
-      <div className="shadow-md border-2 flex-grow p-5 rounded-md flex flex-col gap-3 justify-between">
+      <div className="shadow-md border-2 p-5 rounded-md flex flex-col gap-3 justify-between">
         <Typography variant="h5" className="uppercase">
           Crimes
         </Typography>
