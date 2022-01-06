@@ -48,7 +48,7 @@ export default function Polices() {
                   phone: values.phone,
                   rank: values.rank,
                   endpoint: `police/${selectedUpdateData.nid}`
-                }, updatePoliceMutationCache(selectedUpdateData.nid))
+                }, updatePoliceMutationCache(selectedUpdateData.nid, () => closeUpdateModal()))
               }
             }} validationSchema={updatePolicePayloadValidationSchema} />
           </TransitionedModal>

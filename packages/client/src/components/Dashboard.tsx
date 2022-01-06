@@ -11,11 +11,12 @@ interface DashboardItemProps {
   children?: JSX.Element | JSX.Element[]
   total: number
   className?: string
+  pathname?: string
 }
 
 function DashboardItem(props: DashboardItemProps) {
   const currentUser = useIsAuthenticated();
-  const { label, total, children, className = "" } = props;
+  const { pathname, label, total, children, className = "" } = props;
   return <div className={`shadow-md border-2 p-5 rounded-md flex flex-col justify-between gap-3 ${className}`}>
     <div className="flex flex-col gap-2">
       <Typography variant="h5" className="uppercase">
@@ -28,7 +29,7 @@ function DashboardItem(props: DashboardItemProps) {
     </div>
     <Button style={{
       width: 'fit-content'
-    }} content={`View ${label.toLowerCase()}`} onClick={() => router.push({ pathname: `${currentUser.type}/${label.toLowerCase()}` })} />
+    }} content={`View ${label.toLowerCase()}`} onClick={() => router.push({ pathname: pathname ?? `${currentUser.type}/${label.toLowerCase()}` })} />
   </div>
 }
 
@@ -56,7 +57,7 @@ export function Dashboard() {
 
   return dashboardData && !isGetDashboardQueryLoading ? <div className="flex gap-3 w-full h-full">
     <div className="flex gap-3 flex-col">
-      <DashboardItem label="Casefiles" total={totalCasefiles} className="flex-grow">
+      <DashboardItem pathname="/casefiles" label="Casefiles" total={totalCasefiles} className="flex-grow">
         <div className="flex flex-col gap-1">
           <Typography variant="h6">Status</Typography>
           <div>

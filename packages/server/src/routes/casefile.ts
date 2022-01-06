@@ -31,14 +31,14 @@ CasefileRouter.delete<{ case_no: number }>(
 		validatePayload(CasefilePayload.update),
 		isAuthenticated,
 		isAuthorized(['police', 'admin']),
-		hasAccess('case', ['update', 'delete']),
+		hasAccess('case', ['update']),
 		CasefileController.update
 	)
 	.get(
 		'/:case_no',
 		isAuthenticated,
 		isAuthorized(['police']),
-		hasAccess('case', ['read', 'write', 'update', 'delete']),
+		hasAccess('case', ['read']),
 		CasefileController.get
 	);
 

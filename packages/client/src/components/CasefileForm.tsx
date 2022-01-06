@@ -6,12 +6,12 @@ import { FormProps } from "../types";
 import { Button } from "./Button";
 import { CaseCriminalsForm } from "./CaseForm/CaseCriminalsForm";
 import { CaseVictimsForm } from "./CaseForm/CaseVictimsForm";
-import { FormikSelectInput, SelectTags } from "./FormikSelectInput";
+import { FormikSelectInput } from "./FormikSelectInput";
 import { FormikTextInput } from "./FormikTextInput";
+import { SelectTags } from "./SelectTags";
 
 export function CasefileForm<CasefileData = ICasefile>(props: FormProps<CasefileData> & { showExtra?: boolean }) {
   const { initialValues, onSubmit, showExtra, validationSchema, header, isMutationLoading, submitButtonText, className = "" } = props;
-  console.log({ initialValues });
 
   return <div className="flex items-center justify-center w-full h-full">
     <Formik

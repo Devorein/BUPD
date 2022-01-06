@@ -28,8 +28,8 @@ export function Paginate<ClientQuery extends IQuery<any, any>, Sort extends [str
   const { hasNextPage, lastFetchedPage, fetchNextPage, data, totalItems, allItems, isFetching, } = dataFetcher(clientQuery);
 
   if (data) {
-    return <div className={`flex justify-center gap-10 py-5 w-full h-full ${className}`}>
-      {filterGroups.length !== 0 && <div className="h-full w-[250px]">
+    return <div className={`flex justify-center gap-5 py-5 w-full h-full ${className}`}>
+      {filterGroups.length !== 0 && <div className="h-full min-w-[300px]">
         <FilterForm<ClientQuery> clientFilter={dummyQuery.filter} setClientFilter={(clientFilter) => {
           setDummyQuery({
             ...clientQuery,
