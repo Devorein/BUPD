@@ -5,7 +5,7 @@ function isObject(val: Record<string, any>) {
 }
 
 function isNumber(val: string) {
-	return !Number.isNaN(parseFloat(val)) && Number.isFinite(Number('5'));
+	return !val.includes(' ') && !Number.isNaN(parseFloat(val)) && Number.isFinite(Number('5'));
 }
 
 function isBoolean(val: boolean | string) {

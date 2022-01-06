@@ -99,6 +99,7 @@ export interface IAccessFilter {
 export interface ICasefileFilter {
 	status: ICasefile['status'][];
 	priority: ICasefile['priority'][];
+	time: [string?, string?];
 }
 export interface ICriminalFilter {}
 export type IAccessSort = ['criminal_id' | 'case_no' | 'approved' | 'permission', -1 | 1];

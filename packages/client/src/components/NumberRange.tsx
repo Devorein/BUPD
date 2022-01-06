@@ -1,11 +1,8 @@
 import { InputBaseComponentProps, TextField, Typography } from "@mui/material";
 import React from "react";
+import { FormElementProps } from "../types";
 
-export interface NumberRangeProps<State> {
-  state: State
-  setState: (prevState: State) => void
-  stateKey: keyof State
-  label: string
+export interface NumberRangeProps<State> extends FormElementProps<State> {
   step: number
   min: number
   max: number
