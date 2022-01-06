@@ -51,7 +51,9 @@ export default function Polices() {
       {({
         openModal
       }) => <>
-          <TransitionedModal isModalOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
+          <TransitionedModal sx={{
+            height: 'calc(100% - 150px)'
+          }} isModalOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
             <PoliceForm<UpdatePolicePayload> showNid={false} showPassword={false} header="Update police" submitButtonText="Update" initialValues={selectedUpdateData!} isMutationLoading={updatePoliceMutation.isLoading} onSubmit={(values) => {
               if (selectedUpdateData) {
                 updatePoliceMutation.mutate({

@@ -45,7 +45,9 @@ export default function Criminals() {
         }))
       }}>
         {({ openModal }) => <>
-          <TransitionedModal isModalOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
+          <TransitionedModal sx={{
+            height: 'calc(100% - 150px)'
+          }} isModalOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
             <VictimForm
               initialValues={selectedUpdateData ? { ...selectedUpdateData, name: selectedUpdateData.name } : {} as any}
               isMutationLoading={updateVictimMutation.isLoading}

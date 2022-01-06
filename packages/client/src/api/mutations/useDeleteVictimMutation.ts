@@ -4,7 +4,7 @@ import { useGetVictimsQueryData } from '../queries/useGetVictimsQuery';
 import { useDeleteMutationCache } from '../utils/useDeleteMutationCache';
 
 export function useDeleteVictimMutationCache() {
-	return useDeleteMutationCache('victim', useGetVictimsQueryData, 'case_no');
+	return useDeleteMutationCache('victim', useGetVictimsQueryData);
 }
 
 export function useDeleteVictimMutation() {

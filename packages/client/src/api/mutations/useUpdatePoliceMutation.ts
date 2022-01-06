@@ -4,7 +4,7 @@ import { useGetPolicesQueryData } from '../queries/useGetPolicesQuery';
 import { useUpdateMutationCache } from '../utils/useUpdateMutationCache';
 
 export function useUpdatePoliceMutationCache() {
-	return useUpdateMutationCache(useGetPolicesQueryData, 'nid');
+	return useUpdateMutationCache('police', useGetPolicesQueryData, 'nid');
 }
 
 export function useUpdatePoliceMutation() {

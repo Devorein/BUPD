@@ -87,7 +87,7 @@ export async function createCasefile(
 			for (let index = 0; index < totalCriminals; index += 1) {
 				criminals.push({
 					name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-					photo: faker.image.imageUrl(),
+					photo: faker.image.imageUrl(undefined, undefined, undefined, true),
 				});
 			}
 

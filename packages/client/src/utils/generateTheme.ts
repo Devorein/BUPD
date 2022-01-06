@@ -73,6 +73,15 @@ export function generateTheme() {
 			},
 		},
 		components: {
+			MuiList: {
+				styleOverrides: {
+					root: {
+						'&.MuiMenu-list': {
+							padding: 0,
+						},
+					},
+				},
+			},
 			MuiOutlinedInput: {
 				styleOverrides: {
 					input: {

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, SxProps, Theme } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import Fade from '@mui/material/Fade';
 import Modal, { ModalUnstyledTypeMap } from '@mui/material/Modal';
@@ -8,6 +8,7 @@ interface TransitionedModalProps {
   children: JSX.Element | null
   isModalOpen: boolean
   onClose: ModalUnstyledTypeMap["props"]["onClose"]
+  sx?: SxProps<Theme>
 }
 
 const style = {
@@ -20,11 +21,11 @@ const style = {
   boxShadow: 24,
   p: 2,
   maxHeight: '75%',
-  overflow: 'auto'
+  overflow: 'hidden',
 };
 
 export function TransitionedModal(props: TransitionedModalProps) {
-  const { isModalOpen, children, onClose } = props;
+  const { isModalOpen, children, onClose, sx } = props;
 
   return (
     <div>
@@ -37,10 +38,11 @@ export function TransitionedModal(props: TransitionedModalProps) {
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
+          transitionDuration: 500
         }}
       >
         <Fade in={isModalOpen}>
-          <Box sx={style}>
+          <Box sx={{ ...style, ...(sx ?? {}) }}>
             {children}
           </Box>
         </Fade>
