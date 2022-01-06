@@ -63,8 +63,8 @@ const CasefileModel = {
 			status: inflatedObject.status,
 			police_nid: inflatedObject.police_nid,
 			time: inflatedObject.time,
-			categories: inflatedObject.crime_category.category.split(','),
-			weapons: inflatedObject.crime_weapon.weapon.split(','),
+			categories: inflatedObject.crime_category.category?.split(',') ?? [],
+			weapons: inflatedObject.crime_weapon.weapon?.split(',') ?? [],
 			criminals: [],
 			victims: [],
 		};
@@ -137,8 +137,6 @@ const CasefileModel = {
 				connection
 			);
 		}
-
-		console.log({ removedWeapons, newWeapons, newCategories, removedCategories });
 
 		for (let index = 0; index < removedWeapons.length; index += 1) {
 			await CrimeWeaponModel.delete(

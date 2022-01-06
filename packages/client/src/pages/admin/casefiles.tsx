@@ -43,7 +43,7 @@ export default function Casefiles() {
   useIsAuthenticated();
   useIsAuthorized(["admin"]);
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
-  } = useModal<ICasefile>();
+  } = useModal<ICasefilePopulated>();
 
   const deleteCasefileMutation = useDeleteCasefileMutation();
   const deleteCasefileMutationCache = useDeleteCasefileMutationCache();
@@ -81,6 +81,8 @@ export default function Casefiles() {
                     location: values.location,
                     priority: values.priority,
                     status: values.status,
+                    categories: values.categories,
+                    weapons: values.weapons
                   }, updateCasefileMutationCache(selectedUpdateData.case_no, () => closeUpdateModal()))
                 }
               }} validationSchema={CasefilePayload.update} />
