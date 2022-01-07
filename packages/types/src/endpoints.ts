@@ -36,10 +36,11 @@ export type UpdateVictimResponse = IVictim;
 export interface UpdateCriminalPayload extends Omit<ICriminal, 'criminal_id'> {}
 export interface UpdateCriminalResponse extends ICriminal {}
 export interface UpdatePoliceResponse extends Omit<IPolice, 'password'> {}
-
-export type GetCurrentUserResponse = ApiResponse<
-	(IAdmin & { type: 'admin' }) | (IPolice & { type: 'police' }) | null
->;
+export type CurrentUser =
+	| (IAdmin & { type: 'admin' })
+	| (Omit<IPolice, 'password'> & { type: 'police' })
+	| null;
+export type GetCurrentUserResponse = ApiResponse<CurrentUser>;
 
 export interface LoginPayload {
 	email: string;
