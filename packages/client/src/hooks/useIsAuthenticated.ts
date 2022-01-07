@@ -6,13 +6,15 @@ import { RootContext } from '../contexts';
 
 export function useIsAuthenticated() {
 	const queryClient = useQueryClient();
-	const { currentUser } = useContext(RootContext);
-
+	const { currentUser, getCurrentUserQueryResult } = useContext(RootContext);
 	useEffect(() => {
 		const queryState = queryClient.getQueryState<GetCurrentUserResponse>(['currentUser']);
-		if (queryState && !queryState.isFetching && queryState.data?.status === 'error') {
+		if (
+			getCurrentUserQueryResult.status === 'error' ||
+			(queryState && !queryState.isFetching && queryState.data?.status === 'error')
+		) {
 			router.push({ pathname: '/login' });
 		}
-	}, [queryClient]);
+	}, [queryClient, getCurrentUserQueryResult]);
 	return currentUser!;
 }
