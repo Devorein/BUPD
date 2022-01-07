@@ -93,7 +93,7 @@ export async function createCasefile(
 
 			createCasefileResponses.push(
 				await handleRequest<CreateCasefileResponse, CreateCasefilePayload>(
-					`/casefile`,
+					`casefile`,
 					{
 						categories: Array.from(new Set(categories)),
 						criminals,
@@ -113,6 +113,8 @@ export async function createCasefile(
 			await sleep(150);
 			console.log(`Created case ${caseNumber + 1}`);
 		}
+
+		await sleep(1000);
 
 		return createCasefileResponses;
 	} catch (err) {

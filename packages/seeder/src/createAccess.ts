@@ -1,6 +1,6 @@
 import { AccessPermission, CreateAccessPayload, CreateAccessResponse } from '@bupd/types';
 import faker from 'faker';
-import { handleRequest, promiseAll } from './utils';
+import { handleRequest, sleep } from './utils';
 
 const permissions: AccessPermission[] = ['delete', 'read', 'update', 'write'];
 
@@ -10,35 +10,28 @@ export async function createAccess(
 	criminalIds: number[],
 	totalAccess: number
 ) {
-	const createAccessPromises: Promise<CreateAccessResponse>[] = [];
+	const createAccessResponses: CreateAccessResponse[] = [];
 
 	for (let accessNumber = 0; accessNumber < totalAccess; accessNumber += 1) {
-		createAccessPromises.push(
-			new Promise((resolve, reject) => {
-				async function main() {
-					try {
-						const isCriminal = faker.datatype.boolean();
-						const access: CreateAccessPayload = {
-							case_no: isCriminal ? null : faker.random.arrayElement(caseNumbers),
-							criminal_id: isCriminal ? faker.random.arrayElement(criminalIds) : null,
-							permission: faker.random.arrayElement(permissions),
-						};
-						const createAccessResponse = await handleRequest<
-							CreateAccessResponse,
-							CreateAccessPayload
-						>(`/access`, access, faker.random.arrayElement(policeTokens));
-						resolve(createAccessResponse);
-						console.log(`Created access ${accessNumber + 1}`);
-					} catch (err) {
-						console.log(err.message);
-						reject(err.message);
-					}
-				}
-				main();
-			})
-		);
+		try {
+			const isCriminal = faker.datatype.boolean();
+			const access: CreateAccessPayload = {
+				case_no: isCriminal ? null : faker.random.arrayElement(caseNumbers),
+				criminal_id: isCriminal ? faker.random.arrayElement(criminalIds) : null,
+				permission: faker.random.arrayElement(permissions),
+			};
+			const createAccessResponse = await handleRequest<CreateAccessResponse, CreateAccessPayload>(
+				`access`,
+				access,
+				faker.random.arrayElement(policeTokens)
+			);
+			createAccessResponses.push(createAccessResponse);
+			console.log(`Created access ${createAccessResponse.access_id}`);
+			await sleep(150);
+		} catch (err) {
+			console.log(`Error creating access`);
+		}
 	}
 
-	const createAccessResponses = await promiseAll(createAccessPromises);
 	return createAccessResponses;
 }

@@ -180,6 +180,7 @@ const AccessController = {
 			const jwtPayload = req.jwt_payload as AdminJwtPayload;
 			const payload = req.body;
 			const [access] = await AccessModel.find({ filter: [{ access_id: accessId }] });
+
 			if (!access) {
 				handleError(res, 404, "Access doesn't exist");
 			} else {

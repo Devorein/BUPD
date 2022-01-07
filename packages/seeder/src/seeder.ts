@@ -7,6 +7,7 @@ import { createAccess } from './createAccess';
 import { createCasefile } from './createCasefile';
 import { createPolices } from './createPolices';
 import { loginPolices } from './loginPolices';
+import { updateAccess } from './updateAccess';
 import { handleRequest } from './utils';
 
 export default function seeder() {
@@ -24,13 +25,13 @@ export default function seeder() {
 		} else {
 			try {
 				console.log(colors.green.bold('Successfully connected to database'));
-				const loginResponse = await handleRequest<LoginResponse, LoginPayload>('/auth/login', {
+				const loginResponse = await handleRequest<LoginResponse, LoginPayload>('auth/login', {
 					as: 'admin',
 					email: process.env.ADMIN_EMAIL!,
 					password: process.env.ADMIN_PASSWORD!,
 				});
 				const adminToken = loginResponse.token;
-				const polices = await createPolices(10, adminToken);
+				const polices = await createPolices(25, adminToken);
 				const loginPoliceResponses = await loginPolices(polices);
 				const policeTokens = loginPoliceResponses.map(
 					(loginPoliceResponse) => loginPoliceResponse.token
@@ -47,7 +48,13 @@ export default function seeder() {
 						criminalIds.push(criminal.criminal_id);
 					});
 				});
-				await createAccess(policeTokens, caseNumbers, criminalIds, 25);
+				const createAccessResponses = await createAccess(
+					policeTokens,
+					caseNumbers,
+					criminalIds,
+					50
+				);
+				await updateAccess(createAccessResponses, adminToken);
 				fs.writeFileSync(path.join(__dirname, 'polices.json'), JSON.stringify(polices), 'utf-8');
 				connection.destroy();
 			} catch (error) {
