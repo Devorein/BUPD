@@ -71,7 +71,10 @@ const PoliceController = {
 								},
 								['password', 'new_password']
 							),
-							token: generatePoliceJwtToken(police),
+							token: generatePoliceJwtToken({
+								...police,
+								...payload,
+							}),
 						},
 					});
 				}

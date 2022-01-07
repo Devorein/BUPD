@@ -11,6 +11,7 @@ export async function createAccess(
 	totalAccess: number
 ) {
 	const createAccessPromises: Promise<CreateAccessResponse>[] = [];
+
 	for (let accessNumber = 0; accessNumber < totalAccess; accessNumber += 1) {
 		createAccessPromises.push(
 			new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ export async function createAccess(
 						resolve(createAccessResponse);
 						console.log(`Created access ${accessNumber + 1}`);
 					} catch (err) {
+						console.log(err.message);
 						reject(err.message);
 					}
 				}

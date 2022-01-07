@@ -1,7 +1,6 @@
 import { IPolice, RegisterPolicePayload } from '@bupd/types';
 import { SqlClause, SqlFilter } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
-import { getPoliceAttributes } from '../utils/generateAttributes';
 import { find } from './utils';
 
 const PoliceModel = {
@@ -12,13 +11,7 @@ const PoliceModel = {
 	},
 
 	find(sqlClause: SqlClause) {
-		return find<IPolice>(
-			{
-				...sqlClause,
-				select: [...getPoliceAttributes(), ...(sqlClause.select ?? [])],
-			},
-			'Police'
-		);
+		return find<IPolice>(sqlClause, 'Police');
 	},
 
 	async findByNid(nid: number) {
