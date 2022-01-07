@@ -14,7 +14,7 @@ import {
 	UpdateAccessResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
-import { RowDataPacket } from 'mysql2';
+import { OkPacket, RowDataPacket } from 'mysql2';
 import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
 import { generateInsertQuery, generateSelectQuery, handleError, logger, query } from '../utils';
@@ -65,11 +65,14 @@ const AccessController = {
 					case_no: payload.case_no,
 					admin_id: null,
 				};
-				await query(generateInsertQuery(access, 'Access'));
+				const [response] = (await query(generateInsertQuery(access, 'Access'))) as OkPacket[];
+
 				res.json({
 					status: 'success',
-					// TODO: Doesn't return access_id
-					data: access as any,
+					data: {
+						...access,
+						access_id: response.insertId,
+					},
 				});
 			}
 		} catch (err) {
