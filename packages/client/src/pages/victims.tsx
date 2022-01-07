@@ -1,16 +1,16 @@
 import { GetVictimsPayload, IVictim, IVictimSort } from '@bupd/types';
-import { useDeleteVictimMutation, useDeleteVictimMutationCache } from '../../api/mutations/useDeleteVictimMutation';
-import { useUpdateVictimMutation, useUpdateVictimMutationCache } from '../../api/mutations/useUpdateVictimMutation';
-import { useGetVictimsQuery } from '../../api/queries/useGetVictimsQuery';
-import { DeleteModal } from '../../components/DeleteModal';
-import { DetailsList } from '../../components/DetailsList';
-import { TransitionedModal } from '../../components/Modal';
-import { MutateIcons } from '../../components/MutateIcons';
-import { Paginate } from '../../components/Paginate';
-import { VictimForm } from '../../components/VictimForm';
-import { victimsSortLabelRecord } from '../../constants';
-import { useIsAuthenticated, useIsAuthorized } from '../../hooks';
-import { useModal } from '../../hooks/useModal';
+import { useDeleteVictimMutation, useDeleteVictimMutationCache } from '../api/mutations/useDeleteVictimMutation';
+import { useUpdateVictimMutation, useUpdateVictimMutationCache } from '../api/mutations/useUpdateVictimMutation';
+import { useGetVictimsQuery } from '../api/queries/useGetVictimsQuery';
+import { DeleteModal } from '../components/DeleteModal';
+import { DetailsList } from '../components/DetailsList';
+import { TransitionedModal } from '../components/Modal';
+import { MutateIcons } from '../components/MutateIcons';
+import { Paginate } from '../components/Paginate';
+import { VictimForm } from '../components/VictimForm';
+import { victimsSortLabelRecord } from '../constants';
+import { useIsAuthenticated } from '../hooks';
+import { useModal } from '../hooks/useModal';
 
 const createInitialGetVictimsQuery = (): GetVictimsPayload => ({
   limit: 10,
@@ -24,8 +24,6 @@ const createInitialGetVictimsQuery = (): GetVictimsPayload => ({
 
 export default function Criminals() {
   useIsAuthenticated();
-  useIsAuthorized(["admin"]);
-
   const { openModal: openUpdateModal, selectedData: selectedUpdateData, isModalOpen: isUpdateModalOpen, closeModal: closeUpdateModal
   } = useModal<IVictim>();
 
