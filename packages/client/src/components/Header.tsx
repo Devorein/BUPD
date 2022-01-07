@@ -60,7 +60,7 @@ export function Header() {
           <Button
             content="Register a police"
             onClick={() => {
-              router.push(`/admin/register`);
+              router.push(`/register`);
             }}
           />
         ) : null}
@@ -68,7 +68,7 @@ export function Header() {
           <Button
             content="Report a case"
             onClick={() => {
-              router.push(`/police/case`);
+              router.push(`/case`);
             }}
           />
         ) : null}
