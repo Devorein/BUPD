@@ -7,9 +7,9 @@ export function useGetCasefileQuery(caseNo?: number) {
   const { currentUser } = useContext(RootContext);
   return useApiQuery<GetCasefileResponse, { endpoint: string }>(
     ['casefile', caseNo ?? ""],
-    `casefile`,
+    `casefile/${caseNo}`,
     {
-      enabled: caseNo !== undefined && caseNo !== null && Boolean(currentUser),
+      enabled: Boolean(caseNo) && Boolean(currentUser),
     }
   );
 }

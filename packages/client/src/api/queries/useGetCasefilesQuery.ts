@@ -17,7 +17,7 @@ export function useGetCasefilesQuery(query: GetCasefilesPayload) {
 	const clonedQuery = JSON.parse(JSON.stringify(query));
 	delete clonedQuery.next;
 	return useApiInfiniteQuery<ICasefilePopulated, GetCasefilesPayload>(
-		['casefile', decodeURIComponent(qs.stringify(clonedQuery))],
+		['casefiles', decodeURIComponent(qs.stringify(clonedQuery))],
 		`casefile`,
 		query,
 		{
