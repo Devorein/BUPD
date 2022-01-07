@@ -12,19 +12,24 @@ const hasAccess =
 			} else if (req.jwt_payload.type === 'admin') {
 				return next();
 			} else {
+				const filter = {
+					approved: 1,
+					police_nid: req.jwt_payload.nid,
+					type: accessType,
+					permission: {
+						$in: accessPermissions,
+					},
+				} as any;
+
+				if (accessType === 'case') {
+					filter.case_no = req.params.case_no ?? req.body.case_no;
+				} else if (accessType === 'criminal') {
+					filter.criminal_id = req.params.criminal_id ?? req.body.criminal_id;
+				}
 				const [row] = await AccessModel.find({
-					filter: [
-						{
-							approved: 1,
-							police_nid: req.jwt_payload.nid,
-							type: accessType,
-							permission: {
-								$in: accessPermissions,
-							},
-							case_no: req.params.case_no ? req.params.case_no : req.body.case_no,
-						},
-					],
+					filter: [filter],
 				});
+
 				if (row) {
 					return next();
 				}

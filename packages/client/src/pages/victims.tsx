@@ -52,7 +52,7 @@ export default function Criminals() {
               isMutationLoading={updateVictimMutation.isLoading}
               onSubmit={(values) => {
                 if (selectedUpdateData) {
-                  updateVictimMutation.mutate({ ...values, old_name: selectedUpdateData.name }, updateVictimMutationCache((victim) => victim.case_no === selectedUpdateData.case_no && victim.name === selectedUpdateData.name, () => {
+                  updateVictimMutation.mutate({ address: values.address, age: values.age, case_no: values.case_no, description: values.description, name: values.name, phone_no: values.phone_no, old_name: selectedUpdateData.name }, updateVictimMutationCache((victim) => victim.case_no === selectedUpdateData.case_no && victim.name === selectedUpdateData.name, () => {
                     closeUpdateModal()
                   }))
                 }
