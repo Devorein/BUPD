@@ -4,6 +4,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { blue, green, grey, red } from '@mui/material/colors';
+import router from "next/router";
 import { useCreateAccessMutation, useCreateAccessMutationCache } from "../api/mutations/useCreateAccessMutation";
 import { useDeleteCasefileMutation, useDeleteCasefileMutationCache } from "../api/mutations/useDeleteCasefileMutation";
 import { useUpdateCasefileMutation, useUpdateCasefileMutationCache } from "../api/mutations/useUpdateCasefileMutation";
@@ -112,11 +113,11 @@ export default function Casefiles() {
                   let permissionIcons: null | JSX.Element = null;
                   let mutateIcons: null | JSX.Element = null;
                   if (currentUser.type === "admin") {
-                    mutateIcons = <MutateIcons onDeleteIconClick={() => {
+                    mutateIcons = <MutateIcons onViewIconClick={() => router.push(`/case/${casefile.case_no}`)} showViewIcon={casefile.permissions?.read === 1} onDeleteIconClick={() => {
                       openModal(casefile)
                     }} onUpdateIconClick={() => { openUpdateModal(casefile) }} />
                   } else {
-                    mutateIcons = <MutateIcons showDeleteIcon={casefile.permissions?.delete === 1} showUpdateIcon={casefile.permissions?.update === 1} onDeleteIconClick={() => {
+                    mutateIcons = <MutateIcons onViewIconClick={() => router.push(`/case/${casefile.case_no}`)} showViewIcon={casefile.permissions?.read === 1} showDeleteIcon={casefile.permissions?.delete === 1} showUpdateIcon={casefile.permissions?.update === 1} onDeleteIconClick={() => {
                       openModal(casefile)
                     }} onUpdateIconClick={() => { openUpdateModal(casefile) }} />
                   }
@@ -146,7 +147,6 @@ export default function Casefiles() {
                       }} className="cursor-pointer" style={{ fill: red[500] }} fontSize="small" />}
                     </div>
                   }
-
 
                   return (
                     <div

@@ -58,6 +58,7 @@ export function generateTheme() {
 			},
 			h4: {
 				fontWeight: 800,
+				fontSize: '1.75em',
 			},
 			h5: {
 				fontSize: '1.5em',

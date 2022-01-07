@@ -263,9 +263,12 @@ const CasefileController = {
 				const [criminals] = (await query(
 					`SELECT Criminal.criminal_id as \`Criminal.criminal_id\`,Criminal.name as \`Criminal.name\`,Criminal.photo as \`Criminal.photo\` FROM Casefile as Casefile LEFT JOIN Casefile_Criminal as Casefile_Criminal on Casefile.case_no = Casefile_Criminal.case_no LEFT JOIN Criminal as Criminal on Casefile_Criminal.criminal_id = Criminal.criminal_id WHERE (Casefile.\`case_no\`=${req.params.case_no});`
 				)) as RowDataPacket[];
-				casefile.criminals = (criminals as ICriminal[]).map((criminal) => {
-					const inflatedObject = inflateObject<ICriminal>(criminal, 'Criminal');
-					return inflatedObject;
+				casefile.criminals = [];
+
+				(criminals as ICriminal[]).forEach((criminal) => {
+					if (criminal.criminal_id) {
+						casefile.criminals.push(inflateObject<ICriminal>(criminal, 'Criminal'));
+					}
 				});
 
 				// Get all the approved access request of this case

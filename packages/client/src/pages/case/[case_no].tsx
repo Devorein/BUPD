@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useGetCasefileQuery } from "../../api/queries/useGetCasefileQuery";
@@ -28,29 +29,34 @@ export default function Case() {
         <CasefileCard casefile={getCasefileQueryData.data} />
       </div>
       <div className="flex flex-col gap-3">
-        <Typography variant="h5">Criminals</Typography>
-        <div className="flex flex-col gap-3 h-full overflow-auto pb-2 pr-5">
-          {getCasefileQueryData.data.criminals.map(criminal => <div key={criminal.criminal_id} className="p-5 rounded-md border-2 shadow-md">
-            <CriminalCard criminal={criminal} />
-          </div>)}
-        </div>
-      </div>
-      <div className="flex flex-col gap-3">
-        <Typography variant="h5">Victims</Typography>
-        <div className="flex flex-col gap-3 h-full overflow-auto pb-2 pr-5">
-          {getCasefileQueryData.data.victims.map(victim => <div key={`${victim.case_no}.${victim.name}`} className="p-5 rounded-md border-2 shadow-md">
-            <VictimCard victim={victim} />
-          </div>)}
-        </div>
-      </div>
-      <div className="flex flex-grow flex-col gap-3">
-        <Typography variant="h5">Polices</Typography>
-        <div className="flex flex-col gap-3 h-full overflow-auto pb-2 pr-5">
+        <Typography variant="h4" className="uppercase text-center">Polices</Typography>
+        <div className="flex flex-col gap-3 h-full overflow-auto pb-2 pr-2">
           {getCasefileQueryData.data.polices.map(police => <div key={police.nid} className="p-5 rounded-md border-2 shadow-md">
             <PoliceCard police={police} />
           </div>)}
         </div>
       </div>
+      <div className="flex flex-col gap-3">
+        <Typography variant="h4" className="uppercase text-center">Criminals</Typography>
+        <div className="flex flex-col gap-3 h-full min-w-[250px] overflow-auto pb-2 pr-2">
+          {getCasefileQueryData.data.criminals.length === 0 ? <div className="h-full font-semibold p-5 text-center text-xl" style={{
+            backgroundColor: grey[50]
+          }}>No Criminals</div> : getCasefileQueryData.data.criminals.map(criminal => <div key={criminal.criminal_id} className="p-5 rounded-md border-2 shadow-md">
+            <CriminalCard criminal={criminal} />
+          </div>)}
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Typography variant="h4" className="uppercase text-center">Victims</Typography>
+        <div className="flex flex-col gap-3 min-w-[250px] h-full overflow-auto pb-2 pr-2">
+          {getCasefileQueryData.data.victims.length === 0 ? <div className="h-full font-semibold p-5 text-center text-xl" style={{
+            backgroundColor: grey[50]
+          }}>No Victims</div> : getCasefileQueryData.data.victims.map(victim => <div key={`${victim.case_no}.${victim.name}`} className="p-5 rounded-md border-2 shadow-md">
+            <VictimCard victim={victim} />
+          </div>)}
+        </div>
+      </div>
+
     </div>
 
   }
