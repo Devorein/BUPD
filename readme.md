@@ -44,6 +44,9 @@ This monorepo contains the following packages:-
 3. Run `npm run build` to build all packages except the client using `typescript`
 4. Run `npm run lint` to lint all packages using `eslint`
 5. Run `npm run test` to run tests for all packages using `jest`
+6. Run `npm run build:watch` to starting building in watch mode
+7. Go to server package using `cd packages/server` and start the server using `npm run start`
+8. Go to client package using `cd packages/client` and start the client using `npm run dev`
 
 ### Environment Variables
 
