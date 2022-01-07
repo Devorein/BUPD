@@ -5,10 +5,14 @@ import {
 	GetPoliceResponse,
 	GetPolicesPayload,
 	GetPolicesResponse,
+	PoliceJwtPayload,
 	UpdatePolicePayload,
+	UpdatePoliceProfilePayload,
+	UpdatePoliceProfileResponse,
 	UpdatePoliceResponse,
 } from '@bupd/types';
 import { IPolicePopulated } from '@bupd/types/src/entities';
+import argon2 from 'argon2';
 import { Request, Response } from 'express';
 import { PoliceModel } from '../models';
 import { paginate } from '../models/utils/paginate';
@@ -19,6 +23,64 @@ import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
 
 const PoliceController = {
+	async updateProfile(
+		req: Request<any, any, UpdatePoliceProfilePayload>,
+		res: Response<ApiResponse<UpdatePoliceProfileResponse>>
+	) {
+		try {
+			const jwtPayload = req.jwt_payload as PoliceJwtPayload;
+			const payload = req.body;
+			const [police] = await PoliceModel.find({
+				filter: [{ nid: jwtPayload.nid }],
+				select: ['password'],
+			});
+			if (!police) {
+				handleError(res, 404, `No Police exists with nid ${jwtPayload.nid}`);
+			} else {
+				// Check if the password matches
+				const isCorrectPassword = await argon2.verify(police.password, payload.password);
+				if (!isCorrectPassword) {
+					handleError(res, 401, 'Incorrect password!');
+				} else {
+					// If the user wants to set a new password hash it first
+					const password = payload.new_password
+						? await argon2.hash(payload.new_password, {
+								hashLength: 100,
+								timeCost: 5,
+								salt: Buffer.from(process.env.PASSWORD_SALT!, 'utf-8'),
+						  })
+						: police.password;
+					await PoliceModel.update(
+						[
+							{
+								nid: payload.nid,
+							},
+						],
+						{
+							...removeFields(payload, ['new_password', 'password']),
+							password,
+						}
+					);
+					res.json({
+						status: 'success',
+						data: {
+							...removeFields(
+								{
+									...police,
+									...payload,
+								},
+								['password', 'new_password']
+							),
+							token: generatePoliceJwtToken(police),
+						},
+					});
+				}
+			}
+		} catch (err) {
+			logger.error(err);
+			handleError(res, 500, "Couldn't update your profile");
+		}
+	},
 	async update(
 		req: Request<{ nid: number }, any, UpdatePolicePayload>,
 		res: Response<ApiResponse<UpdatePoliceResponse>>
@@ -47,7 +109,6 @@ const PoliceController = {
 							},
 							['password']
 						),
-						token: generatePoliceJwtToken(police),
 					},
 				});
 			}

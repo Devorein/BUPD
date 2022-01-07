@@ -16,10 +16,10 @@ PoliceRouter.get(
 )
 	.put(
 		'/',
-		validatePayload(PoliceRequest.updateProfile('server')),
 		isAuthenticated,
 		isAuthorized(['police']),
-		PoliceController.update
+		validatePayload(PoliceRequest.updateProfile('server')),
+		PoliceController.updateProfile
 	)
 	.get<any, any, any, GetPoliceAccessesPayload>(
 		'/access',

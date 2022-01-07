@@ -1,6 +1,7 @@
-import { IPolice, RegisterPolicePayload, UpdatePolicePayload } from '@bupd/types';
+import { IPolice, RegisterPolicePayload } from '@bupd/types';
 import { SqlClause, SqlFilter } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
+import { getPoliceAttributes } from '../utils/generateAttributes';
 import { find } from './utils';
 
 const PoliceModel = {
@@ -14,16 +15,7 @@ const PoliceModel = {
 		return find<IPolice>(
 			{
 				...sqlClause,
-				select: [
-					'email',
-					'phone',
-					'address',
-					'designation',
-					'rank',
-					'name',
-					'nid',
-					...(sqlClause.select ?? []),
-				],
+				select: [...getPoliceAttributes(), ...(sqlClause.select ?? [])],
 			},
 			'Police'
 		);
@@ -39,7 +31,7 @@ const PoliceModel = {
 		return polices[0];
 	},
 
-	async update(filterQuery: SqlFilter, payload: UpdatePolicePayload) {
+	async update(filterQuery: SqlFilter, payload: Partial<IPolice>) {
 		await query(generateUpdateQuery(filterQuery, payload, 'Police'));
 		// return the payload if the update operation was successful
 		return payload as Partial<IPolice>;

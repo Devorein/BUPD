@@ -17,9 +17,9 @@ function policeValidationSchema(purpose?: 'create' | 'update', domain?: 'server'
 			})
 			.required(domain === 'client' ? 'Required' : undefined)
 			.typeError('Invalid'),
-		phone: yup.string(),
-		address: yup.string(),
-		designation: yup.string(),
+		phone: yup.string().required(domain === 'client' ? 'Required' : undefined),
+		address: yup.string().required(domain === 'client' ? 'Required' : undefined),
+		designation: yup.string().required(domain === 'client' ? 'Required' : undefined),
 		name: yup.string().required(domain === 'client' ? 'Required' : undefined),
 		rank: yup.string().required(domain === 'client' ? 'Required' : undefined),
 	};
@@ -53,6 +53,7 @@ export const PoliceRequest = {
 					}
 					return validatePassword(password);
 				}),
+				nid: yup.number().required(),
 			})
 		),
 	get: yup

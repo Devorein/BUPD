@@ -9,6 +9,7 @@ export default function isAuthenticated(
 	next: NextFunction
 ) {
 	const { headers } = req;
+
 	if (!headers.authorization) {
 		handleError(res, 401, 'Not authenticated');
 	} else {
