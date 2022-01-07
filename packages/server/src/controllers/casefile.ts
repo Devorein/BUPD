@@ -266,8 +266,9 @@ const CasefileController = {
 				casefile.criminals = [];
 
 				(criminals as ICriminal[]).forEach((criminal) => {
-					if (criminal.criminal_id) {
-						casefile.criminals.push(inflateObject<ICriminal>(criminal, 'Criminal'));
+					const inflatedObject = inflateObject<ICriminal>(criminal, 'Criminal');
+					if (inflatedObject.criminal_id) {
+						casefile.criminals.push(inflatedObject);
 					}
 				});
 
