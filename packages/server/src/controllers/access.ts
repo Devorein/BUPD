@@ -14,9 +14,10 @@ import {
 	UpdateAccessResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
+import { OkPacket, RowDataPacket } from 'mysql2';
 import AccessModel from '../models/Access';
 import { paginate } from '../models/utils/paginate';
-import { generateInsertQuery, handleError, logger, query } from '../utils';
+import { generateInsertQuery, generateSelectQuery, handleError, logger, query } from '../utils';
 import { convertAccessFilter } from '../utils/convertClientQuery';
 import {
 	getAccessAttributes,
@@ -34,21 +35,46 @@ const AccessController = {
 		try {
 			const jwtPayload = req.jwt_payload! as PoliceJwtPayload;
 			const payload = req.body;
-			const access: Omit<IAccess, 'access_id'> = {
-				permission: payload.permission,
-				approved: 2,
-				police_nid: jwtPayload.nid,
-				type: payload.criminal_id !== null ? 'criminal' : 'case',
-				criminal_id: payload.criminal_id,
-				case_no: payload.case_no,
-				admin_id: null,
-			};
-			await query(generateInsertQuery(access, 'Access'));
-			res.json({
-				status: 'success',
-				// TODO: Doesn't return access_id
-				data: access as any,
-			});
+			// Check if the police has requested an access of similar permission to same entity
+			const [previousAccess] = (await query(
+				generateSelectQuery(
+					{
+						filter: [
+							{
+								permission: payload.permission,
+								police_nid: jwtPayload.nid,
+								type: payload.criminal_id ? 'criminal' : 'case',
+								criminal_id: payload.criminal_id,
+								case_no: payload.case_no,
+							},
+						],
+					},
+					'Access'
+				)
+			)) as RowDataPacket[];
+
+			if (previousAccess.length !== 0) {
+				handleError(res, 401, 'An access already exist');
+			} else {
+				const access: Omit<IAccess, 'access_id'> = {
+					permission: payload.permission,
+					approved: 2,
+					police_nid: jwtPayload.nid,
+					type: payload.criminal_id ? 'criminal' : 'case',
+					criminal_id: payload.criminal_id,
+					case_no: payload.case_no,
+					admin_id: null,
+				};
+				const [response] = (await query(generateInsertQuery(access, 'Access'))) as OkPacket[];
+
+				res.json({
+					status: 'success',
+					data: {
+						...access,
+						access_id: response.insertId,
+					},
+				});
+			}
 		} catch (err) {
 			logger.error(err);
 			handleError(res);
