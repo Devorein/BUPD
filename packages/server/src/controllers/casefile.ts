@@ -9,11 +9,8 @@ import {
 	ICasefileIntermediate,
 	ICasefilePopulated,
 	ICriminal,
-	IPermissionsRecord,
 	IVictim,
 	PoliceJwtPayload,
-	TAccessApproval,
-	TAccessPermission,
 	UpdateCasefileResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
@@ -32,6 +29,7 @@ import { SqlSelect } from '../types';
 import { handleError, logger, pool } from '../utils';
 import { convertCaseFilter } from '../utils/convertClientQuery';
 import { getCasefileAttributes } from '../utils/generateAttributes';
+import { generatePermissionRecord } from '../utils/generatePermissionRecord';
 import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
 
@@ -318,36 +316,20 @@ const CasefileController = {
 					(rows) =>
 						rows.map((row) => {
 							const { permissions } = row;
-
 							const inflatedObject = inflateObject<ICasefileIntermediate>(row, 'Casefile');
-							const casefile: ICasefilePopulated = {
+							return {
 								case_no: inflatedObject.case_no,
 								location: inflatedObject.location,
 								priority: inflatedObject.priority,
 								status: inflatedObject.status,
 								police_nid: inflatedObject.police_nid,
 								time: inflatedObject.time,
-								categories: [],
+								categories: inflatedObject.crime_category.category?.split(',') ?? [],
 								criminals: [],
 								victims: [],
-								weapons: [],
-								permissions: undefined,
-							};
-
-							const permissionRecord: IPermissionsRecord = {};
-							if (permissions) {
-								permissions.split(',').forEach((permissionApproval) => {
-									const [permission, approval] = permissionApproval.split(' ');
-									permissionRecord[permission as TAccessPermission] = parseInt(
-										approval,
-										10
-									) as TAccessApproval;
-								});
-							}
-							casefile.categories = inflatedObject.crime_category.category?.split(',') ?? [];
-							casefile.weapons = inflatedObject.crime_weapon.weapon?.split(',') ?? [];
-							casefile.permissions = permissionRecord;
-							return casefile;
+								weapons: inflatedObject.crime_weapon.weapon?.split(',') ?? [],
+								permissions: permissions ? generatePermissionRecord(permissions) : undefined,
+							} as ICasefilePopulated;
 						})
 				),
 			});

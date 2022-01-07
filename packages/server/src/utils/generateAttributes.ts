@@ -3,8 +3,9 @@ import {
 	casefileAttributes,
 	criminalAttributes,
 	policeAttributes,
+	victimAttributes,
 } from '@bupd/constants';
-import { IAccess, ICasefile, ICriminal, IPolice } from '@bupd/types';
+import { IAccess, ICasefile, ICriminal, IPolice, IVictim } from '@bupd/types';
 
 function generateAttributes<Entity>(
 	attributes: (keyof Entity)[],
@@ -36,4 +37,8 @@ export function getCasefileAttributes(namespace?: string, removeFields?: (keyof 
 
 export function getCriminalAttributes(namespace?: string, removeFields?: (keyof ICriminal)[]) {
 	return generateAttributes<ICriminal>(criminalAttributes, namespace, removeFields);
+}
+
+export function getVictimAttributes(namespace?: string, removeFields?: (keyof IVictim)[]) {
+	return generateAttributes<IVictim>(victimAttributes, namespace, removeFields);
 }

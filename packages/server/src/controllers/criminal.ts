@@ -5,10 +5,7 @@ import {
 	GetCriminalsResponse,
 	ICriminalIntermediate,
 	ICriminalPopulated,
-	IPermissionsRecord,
 	PoliceJwtPayload,
-	TAccessApproval,
-	TAccessPermission,
 	UpdateCriminalPayload,
 	UpdateCriminalResponse,
 } from '@bupd/types';
@@ -19,6 +16,7 @@ import { SqlSelect } from '../types';
 import { handleError, logger } from '../utils';
 import { convertCriminalFilter } from '../utils/convertClientQuery';
 import { getCriminalAttributes } from '../utils/generateAttributes';
+import { generatePermissionRecord } from '../utils/generatePermissionRecord';
 import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
 
@@ -116,30 +114,15 @@ const CriminalController = {
 					(rows) =>
 						rows.map((row) => {
 							const { permissions } = row;
-
 							const inflatedObject = inflateObject<ICriminalIntermediate>(row, 'Criminal');
-							const permissionRecord: IPermissionsRecord = {};
-							if (permissions) {
-								permissions.split(',').forEach((permissionApproval) => {
-									const [permission, approval] = permissionApproval.split(' ');
-									permissionRecord[permission as TAccessPermission] = parseInt(
-										approval,
-										10
-									) as TAccessApproval;
-								});
-							}
 
-							const criminal: ICriminalPopulated = {
+							return {
 								criminal_id: inflatedObject.criminal_id,
 								name: inflatedObject.name,
 								photo: inflatedObject.photo,
 								total_cases: row.total_cases,
-								permissions: undefined,
-							};
-
-							criminal.permissions = permissionRecord;
-
-							return criminal;
+								permissions: permissions ? generatePermissionRecord(permissions) : undefined,
+							} as ICriminalPopulated;
 						})
 				),
 			});

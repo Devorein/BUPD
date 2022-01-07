@@ -12,7 +12,6 @@ function MyDocument() {
   </Html>
 }
 
-
 MyDocument.getInitialProps = async (ctx: any) => {
   const sheets = new ServerStyleSheets();
   const originalRenderPage = ctx.renderPage;
