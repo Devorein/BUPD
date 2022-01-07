@@ -8,7 +8,7 @@ import { useApiInfiniteQuery } from '../../hooks/useApiInfiniteQuery';
 export function useGetCasefilesQueryData() {
 	const queryClientSetData = useQueryClientSetInfiniteData<PaginatedResponse<ICasefilePopulated>>();
 	return (cacheHitCb: CacheHitFunction<PaginatedResponse<ICasefilePopulated>>) => {
-		queryClientSetData(['casefile'], cacheHitCb);
+		queryClientSetData(['casefiles'], cacheHitCb);
 	};
 }
 
