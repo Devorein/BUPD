@@ -1,54 +1,53 @@
-import { Typography } from "@mui/material";
-import { Form, Formik, FormikConfig } from "formik";
-import { BaseSchema } from "yup";
-import { Button, FormikTextInput } from ".";
+import { Typography } from '@mui/material';
+import { Form, Formik, FormikConfig } from 'formik';
+import { BaseSchema } from 'yup';
+import { Button, FormikTextInput } from '.';
 
 interface CriminalFormProps<Values> {
-  initialValues: Values
-  validationSchema: BaseSchema
-  onSubmit: FormikConfig<Values>["onSubmit"]
-  isMutationLoading: boolean
+	initialValues: Values;
+	validationSchema: BaseSchema;
+	onSubmit: FormikConfig<Values>['onSubmit'];
+	isMutationLoading: boolean;
 }
 
 export function CriminalForm<Data>(props: CriminalFormProps<Data>) {
-  const { initialValues, onSubmit, validationSchema, isMutationLoading } = props;
+	const { initialValues, onSubmit, validationSchema, isMutationLoading } = props;
 
-  return (
-    <Formik
-      validateOnMount
-      validationSchema={validationSchema}
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-    >
-      {({ isSubmitting, isValid }) => (
-        <Form className={`p-5 shadow-md rounded-md h-full border-2 w-full`}>
-          <div className="my-5 text-center uppercase">
-            <Typography variant="h5">Criminal</Typography>
-          </div>
-          <div className="flex flex-col overflow-auto pr-5" style={{
-            height: 'calc(100% - 135px)'
-          }}>
-            <FormikTextInput
-              name={`name`}
-              label={`Name`}
-              placeholder={`John Doe`}
-            />
-            <FormikTextInput
-              name={`photo`}
-              label={`Photo`}
-              placeholder={`https://image.com/a.png?dim=600x400`}
-            />
-          </div>
-          <div className="flex justify-between mt-5">
-            <Button
-              color="secondary"
-              content={"Update"}
-              type="submit"
-              disabled={!isValid || isSubmitting || isMutationLoading}
-            />
-          </div>
-        </Form>
-      )}
-    </Formik>
-  );
+	return (
+		<Formik
+			validateOnMount
+			validationSchema={validationSchema}
+			initialValues={initialValues}
+			onSubmit={onSubmit}
+		>
+			{({ isSubmitting, isValid }) => (
+				<Form className={`p-5 shadow-md rounded-md h-full border-2 w-full`}>
+					<div className="my-5 text-center uppercase">
+						<Typography variant="h5">Criminal</Typography>
+					</div>
+					<div
+						className="flex flex-col overflow-auto pr-5"
+						style={{
+							height: 'calc(100% - 135px)',
+						}}
+					>
+						<FormikTextInput name={`name`} label={`Name`} placeholder={`John Doe`} />
+						<FormikTextInput
+							name={`photo`}
+							label={`Photo`}
+							placeholder={`https://image.com/a.png?dim=600x400`}
+						/>
+					</div>
+					<div className="flex justify-between mt-5">
+						<Button
+							color="secondary"
+							content={'Update'}
+							type="submit"
+							disabled={!isValid || isSubmitting || isMutationLoading}
+						/>
+					</div>
+				</Form>
+			)}
+		</Formik>
+	);
 }

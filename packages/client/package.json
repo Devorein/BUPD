@@ -11,7 +11,8 @@
     "build-prod": "run-s clean build export",
     "clean": "rimraf .next out",
     "lint": "next lint",
-    "build-types": "tsc --noEmit --pretty"
+    "build-types": "tsc --noEmit --pretty",
+    "format": "prettier ./src/**/*.{tsx,ts} --write"
   },
   "dependencies": {
     "@bupd/validation": "1.0.0",
