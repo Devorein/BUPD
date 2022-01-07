@@ -37,7 +37,7 @@ CasefileRouter.delete<{ case_no: number }>(
 	.get(
 		'/:case_no',
 		isAuthenticated,
-		isAuthorized(['police']),
+		isAuthorized(['police', 'admin']),
 		hasAccess('case', ['read']),
 		CasefileController.get
 	);

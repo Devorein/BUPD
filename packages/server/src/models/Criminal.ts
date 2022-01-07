@@ -9,13 +9,7 @@ import { useQuery } from './utils/useQuery';
 
 const CriminalModel = {
 	find(sqlClause: SqlClause) {
-		return find<ICriminal>(
-			{
-				...sqlClause,
-				select: ['criminal_id', 'name', 'photo', ...(sqlClause.select ?? [])],
-			},
-			'Criminal'
-		);
+		return find<ICriminal>(sqlClause, 'Criminal');
 	},
 
 	async create(criminalData: ICriminal, connection?: PoolConnection) {

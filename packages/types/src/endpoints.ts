@@ -150,7 +150,11 @@ export type GetPolicesResponse = ApiResponse<PaginatedResponse<IPolicePopulated>
 export type DeletePoliceResponse = ApiResponse<IPolice>;
 export type GetPoliceResponse = ApiResponse<Omit<IPolice, 'password'>>;
 export type DeleteCasefileResponse = ApiResponse<ICasefile>;
-export type GetCasefileResponse = ApiResponse<ICasefile>;
+export type GetCasefileResponse = ApiResponse<
+	ICasefilePopulated & {
+		accesses: { police_nid: number; permission: TAccessPermission }[];
+	}
+>;
 export type DeleteCriminalResponse = ApiResponse<ICriminal>;
 export interface GetAccessesPayload extends IQuery<IAccessFilter, IAccessSort> {}
 export type GetAccessesResponse = ApiResponse<PaginatedResponse<IAccessPopulated>>;

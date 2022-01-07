@@ -35,19 +35,23 @@ const AccessController = {
 		try {
 			const jwtPayload = req.jwt_payload! as PoliceJwtPayload;
 			const payload = req.body;
+			const filter = {
+				permission: payload.permission,
+				police_nid: jwtPayload.nid,
+				type: payload.criminal_id ? 'criminal' : 'case',
+			} as any;
+
+			if (payload.case_no) {
+				filter.case_no = payload.case_no;
+			} else if (payload.criminal_id) {
+				filter.criminal_id = payload.criminal_id;
+			}
+
 			// Check if the police has requested an access of similar permission to same entity
 			const [previousAccess] = (await query(
 				generateSelectQuery(
 					{
-						filter: [
-							{
-								permission: payload.permission,
-								police_nid: jwtPayload.nid,
-								type: payload.criminal_id ? 'criminal' : 'case',
-								criminal_id: payload.criminal_id,
-								case_no: payload.case_no,
-							},
-						],
+						filter: [filter],
 					},
 					'Access'
 				)

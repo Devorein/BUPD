@@ -11,6 +11,7 @@ import {
 	ICriminal,
 	IVictim,
 	PoliceJwtPayload,
+	TAccessPermission,
 	UpdateCasefileResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
@@ -26,7 +27,7 @@ import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
 import { paginate } from '../models/utils/paginate';
 import { SqlSelect } from '../types';
-import { handleError, logger, pool } from '../utils';
+import { handleError, logger, pool, query } from '../utils';
 import { convertCaseFilter } from '../utils/convertClientQuery';
 import { getCasefileAttributes } from '../utils/generateAttributes';
 import { generatePermissionRecord } from '../utils/generatePermissionRecord';
@@ -257,9 +258,32 @@ const CasefileController = {
 		try {
 			const casefile = await CasefileModel.findByCaseNo(req.params.case_no);
 			if (casefile) {
+				// Get the criminals associated with the case
+				const [criminals] = (await query(
+					`SELECT Criminal.criminal_id as \`Criminal.criminal_id\`,Criminal.name as \`Criminal.name\`,Criminal.photo as \`Criminal.photo\` FROM Casefile as Casefile LEFT JOIN Casefile_Criminal as Casefile_Criminal on Casefile.case_no = Casefile_Criminal.case_no LEFT JOIN Criminal as Criminal on Casefile_Criminal.criminal_id = Criminal.criminal_id WHERE (Casefile.\`case_no\`=${req.params.case_no});`
+				)) as RowDataPacket[];
+				casefile.criminals = (criminals as ICriminal[]).map((criminal) => {
+					const inflatedObject = inflateObject<ICriminal>(criminal, 'Criminal');
+					return inflatedObject;
+				});
+
+				// Get all the approved access request of this case
+				const [accesses] = (await query(
+					`select police_nid, permission from access where approved = 1 AND case_no = ${req.params.case_no};`
+				)) as RowDataPacket[];
+
+				// Get victims of the case
+				const [victims] = (await query(
+					`select name, address, age, phone_no, description from victim where case_no = ${req.params.case_no};`
+				)) as RowDataPacket[];
+				casefile.victims = victims as IVictim[];
+
 				res.json({
 					status: 'success',
-					data: casefile,
+					data: {
+						...casefile,
+						accesses: accesses as { police_nid: number; permission: TAccessPermission }[],
+					},
 				});
 			} else {
 				handleError(res, 404, `Casefile doesn't exist`);
