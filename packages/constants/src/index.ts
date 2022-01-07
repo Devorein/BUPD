@@ -3,6 +3,7 @@ import {
 	ICasefile,
 	ICriminal,
 	IPolice,
+	IVictim,
 	TCasefilePriority,
 	TCasefileStatus,
 } from '@bupd/types';
@@ -81,3 +82,11 @@ export const casefileAttributes: (keyof ICasefile)[] = [
 ];
 
 export const criminalAttributes: (keyof ICriminal)[] = ['criminal_id', 'name', 'photo'];
+export const victimAttributes: (keyof IVictim)[] = [
+	'address',
+	'age',
+	'case_no',
+	'description',
+	'name',
+	'phone_no',
+];

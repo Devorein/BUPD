@@ -5,14 +5,19 @@ import {
 	GetVictimsPayload,
 	GetVictimsResponse,
 	IVictim,
+	PoliceJwtPayload,
 	UpdateVictimPayload,
 } from '@bupd/types';
 import { UpdateVictimResponse } from '@bupd/types/src/endpoints';
+import { IVictimIntermediate } from '@bupd/types/src/entities';
 import { Request, Response } from 'express';
 import { VictimModel } from '../models';
 import { paginate } from '../models/utils/paginate';
+import { SqlSelect } from '../types';
 import { handleError, removeFields } from '../utils';
 import { convertVictimFilter } from '../utils/convertClientQuery';
+import { getVictimAttributes } from '../utils/generateAttributes';
+import { generatePermissionRecord } from '../utils/generatePermissionRecord';
 import Logger from '../utils/logger';
 
 const VictimController = {
@@ -20,18 +25,36 @@ const VictimController = {
 		req: Request<any, any, any, GetVictimsPayload>,
 		res: Response<GetVictimsResponse>
 	) {
+		const select: SqlSelect = [];
+
+		if (req.jwt_payload!.type === 'police') {
+			select.push({
+				raw: `(SELECT GROUP_CONCAT(CONCAT(permission, " ", approved)) from Access where Access.case_no = Victim.\`case_no\` AND police_nid = ${
+					(req.jwt_payload as PoliceJwtPayload).nid
+				}) as permissions`,
+			});
+		}
+
+		select.push(...getVictimAttributes());
+
 		try {
 			res.json({
 				status: 'success',
-				data: await paginate<IVictim>(
+				data: await paginate<IVictim, IVictimIntermediate>(
 					{
 						filter: convertVictimFilter(req.query.filter),
 						limit: req.query.limit,
 						sort: req.query.sort ? [req.query.sort] : [],
 						next: req.query.next,
+						select,
 					},
 					'Victim',
-					'name'
+					'name',
+					(rows) =>
+						rows.map((row) => ({
+							...row,
+							permissions: row.permissions ? generatePermissionRecord(row.permissions) : undefined,
+						}))
 				),
 			});
 		} catch (err) {

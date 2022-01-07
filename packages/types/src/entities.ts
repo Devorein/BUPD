@@ -1,3 +1,9 @@
+export type TAccessPermission = 'read' | 'write' | 'update' | 'delete';
+export type TAccessType = 'case' | 'criminal';
+export type TAccessApproval = 1 | 0 | 2;
+
+export type IPermissionsRecord = Partial<Record<TAccessPermission, TAccessApproval>>;
+
 // Entity type definitions
 export interface IAdmin {
 	email: string;
@@ -35,9 +41,13 @@ export interface IVictim {
 	case_no: number;
 }
 
-export type TAccessPermission = 'read' | 'write' | 'update' | 'delete';
-export type TAccessType = 'case' | 'criminal';
-export type TAccessApproval = 1 | 0 | 2;
+export interface IVictimIntermediate extends IVictim {
+	permissions: string;
+}
+
+export interface IVictimPopulated extends IVictim {
+	permissions?: IPermissionsRecord;
+}
 
 export interface IAccess {
 	access_id: number;
@@ -92,8 +102,6 @@ export interface ICriminalIntermediate extends ICriminal {
 	permissions: string;
 	total_cases: number;
 }
-
-export type IPermissionsRecord = Partial<Record<TAccessPermission, TAccessApproval>>;
 
 export interface ICasefilePopulated extends ICasefile {
 	weapons: string[];
