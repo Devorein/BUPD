@@ -4,19 +4,36 @@ import {
 	CreateCasefileResponse,
 	DeleteCasefileResponse,
 	GetCasefileResponse,
-	ICrimeCategory,
-	ICrimeWeapon,
+	GetCasefilesPayload,
+	GetCasefilesResponse,
+	ICasefileIntermediate,
+	ICasefilePopulated,
 	ICriminal,
+	IPolice,
 	IVictim,
 	PoliceJwtPayload,
+	TAccessPermission,
 	UpdateCasefileResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
 import { FieldPacket, RowDataPacket } from 'mysql2';
-import { CasefileModel, CrimeCategoryModel, CriminalModel, VictimModel } from '../models';
+import {
+	AccessModel,
+	CasefileModel,
+	CrimeCategoryModel,
+	CriminalModel,
+	VictimModel,
+} from '../models';
 import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
-import { handleError, logger, pool } from '../utils';
+import { paginate } from '../models/utils/paginate';
+import { SqlSelect } from '../types';
+import { handleError, logger, pool, query } from '../utils';
+import { convertCaseFilter } from '../utils/convertClientQuery';
+import { getCasefileAttributes, getPoliceAttributes } from '../utils/generateAttributes';
+import { generatePermissionRecord } from '../utils/generatePermissionRecord';
+import { inflateObject } from '../utils/inflateObject';
+import Logger from '../utils/logger';
 
 const CasefileController = {
 	async create(
@@ -33,8 +50,8 @@ const CasefileController = {
 			const newCriminalPayloads: Omit<ICriminal, 'criminal_id'>[] = [];
 			const allCriminalIds: number[] = [];
 			const victims: IVictim[] = [],
-				categories: ICrimeCategory[] = [],
-				weapons: ICrimeWeapon[] = [];
+				categories: string[] = [],
+				weapons: string[] = [];
 			payload.criminals.forEach((criminal) => {
 				if ('id' in criminal) {
 					existingCriminalIds.push(criminal.id);
@@ -75,25 +92,25 @@ const CasefileController = {
 			);
 
 			for (let index = 0; index < payload.weapons.length; index += 1) {
-				const weapon = await CrimeWeaponModel.create(
+				await CrimeWeaponModel.create(
 					{
 						case_no: maxCaseNo,
 						weapon: payload.weapons[index],
 					},
 					connection
 				);
-				weapons.push(weapon);
+				weapons.push(payload.weapons[index]);
 			}
 
 			for (let index = 0; index < payload.categories.length; index += 1) {
-				const category = await CrimeCategoryModel.create(
+				await CrimeCategoryModel.create(
 					{
 						case_no: maxCaseNo,
 						category: payload.categories[index],
 					},
 					connection
 				);
-				categories.push(category);
+				categories.push(payload.categories[index]);
 			}
 
 			for (let index = 0; index < payload.victims.length; index += 1) {
@@ -130,6 +147,40 @@ const CasefileController = {
 				);
 			}
 
+			// The reporting officer should have read, update and delete access to the casefile
+			const accessData = {
+				admin_id: null,
+				approved: 1,
+				case_no: maxCaseNo,
+				criminal_id: null,
+				police_nid: jwtPayload.nid,
+				type: 'case',
+			} as const;
+
+			await AccessModel.create(
+				{
+					...accessData,
+					permission: 'read',
+				},
+				connection
+			);
+
+			await AccessModel.create(
+				{
+					...accessData,
+					permission: 'update',
+				},
+				connection
+			);
+
+			await AccessModel.create(
+				{
+					...accessData,
+					permission: 'delete',
+				},
+				connection
+			);
+
 			const joinedData = (await connection.query(`
         SELECT
           CR.name,
@@ -151,30 +202,32 @@ const CasefileController = {
 					categories,
 					victims,
 					weapons,
-					criminals: joinedData[0] as ICriminal[],
+					criminals: allCriminalIds.length !== 0 ? (joinedData[0] as ICriminal[]) : [],
 				},
 			});
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: "Couldn't create case file. Please try again.",
-			});
+			handleError(res, 500, "Couldn't create case file. Please try again.");
 		}
 	},
 
 	async delete(req: Request<{ case_no: number }>, res: Response<DeleteCasefileResponse>) {
-		const file = await CasefileModel.findByCaseNo(req.params.case_no);
-		if (file[0]) {
-			const result = await CasefileModel.delete(req.params.case_no);
-			if (result) {
-				res.json({
-					status: 'success',
-					data: file[0],
-				});
+		try {
+			const file = await CasefileModel.findByCaseNo(req.params.case_no);
+			if (file) {
+				const result = await CasefileModel.delete(req.params.case_no);
+				if (result) {
+					res.json({
+						status: 'success',
+						data: file,
+					});
+				}
+			} else {
+				handleError(res, 404, 'No valid case files found to delete');
 			}
-		} else {
-			handleError(res, 404, 'No valid case files found to delete');
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
 		}
 	},
 
@@ -184,40 +237,137 @@ const CasefileController = {
 	) {
 		try {
 			const payload = req.body;
-			const [casefile] = await CasefileModel.find({ filter: [{ case_no: req.params.case_no }] });
+			const casefile = await CasefileModel.update([{ case_no: req.params.case_no }], {
+				...payload,
+				case_no: req.params.case_no,
+			});
+
 			if (!casefile) {
 				handleError(res, 404, "Casefile doesn't exist");
 			} else {
-				await CasefileModel.update(
-					[
-						{
-							case_no: req.params.case_no,
-						},
-					],
-					payload
-				);
 				res.json({
 					status: 'success',
-					data: {
-						...casefile,
-						...payload,
-					},
+					data: casefile,
 				});
 			}
 		} catch (err) {
 			logger.error(err);
-			handleError(res, 500, "Couldn't update the casefile");
+			handleError(res, 500, "Couldn't update casefile");
 		}
 	},
 	async get(req: Request<{ case_no: number }>, res: Response<GetCasefileResponse>) {
-		const [file] = await CasefileModel.findByCaseNo(req.params.case_no);
-		if (file) {
+		try {
+			const casefile = await CasefileModel.findByCaseNo(req.params.case_no);
+			if (casefile) {
+				// Get the criminals associated with the case
+				const [criminals] = (await query(
+					`SELECT Criminal.criminal_id as \`Criminal.criminal_id\`,Criminal.name as \`Criminal.name\`,Criminal.photo as \`Criminal.photo\` FROM Casefile as Casefile LEFT JOIN Casefile_Criminal as Casefile_Criminal on Casefile.case_no = Casefile_Criminal.case_no LEFT JOIN Criminal as Criminal on Casefile_Criminal.criminal_id = Criminal.criminal_id WHERE (Casefile.\`case_no\`=${req.params.case_no});`
+				)) as RowDataPacket[];
+				casefile.criminals = [];
+
+				(criminals as ICriminal[]).forEach((criminal) => {
+					if (criminal.criminal_id) {
+						casefile.criminals.push(inflateObject<ICriminal>(criminal, 'Criminal'));
+					}
+				});
+
+				// Get all the approved access request of this case
+				const [polices] = (await query(
+					`select ${getPoliceAttributes('Police', ['password']).join(
+						','
+					)}, Access.permission from Access as Access left join Police as Police on Police.nid = Access.police_nid where approved = 1 AND case_no = ${
+						req.params.case_no
+					};`
+				)) as RowDataPacket[];
+
+				// Get victims of the case
+				const [victims] = (await query(
+					`select name, address, age, phone_no, description, case_no from victim where case_no = ${req.params.case_no};`
+				)) as RowDataPacket[];
+				casefile.victims = victims as IVictim[];
+
+				res.json({
+					status: 'success',
+					data: {
+						...casefile,
+						polices: polices as (IPolice & { permission: TAccessPermission })[],
+					},
+				});
+			} else {
+				handleError(res, 404, `Casefile doesn't exist`);
+			}
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
+		}
+	},
+	async findMany(
+		req: Request<any, any, any, GetCasefilesPayload>,
+		res: Response<GetCasefilesResponse>
+	) {
+		const select: SqlSelect = [];
+		if (req.jwt_payload!.type === 'police') {
+			select.push({
+				raw: `(SELECT GROUP_CONCAT(CONCAT(permission, " ", approved)) from Access where Access.case_no = Casefile.\`case_no\` AND police_nid = ${
+					(req.jwt_payload as PoliceJwtPayload).nid
+				}) as permissions`,
+			});
+		}
+
+		select.push(
+			...getCasefileAttributes('Casefile'),
+			{
+				aggregation: ['DISTINCT', 'GROUP_CONCAT'],
+				attribute: 'weapon',
+				namespace: 'Crime_Weapon',
+			},
+			{
+				aggregation: ['DISTINCT', 'GROUP_CONCAT'],
+				attribute: 'category',
+				namespace: 'Crime_Category',
+			}
+		);
+		try {
 			res.json({
 				status: 'success',
-				data: file,
+				data: await paginate<ICasefilePopulated, ICasefileIntermediate>(
+					{
+						filter: convertCaseFilter(req.query.filter),
+						limit: req.query.limit,
+						sort: req.query.sort ? [req.query.sort] : [],
+						next: req.query.next,
+						select,
+						joins: [
+							['Casefile', 'Crime_Weapon', 'case_no', 'case_no', 'LEFT'],
+							['Casefile', 'Crime_Category', 'case_no', 'case_no', 'LEFT'],
+						],
+						groups: ['Casefile.case_no'],
+					},
+					'Casefile',
+					'case_no',
+					(rows) =>
+						rows.map((row) => {
+							const { permissions } = row;
+							const inflatedObject = inflateObject<ICasefileIntermediate>(row, 'Casefile');
+							return {
+								case_no: inflatedObject.case_no,
+								location: inflatedObject.location,
+								priority: inflatedObject.priority,
+								status: inflatedObject.status,
+								police_nid: inflatedObject.police_nid,
+								time: inflatedObject.time,
+								categories: inflatedObject.crime_category.category?.split(',') ?? [],
+								criminals: [],
+								victims: [],
+								weapons: inflatedObject.crime_weapon.weapon?.split(',') ?? [],
+								permissions: permissions ? generatePermissionRecord(permissions) : undefined,
+							} as ICasefilePopulated;
+						})
+				),
 			});
-		} else {
-			handleError(res, 404, `No casefile with id, ${req.params.case_no} found`);
+		} catch (err) {
+			Logger.error(err);
+			handleError(res);
 		}
 	},
 };

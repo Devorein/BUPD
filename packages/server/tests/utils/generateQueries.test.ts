@@ -3,12 +3,14 @@
 import {
 	generateCountQuery,
 	generateDeleteQuery,
+	generateGroupClause,
 	generateInsertQuery,
+	generateJoinClause,
 	generateLimitClause,
 	generateLogicalOperationClauses,
 	generateOrderbyClause,
-	generatePaginationQuery,
 	generateScalarClauses,
+	generateSelectClause,
 	generateSelectQuery,
 	generateSetClause,
 	generateUpdateQuery,
@@ -27,6 +29,48 @@ it(`generateCountQuery`, () => {
 			'police'
 		)
 	).toBe("SELECT COUNT(*) as count FROM police WHERE (`filter1`='value1' AND `filter2`='value2');");
+});
+
+describe('.generateGroupClause', () => {
+	it(`Should generate group clause for empty array`, () => {
+		expect(generateGroupClause([])).toBe(``);
+	});
+
+	it(`Should generate group clause for non empty array`, () => {
+		expect(generateGroupClause(['name', 'age'])).toBe('GROUP BY `name`,`age`');
+	});
+});
+
+describe('.generateSelectClause', () => {
+	it(`Should generate correct select clause without joins`, () => {
+		expect(
+			generateSelectClause(
+				[
+					'col1',
+					{
+						aggregation: ['SUM', 'COUNT'],
+						attribute: 'col2',
+					},
+				],
+				false
+			)
+		).toBe('`col1`,COUNT(SUM(`col2`)) as `col2`');
+	});
+
+	it(`Should generate correct select clause with joins`, () => {
+		expect(
+			generateSelectClause(
+				[
+					'col1',
+					{
+						aggregation: ['SUM', 'COUNT'],
+						attribute: 'col2',
+					},
+				],
+				true
+			)
+		).toBe('col1 as `col1`,COUNT(SUM(`col2`)) as `col2`');
+	});
 });
 
 describe('.generateScalarClauses', () => {
@@ -55,9 +99,12 @@ describe('.generateScalarClauses', () => {
 					$eq: 5,
 				},
 				h: true,
+				i: {
+					$is: null,
+				},
 			})
 		).toBe(
-			"(`a`>1 AND `b`<=3 AND `c` IN(1,2,3) AND `d`>='abc' AND `e`<5 AND `f`!='def' AND `g`=5 AND `h`=true)"
+			"(`a`>1 AND `b`<=3 AND `c` IN(1,2,3) AND `d`>='abc' AND `e`<5 AND `f`!='def' AND `g`=5 AND `h`=true AND `i` IS NULL)"
 		);
 	});
 
@@ -144,6 +191,10 @@ describe('.generateOrderbyClause', () => {
 		).toBe('ORDER BY `rank` DESC, `key` DESC');
 	});
 
+	it(`Should work when we pass undefined sort`, () => {
+		expect(generateOrderbyClause(undefined)).toBe('');
+	});
+
 	it(`Should work when we pass only sort for ASC`, () => {
 		expect(generateOrderbyClause([['rank', 1]])).toBe('ORDER BY `rank` ASC');
 	});
@@ -185,7 +236,7 @@ describe('.generateSelectQuery', () => {
 		expect(generateSelectQuery({}, 'Police')).toBe('SELECT * FROM Police ;');
 	});
 
-	it(`Should work when we Select specific attributes in SQL`, () => {
+	it(`Should work when we select specific attributes have filter and sort`, () => {
 		expect(
 			generateSelectQuery(
 				{
@@ -196,14 +247,39 @@ describe('.generateSelectQuery', () => {
 							rank: 'Nayak',
 						},
 					],
+					joins: [],
 					sort: [['rank', -1]],
 					limit: 10,
 					select: ['attribute1'],
+					groups: ['col1'],
 				},
 				'Police'
 			)
 		).toBe(
-			"SELECT `attribute1` FROM Police WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') ORDER BY `rank` DESC LIMIT 10;"
+			"SELECT `attribute1` FROM Police WHERE (`filter1`='value1' AND `filter2`='value2' AND `rank`='Nayak') GROUP BY `col1` ORDER BY `rank` DESC LIMIT 10;"
+		);
+	});
+
+	it(`Should work when we have join in select query`, () => {
+		expect(
+			generateSelectQuery(
+				{
+					filter: [
+						{
+							filter1: 'value1',
+							filter2: 'value2',
+							rank: 'Nayak',
+						},
+					],
+					joins: [['Police', 'Criminal', 'nid', 'criminal_nid']],
+					sort: [['rank', -1]],
+					limit: 10,
+					select: ['Police.attribute1'],
+				},
+				'Police'
+			)
+		).toBe(
+			"SELECT Police.attribute1 as `Police.attribute1` FROM Police as Police LEFT JOIN Criminal as Criminal on Police.nid = Criminal.criminal_nid WHERE (Police.`filter1`='value1' AND Police.`filter2`='value2' AND Police.`rank`='Nayak') ORDER BY Police.`rank` DESC LIMIT 10;"
 		);
 	});
 });
@@ -234,60 +310,19 @@ describe('.generateDeleteQuery', () => {
 	});
 });
 
-describe('.generatePaginationQuery', () => {
-	it(`Should generate update filter if no filter and sort is present`, () => {
-		expect(generatePaginationQuery({ next: { id: 2 } }, 'access_id')).toMatchObject({
-			filter: [
-				{
-					access_id: {
-						$gt: 2,
-					},
-				},
-			],
-		});
+describe('.generateJoinClause', () => {
+	it(`Should work when joins is empty`, () => {
+		expect(generateJoinClause([])).toBe('');
 	});
 
-	it(`Should generate update filter if filter and sort(descending) is present`, () => {
+	it(`Should work when joins is not empty`, () => {
 		expect(
-			generatePaginationQuery(
-				{ filter: [{ field1: 'value1' }], sort: [['field2', -1]], next: { id: 2 } },
-				'access_id'
-			)
-		).toMatchObject({
-			filter: [{ field1: 'value1' }, { $or: [{ field2: {} }, { access_id: { $lt: 2 } }] }],
-			sort: [
-				['field2', -1],
-				['access_id', -1],
-			],
-			next: { id: 2 },
-		});
-	});
-
-	it(`Should generate update filter if filter and sort(ascending) is present`, () => {
-		expect(
-			generatePaginationQuery(
-				{ filter: [{ field1: 'value1' }], sort: [['field2', 1]], next: { id: 2, field2: 2 } },
-				'access_id'
-			)
-		).toMatchObject({
-			filter: [
-				{ field1: 'value1' },
-				{
-					$or: [
-						{
-							field2: {
-								$gt: 2,
-							},
-						},
-						{ access_id: { $gt: 2 } },
-					],
-				},
-			],
-			sort: [
-				['field2', 1],
-				['access_id', -1],
-			],
-			next: { id: 2 },
-		});
+			generateJoinClause([
+				['Access', 'Police', 'police_nid', 'nid', 'LEFT'],
+				['Access', 'Criminal', 'criminal_id', 'criminal_id'],
+			])
+		).toBe(
+			`Access as Access LEFT JOIN Police as Police on Access.police_nid = Police.nid LEFT JOIN Criminal as Criminal on Access.criminal_id = Criminal.criminal_id`
+		);
 	});
 });

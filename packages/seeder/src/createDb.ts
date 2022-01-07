@@ -59,7 +59,7 @@ export default async function createDb(dbName: string) {
             case_no INT NOT NULL AUTO_INCREMENT,
             status VARCHAR(10),
             location VARCHAR(250) NOT NULL,
-            priority VARCHAR(10),
+            priority TINYINT NOT NULL,
             time DATETIME NOT NULL,
             police_nid INT,
             FOREIGN KEY (police_nid) 
@@ -126,7 +126,7 @@ export default async function createDb(dbName: string) {
 		query = `CREATE TABLE Access (
             access_id INT NOT NULL AUTO_INCREMENT,
             permission VARCHAR(10) NOT NULL,
-            approved BOOLEAN NOT NULL,
+            approved TINYINT NOT NULL,
             police_nid INT NOT NULL,
             type VARCHAR(10) NOT NULL,
             criminal_id INT,

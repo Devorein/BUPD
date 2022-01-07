@@ -1,5 +1,5 @@
 import { blue, grey, red } from '@mui/material/colors';
-import { createTheme, lighten, ThemeOptions } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 export function generateTheme() {
 	const text: {
@@ -33,7 +33,7 @@ export function generateTheme() {
 			},
 		},
 		typography: {
-			fontFamily: 'Rubik',
+			fontFamily: 'Rubik, sans-serif',
 			fontSize: 14,
 			body1: {
 				fontWeight: 400,
@@ -58,11 +58,14 @@ export function generateTheme() {
 			},
 			h4: {
 				fontWeight: 800,
+				fontSize: '1.75em',
 			},
 			h5: {
+				fontSize: '1.5em',
 				fontWeight: 700,
 			},
 			h6: {
+				fontSize: '1.25em',
 				fontWeight: 600,
 			},
 			caption: {
@@ -71,6 +74,15 @@ export function generateTheme() {
 			},
 		},
 		components: {
+			MuiList: {
+				styleOverrides: {
+					root: {
+						'&.MuiMenu-list': {
+							padding: 0,
+						},
+					},
+				},
+			},
 			MuiOutlinedInput: {
 				styleOverrides: {
 					input: {
@@ -78,7 +90,7 @@ export function generateTheme() {
 					},
 					root: {
 						'&.MuiInputBase-multiline': {
-							padding: 5,
+							padding: 0,
 						},
 					},
 				},
@@ -122,7 +134,7 @@ export function generateTheme() {
 							fontWeight: 500,
 						},
 						'&:hover': {
-							backgroundColor: lighten(grey[700], 0.5),
+							backgroundColor: grey[900],
 							color: 'white',
 						},
 					},

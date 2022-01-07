@@ -1,25 +1,38 @@
 import { NextKey, PaginatedResponse } from '@bupd/types';
 import { RowDataPacket } from 'mysql2';
 import { SqlClause } from '../../types';
-import { generateCountQuery, generatePaginationQuery, query } from '../../utils';
+import { generateCountQuery, query } from '../../utils';
+import { generatePaginationQuery } from '../../utils/generatePaginationQuery';
 import find from './find';
 
-export async function paginate<Data>(
+export async function paginate<Data, IntermediateData = Data>(
 	sqlClause: SqlClause & { next?: NextKey },
 	table: string,
-	nextCursorProperty: keyof Data
+	nextCursorProperty: keyof Data,
+	// eslint-disable-next-line
+	rowTransform?: (rows: IntermediateData[]) => Data[],
+	nullableSortFields?: Record<string, string>
 ) {
+	const sortField = sqlClause.sort?.[0]?.[0];
+
+	let next: PaginatedResponse<any>['next'] = null;
+
 	// Generate the total counts first as sqlClause.filter will be mutated by generatePaginationQuery
 	const rowsCount = (await query(
 		generateCountQuery(sqlClause.filter ?? [], table)
 	)) as RowDataPacket[];
-	const paginationQuery = generatePaginationQuery(sqlClause, nextCursorProperty as string);
+	const paginationQuery = generatePaginationQuery(
+		sqlClause,
+		nextCursorProperty as string,
+		nullableSortFields as Record<string, string>
+	);
 
-	const rows = await find<Data>(paginationQuery, table);
+	let rows = await find<Data>(paginationQuery, table);
 
-	const sortField = sqlClause.sort?.[0]?.[0];
+	if (rowTransform) {
+		rows = rowTransform(rows as unknown as IntermediateData[]);
+	}
 
-	let next: PaginatedResponse<any>['next'] = null;
 	// Get the last row
 	const lastRow = rows[rows.length - 1];
 	if (lastRow) {
@@ -29,6 +42,11 @@ export async function paginate<Data>(
 		};
 
 		if (sortField) {
+			const secondarySortField = nullableSortFields?.[sortField as string];
+			const isLastRowPrimarySortNull = lastRow[sortField as keyof Data] === null;
+			if (isLastRowPrimarySortNull && secondarySortField) {
+				next[secondarySortField] = lastRow[secondarySortField as keyof Data];
+			}
 			next[sortField] = lastRow[sortField as keyof Data];
 		}
 	}

@@ -30,13 +30,13 @@ export default function seeder() {
 					password: process.env.ADMIN_PASSWORD!,
 				});
 				const adminToken = loginResponse.token;
-				const polices = await createPolices(5, adminToken);
+				const polices = await createPolices(10, adminToken);
 				const loginPoliceResponses = await loginPolices(polices);
 				const policeTokens = loginPoliceResponses.map(
 					(loginPoliceResponse) => loginPoliceResponse.token
 				);
 				const createCasefileResponses = await createCasefile(policeTokens, {
-					totalCaseFiles: 10,
+					totalCaseFiles: 25,
 				});
 				const caseNumbers: number[] = [],
 					criminalIds: number[] = [];
@@ -47,7 +47,7 @@ export default function seeder() {
 						criminalIds.push(criminal.criminal_id);
 					});
 				});
-				await createAccess(policeTokens, caseNumbers, criminalIds, 50);
+				await createAccess(policeTokens, caseNumbers, criminalIds, 25);
 				fs.writeFileSync(path.join(__dirname, 'polices.json'), JSON.stringify(polices), 'utf-8');
 				connection.destroy();
 			} catch (error) {

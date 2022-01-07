@@ -11,16 +11,19 @@
     "build-prod": "run-s clean build export",
     "clean": "rimraf .next out",
     "lint": "next lint",
-    "build-types": "tsc --noEmit --pretty"
+    "build-types": "tsc --noEmit --pretty",
+    "format": "prettier ./src/**/*.{tsx,ts} --write"
   },
   "dependencies": {
     "@bupd/validation": "1.0.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.5",
+    "@mui/lab": "^5.0.0-alpha.63",
     "@mui/material": "^5.2.6",
     "@mui/styles": "^5.2.3",
     "axios": "^0.24.0",
+    "dayjs": "^1.10.7",
     "formik": "^2.2.9",
     "next": "^12.0.2",
     "next-seo": "^4.28.1",
@@ -29,10 +32,10 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.34.6",
-    "styled-jsx-plugin-postcss": "^4.0.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@bupd/constants": "1.0.0",
     "@bupd/types": "1.0.0",
     "@next/bundle-analyzer": "^12.0.2",
     "@types/qs": "^6.9.7",

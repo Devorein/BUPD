@@ -12,7 +12,7 @@ import {
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
 import { AdminModel, PoliceModel } from '../models';
-import { generatePoliceJwtToken, logger, removeFields, signToken } from '../utils';
+import { generatePoliceJwtToken, handleError, logger, removeFields, signToken } from '../utils';
 
 const AuthController = {
 	login: async (
@@ -28,17 +28,11 @@ const AuthController = {
 				});
 
 				if (!police) {
-					res.json({
-						status: 'error',
-						message: 'No police exists with that email',
-					});
+					handleError(res, 404, 'No police exists with that email');
 				} else {
 					const isCorrectPassword = await argon2.verify(police.password, payload.password);
 					if (!isCorrectPassword) {
-						res.json({
-							status: 'error',
-							message: 'Incorrect password',
-						});
+						handleError(res, 401, 'Incorrect password!');
 					} else {
 						const passwordRemovedPolice = removeFields<IPolice & { password: string }, IPolice>(
 							police,
@@ -56,17 +50,11 @@ const AuthController = {
 			} else if (payload.as === 'admin') {
 				const [admin] = await AdminModel.find([{ email: payload.email }]);
 				if (!admin) {
-					res.json({
-						status: 'error',
-						message: 'No admin exists with that email',
-					});
+					handleError(res, 404, 'No admin exists with that email');
 				} else {
 					const isCorrectPassword = await argon2.verify(admin.password, payload.password);
 					if (!isCorrectPassword) {
-						res.json({
-							status: 'error',
-							message: 'Incorrect password',
-						});
+						handleError(res, 401, 'Incorrect password!');
 					} else {
 						const passwordRemovedAdmin = removeFields<IAdmin & { password: string }, IAdmin>(
 							admin,
@@ -89,10 +77,7 @@ const AuthController = {
 			}
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: 'Something went wrong. Please try again.',
-			});
+			handleError(res);
 		}
 	},
 	register: async (
@@ -125,15 +110,13 @@ const AuthController = {
 			// and send appropriate response error message
 			if (err.code === 'ER_DUP_ENTRY') {
 				const isDuplicateEmail = err.sqlMessage.includes('email');
-				res.json({
-					status: 'error',
-					message: `A police already exists with this ${isDuplicateEmail ? 'email' : 'NID'}`,
-				});
+				handleError(
+					res,
+					409,
+					`A police already exists with this ${isDuplicateEmail ? 'email' : 'NID'}`
+				);
 			} else {
-				res.json({
-					status: 'error',
-					message: 'Something went wrong. Please try again',
-				});
+				handleError(res);
 			}
 		}
 	},
@@ -150,10 +133,7 @@ const AuthController = {
 					},
 				]);
 				if (!admin) {
-					res.json({
-						status: 'error',
-						message: "Admin doesn't exist",
-					});
+					handleError(res, 404, "Admin doesn't exist");
 				} else {
 					res.json({
 						status: 'success',
@@ -173,10 +153,7 @@ const AuthController = {
 					],
 				});
 				if (!police) {
-					res.json({
-						status: 'error',
-						message: "Police doesn't exist",
-					});
+					handleError(res, 404, "Police doesn't exist");
 				} else {
 					res.json({
 						status: 'success',
@@ -187,17 +164,11 @@ const AuthController = {
 					});
 				}
 			} else {
-				res.json({
-					status: 'error',
-					message: 'Invalid token used',
-				});
+				handleError(res, 401, 'Invalid token used');
 			}
 		} catch (err) {
 			logger.error(err);
-			res.json({
-				status: 'error',
-				message: 'Something went wrong. Please try again.',
-			});
+			handleError(res);
 		}
 	},
 };

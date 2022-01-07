@@ -5,7 +5,7 @@ function isObject(val: Record<string, any>) {
 }
 
 function isNumber(val: string) {
-	return !Number.isNaN(parseFloat(val)) && Number.isFinite(Number('5'));
+	return !val.includes(' ') && !Number.isNaN(parseFloat(val)) && Number.isFinite(Number('5'));
 }
 
 function isBoolean(val: boolean | string) {
@@ -54,7 +54,7 @@ function parseObject(obj: Record<string, any>) {
 	const result: Record<string, any> = {};
 	Object.keys(obj).forEach((key) => {
 		const val = parseValue(obj[key]);
-		if (val !== null) result[key] = val; // ignore null values
+		result[key] = val; // ignore null values
 	});
 	return result;
 }

@@ -2,9 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: Rubik;
+  src: url("../../public/static/Rubik-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Rubik;
+  src: url("../../public/static/Rubik-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: Rubik;
+  src: url("../../public/static/Rubik-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Rubik;
+  src: url("../../public/static/Rubik-Regular.ttf");
+  font-weight: 400;
+}
+
 body {
   height: 100vh;
   width: 100vw;
+  font-family: Rubik, sans-serif;
+  overflow:hidden;
 }
 
 #__next, .Page {
@@ -14,9 +40,10 @@ body {
 
 .Body {
   margin: 15px 0px;
-  height: calc(100% - 60px);
+  height: calc(100% - 75px);
   overflow: auto;
   width: 100%;
+  overflow:hidden;
 }
 
 ::-webkit-scrollbar {

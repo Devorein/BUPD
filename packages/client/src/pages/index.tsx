@@ -1,21 +1,15 @@
-import { AdminHome, Page, PoliceHome } from "../components";
-import { useIsAuthenticated } from "../hooks";
+import { useContext } from 'react';
+import { AdminHome, PoliceHome } from '../components';
+import { RootContext } from '../contexts';
+import { useIsAuthenticated } from '../hooks';
 
 const Index = () => {
-  const currentUser = useIsAuthenticated();
-
-  function render() {
-    if (!currentUser) {
-      return null;
-    }
-    return currentUser.type === "admin" ? <AdminHome /> : <PoliceHome />
-  }
-
-  return (
-    <Page>
-      {render()}
-    </Page>
-  );
+	useIsAuthenticated();
+	const { currentUser } = useContext(RootContext);
+	if (!currentUser) {
+		return null;
+	}
+	return currentUser.type === 'admin' ? <AdminHome /> : <PoliceHome />;
 };
 
 export default Index;

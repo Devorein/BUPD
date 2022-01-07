@@ -8,7 +8,7 @@ declare module 'express' {
 	}
 }
 
-export type PrimitiveValues = string | number | boolean;
+export type PrimitiveValues = string | number | boolean | null;
 
 export type SqlFilterInOperator = {
 	$in: PrimitiveValues[];
@@ -16,6 +16,10 @@ export type SqlFilterInOperator = {
 
 export type SqlFilterEqOperator = {
 	$eq: PrimitiveValues;
+};
+
+export type SqlFilterIsOperator = {
+	$is: PrimitiveValues;
 };
 
 export type SqlFilterNeqOperator = {
@@ -45,7 +49,8 @@ export type SqlFilterOperators =
 	| SqlFilterGteOperator
 	| SqlFilterGtOperator
 	| SqlFilterLtOperator
-	| SqlFilterLteOperator;
+	| SqlFilterLteOperator
+	| SqlFilterIsOperator;
 export interface SqlFilterOr {
 	// eslint-disable-next-line
 	$or: SqlFilter;
@@ -64,9 +69,26 @@ export type SqlFilter = (
 
 export type SqlSort = Array<[string, -1 | 1]>;
 
+// Left table, right table, Left table join attribute, right table join attribute, join type
+export type SqlJoins = [string, string, string, string, ('LEFT' | 'RIGHT' | 'INNER')?][];
+export type SqlAggregationSelect = {
+	aggregation: ('COUNT' | 'GROUP_CONCAT' | 'MIN' | 'MAX' | 'SUM' | 'DISTINCT')[];
+	attribute: string;
+	namespace?: string;
+	alias?: string;
+};
+
+export type SqlRawSelect = {
+	raw: string;
+};
+
+export type SqlSelect = (string | SqlAggregationSelect | SqlRawSelect)[];
+
 export interface SqlClause {
 	filter?: SqlFilter;
 	sort?: SqlSort;
 	limit?: number;
-	select?: string[];
+	select?: SqlSelect;
+	joins?: SqlJoins;
+	groups?: string[];
 }

@@ -33,11 +33,11 @@ describe('.AccessPayload.get', () => {
 		).toThrow();
 	});
 
-	it(`Should throw error when filter approved is greater than 1`, () => {
+	it(`Should throw error when filter approved is greater than 2`, () => {
 		expect(() =>
 			AccessPayload.get.validateSyncAt('filter.approved', {
 				filter: {
-					approved: [2],
+					approved: [3],
 				},
 			})
 		).toThrow();
@@ -47,7 +47,7 @@ describe('.AccessPayload.get', () => {
 		expect(() =>
 			AccessPayload.get.validateSyncAt('filter.approved', {
 				filter: {
-					approved: [0, 1],
+					approved: [0, 1, 2],
 				},
 			})
 		).not.toThrow();

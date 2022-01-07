@@ -1,11 +1,21 @@
-import { ApiResponse, PaginatedResponse } from '@bupd/types';
-import router from 'next/router';
-import { useInfiniteQuery, UseInfiniteQueryOptions } from 'react-query';
+import { ApiResponse, IQuery, PaginatedResponse } from '@bupd/types';
+import qs from 'qs';
+import { useInfiniteQuery, UseInfiniteQueryOptions, UseInfiniteQueryResult } from 'react-query';
 import { apiRequest } from '../utils';
 
-export function useApiInfiniteQuery<Item>(
+export type UseApiInfiniteQuery<Item> = UseInfiniteQueryResult<
+	ApiResponse<PaginatedResponse<Item>>,
+	Error
+> & {
+	totalItems: number;
+	allItems: Item[];
+	lastFetchedPage: ApiResponse<PaginatedResponse<Item>> | null | undefined;
+};
+
+export function useApiInfiniteQuery<Item, Payload extends IQuery<any, any>>(
 	keys: string[],
 	endpoint: string,
+	payload?: Payload,
 	options?: UseInfiniteQueryOptions<
 		ApiResponse<PaginatedResponse<Item>>,
 		Error,
@@ -13,7 +23,7 @@ export function useApiInfiniteQuery<Item>(
 		ApiResponse<PaginatedResponse<Item>>,
 		string[]
 	>
-) {
+): UseApiInfiniteQuery<Item> {
 	const infiniteQuery = useInfiniteQuery<
 		ApiResponse<PaginatedResponse<Item>>,
 		Error,
@@ -23,7 +33,7 @@ export function useApiInfiniteQuery<Item>(
 		keys,
 		async ({ pageParam }) =>
 			apiRequest<ApiResponse<PaginatedResponse<Item>>>(
-				`${endpoint}?${pageParam ?? router.asPath.slice(2)}`
+				`${endpoint}?${qs.stringify(pageParam ?? payload)}`
 			),
 		{
 			...options,

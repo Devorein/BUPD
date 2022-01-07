@@ -1,21 +1,20 @@
 import { GetCurrentUserResponse } from '@bupd/types';
 import router from 'next/router';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useQueryClient } from 'react-query';
-import { useCurrentUser } from './useCurrentUser';
+import { RootContext } from '../contexts';
 
 export function useIsAuthenticated() {
 	const queryClient = useQueryClient();
-	const currentUser = useCurrentUser();
-
+	const { currentUser, getCurrentUserQueryResult } = useContext(RootContext);
 	useEffect(() => {
-		if (!currentUser) {
-			const queryState = queryClient.getQueryState<GetCurrentUserResponse>(['currentUser']);
-
-			if (queryState && !queryState.isFetching && queryState.data?.status === 'error') {
-				router.push({ pathname: '/login' });
-			}
+		const queryState = queryClient.getQueryState<GetCurrentUserResponse>(['currentUser']);
+		if (
+			getCurrentUserQueryResult.status === 'error' ||
+			(queryState && !queryState.isFetching && queryState.data?.status === 'error')
+		) {
+			router.push({ pathname: '/login' });
 		}
-	}, [currentUser, queryClient]);
-	return currentUser;
+	}, [queryClient, getCurrentUserQueryResult]);
+	return currentUser!;
 }

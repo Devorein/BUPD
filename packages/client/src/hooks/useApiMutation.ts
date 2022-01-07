@@ -3,21 +3,28 @@ import axios, { AxiosError, Method } from 'axios';
 import { useMutation, UseMutationOptions } from 'react-query';
 import { JWT_LS_KEY, SERVER_URL } from '../constants';
 
-export function useApiMutation<R, P>(
+export function useApiMutation<Response, Payload>(
 	keys: string[],
 	endpoint: string,
 	method?: Method,
-	options?: UseMutationOptions<ApiResponse<R>, string, P>
+	options?: UseMutationOptions<ApiResponse<Response>, string, Payload>
 ) {
-	return useMutation<ApiResponse<R>, string, P>(
+	return useMutation<ApiResponse<Response>, string, Payload>(
 		keys,
 		async (payload) => {
+			// Support for endpoints that required data from payload
+			if ((payload as any).endpoint) {
+				// eslint-disable-next-line
+				endpoint = (payload as any).endpoint;
+				delete (payload as any).endpoint;
+			}
+
 			try {
 				let jwtToken: null | string = null;
 				if (typeof window !== 'undefined') {
 					jwtToken = localStorage.getItem(JWT_LS_KEY);
 				}
-				const { data: response } = await axios.request<ApiResponse<R>>({
+				const { data: response } = await axios.request<ApiResponse<Response>>({
 					url: `${SERVER_URL!}/${endpoint}`,
 					data: payload,
 					headers: {

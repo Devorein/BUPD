@@ -1,20 +1,13 @@
-import { CreateCasefilePayload, CreateCasefileResponse, TCasefilePriority } from '@bupd/types';
+import {
+	CASEFILE_PRIORITIES,
+	CASEFILE_STATUSES,
+	CRIME_CATEGORIES,
+	CRIME_WEAPONS,
+} from '@bupd/constants';
+import { CreateCasefilePayload, CreateCasefileResponse } from '@bupd/types';
 import dayjs from 'dayjs';
 import faker from 'faker';
 import { handleRequest, sleep } from './utils';
-
-const crimeWeapons = [
-	'Machete',
-	'Knife',
-	'Pistol Auto 9mm 1A',
-	'Submachine guns',
-	'Bamboo Stick',
-	'Hockey Stick',
-	'Baseball bat',
-	'Cricket bat',
-];
-const crimeCategories = ['Murder', 'Robbery', 'Sexual assault', 'Arson', 'Burglary', 'Theft'];
-const casePriorities: TCasefilePriority[] = ['high', 'low', 'medium'];
 
 interface CreateCasefileSeederOptions {
 	totalCaseFiles: number;
@@ -69,11 +62,11 @@ export async function createCasefile(
 			const categories: CreateCasefilePayload['categories'] = [];
 
 			for (let index = 0; index < totalCrimeWeapons; index += 1) {
-				weapons.push(faker.random.arrayElement(crimeWeapons));
+				weapons.push(faker.random.arrayElement(CRIME_WEAPONS));
 			}
 
 			for (let index = 0; index < totalCrimeCategories; index += 1) {
-				categories.push(faker.random.arrayElement(crimeCategories));
+				categories.push(faker.random.arrayElement(CRIME_CATEGORIES));
 			}
 
 			const victims: CreateCasefilePayload['victims'] = [];
@@ -94,7 +87,7 @@ export async function createCasefile(
 			for (let index = 0; index < totalCriminals; index += 1) {
 				criminals.push({
 					name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-					photo: faker.image.imageUrl(),
+					photo: faker.image.imageUrl(undefined, undefined, undefined, true),
 				});
 			}
 
@@ -104,8 +97,9 @@ export async function createCasefile(
 					{
 						categories: Array.from(new Set(categories)),
 						criminals,
+						status: faker.random.arrayElement(CASEFILE_STATUSES),
 						location: `${faker.address.streetAddress()} ${faker.address.city()}`,
-						priority: faker.random.arrayElement(casePriorities),
+						priority: faker.random.arrayElement(CASEFILE_PRIORITIES),
 						victims,
 						weapons: Array.from(new Set(weapons)),
 						time: faker.datatype.number({
@@ -116,7 +110,7 @@ export async function createCasefile(
 					policeToken
 				)
 			);
-			await sleep(500);
+			await sleep(150);
 			console.log(`Created case ${caseNumber + 1}`);
 		}
 
