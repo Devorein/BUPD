@@ -43,6 +43,18 @@ function policeValidationSchema(purpose?: 'create' | 'update', domain?: 'server'
 
 export const PoliceRequest = {
 	update: (domain: 'client' | 'server') => policeValidationSchema('update', domain),
+	updateProfile: (domain: 'client' | 'server') =>
+		policeValidationSchema('update', domain).concat(
+			yup.object({
+				password: yup.string().required(domain === 'client' ? 'Required' : undefined),
+				new_password: yup.string().test((password) => {
+					if (!password) {
+						return true;
+					}
+					return validatePassword(password);
+				}),
+			})
+		),
 	get: yup
 		.object({
 			filter: yup.object({
