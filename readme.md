@@ -49,6 +49,7 @@ This monorepo contains the following packages:-
 8. Go to seeder package using `cd packages/seeder` and run the following commands
    1. `npm run create-db <db-name>` to create a database with all the tables
    2. `npm run seeder` to generate and populate database with random data
+   3. Check out the `polices.json` file generated in `packages/seeder/dist/polices.json` to view the info about the generated police.
 9. Go to server package using `cd packages/server` and start the server using `npm run start`
 10. Go to client package using `cd packages/client` and start the client using `npm run dev`
 
