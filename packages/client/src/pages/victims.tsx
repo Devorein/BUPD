@@ -1,4 +1,4 @@
-import { GetVictimsPayload, IVictim, IVictimSort } from '@bupd/types';
+import { GetVictimsPayload, IVictim, IVictimPopulated, IVictimSort } from '@bupd/types';
 import { useDeleteVictimMutation, useDeleteVictimMutationCache } from '../api/mutations/useDeleteVictimMutation';
 import { useUpdateVictimMutation, useUpdateVictimMutationCache } from '../api/mutations/useUpdateVictimMutation';
 import { useGetVictimsQuery } from '../api/queries/useGetVictimsQuery';
@@ -59,7 +59,7 @@ export default function Criminals() {
               }}
             />
           </TransitionedModal>
-          <Paginate<GetVictimsPayload, IVictimSort, IVictim>
+          <Paginate<GetVictimsPayload, IVictimSort, IVictimPopulated>
             searchBarPlaceholder="Search by case no. Eg:- 1 2 10"
             filterGroups={[
               {
@@ -81,7 +81,7 @@ export default function Criminals() {
                     className="border-2 shadow-md relative rounded-md p-5 flex flex-col gap-3"
                     key={`${victim.name}.${victim.case_no}`}
                   >
-                    <MutateIcons onDeleteIconClick={() => {
+                    <MutateIcons showDeleteIcon={victim.permissions?.delete === 1} showUpdateIcon={victim.permissions?.update === 1} onDeleteIconClick={() => {
                       openModal(victim)
                     }} onUpdateIconClick={() => {
                       openUpdateModal(victim)

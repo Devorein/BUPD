@@ -9,6 +9,7 @@ import {
 	UpdateVictimPayload,
 } from '@bupd/types';
 import { UpdateVictimResponse } from '@bupd/types/src/endpoints';
+import { IVictimIntermediate } from '@bupd/types/src/entities';
 import { Request, Response } from 'express';
 import { VictimModel } from '../models';
 import { paginate } from '../models/utils/paginate';
@@ -16,6 +17,7 @@ import { SqlSelect } from '../types';
 import { handleError, removeFields } from '../utils';
 import { convertVictimFilter } from '../utils/convertClientQuery';
 import { getVictimAttributes } from '../utils/generateAttributes';
+import { generatePermissionRecord } from '../utils/generatePermissionRecord';
 import Logger from '../utils/logger';
 
 const VictimController = {
@@ -38,7 +40,7 @@ const VictimController = {
 		try {
 			res.json({
 				status: 'success',
-				data: await paginate<IVictim>(
+				data: await paginate<IVictim, IVictimIntermediate>(
 					{
 						filter: convertVictimFilter(req.query.filter),
 						limit: req.query.limit,
@@ -48,10 +50,11 @@ const VictimController = {
 					},
 					'Victim',
 					'name',
-					(rows) => {
-						console.log(rows);
-						return rows;
-					}
+					(rows) =>
+						rows.map((row) => ({
+							...row,
+							permissions: row.permissions ? generatePermissionRecord(row.permissions) : undefined,
+						}))
 				),
 			});
 		} catch (err) {

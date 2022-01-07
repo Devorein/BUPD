@@ -5,6 +5,8 @@ import { useIsAuthenticated } from '../hooks/useIsAuthenticated';
 
 export default function Accesses() {
   const currentUser = useIsAuthenticated();
-
+  if (!currentUser) {
+    return null;
+  }
   return currentUser.type === "admin" ? <AdminAccessList /> : <PoliceAccessList />
 }
