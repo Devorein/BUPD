@@ -17,9 +17,9 @@ function policeValidationSchema(purpose?: 'create' | 'update', domain?: 'server'
 			})
 			.required(domain === 'client' ? 'Required' : undefined)
 			.typeError('Invalid'),
-		phone: yup.string(),
-		address: yup.string(),
-		designation: yup.string(),
+		phone: yup.string().required(domain === 'client' ? 'Required' : undefined),
+		address: yup.string().required(domain === 'client' ? 'Required' : undefined),
+		designation: yup.string().required(domain === 'client' ? 'Required' : undefined),
 		name: yup.string().required(domain === 'client' ? 'Required' : undefined),
 		rank: yup.string().required(domain === 'client' ? 'Required' : undefined),
 	};
@@ -43,6 +43,25 @@ function policeValidationSchema(purpose?: 'create' | 'update', domain?: 'server'
 
 export const PoliceRequest = {
 	update: (domain: 'client' | 'server') => policeValidationSchema('update', domain),
+	updateProfile: (domain: 'client' | 'server') =>
+		policeValidationSchema('update', domain).concat(
+			yup.object({
+				password: yup.string().required(domain === 'client' ? 'Required' : undefined),
+				new_password: yup.string().test(function validation(password) {
+					if (!password) {
+						return true;
+					}
+					if (!validatePassword(password)) {
+						return (this as any).createError({
+							message: 'Weak password',
+							path: 'new_password',
+						});
+					}
+					return true;
+				}),
+				nid: yup.number().required(),
+			})
+		),
 	get: yup
 		.object({
 			filter: yup.object({

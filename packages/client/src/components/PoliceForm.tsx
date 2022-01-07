@@ -10,10 +10,11 @@ import { FormikTextInput } from "./FormikTextInput";
 interface PoliceFormProps<PoliceData> extends FormProps<PoliceData> {
   showPassword: boolean
   showNid: boolean
+  showNewPassword?: boolean
 }
 
 export function PoliceForm<PoliceData = IPolice>(props: PoliceFormProps<PoliceData>) {
-  const { showNid, showPassword, header, submitButtonText, initialValues, className, onSubmit, validationSchema, isMutationLoading } = props;
+  const { showNewPassword = false, showNid, showPassword, header, submitButtonText, initialValues, className, onSubmit, validationSchema, isMutationLoading } = props;
 
   return (
     <Formik
@@ -46,6 +47,13 @@ export function PoliceForm<PoliceData = IPolice>(props: PoliceFormProps<PoliceDa
               disabled={isMutationLoading}
               name="password"
               label="Password"
+              placeholder="*****"
+              type="password"
+            />}
+            {showNewPassword && <FormikTextInput
+              disabled={isMutationLoading}
+              name="new_password"
+              label="New Password"
               placeholder="*****"
               type="password"
             />}

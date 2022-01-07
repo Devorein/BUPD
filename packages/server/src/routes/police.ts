@@ -14,6 +14,13 @@ PoliceRouter.get(
 	isAuthorized(['admin', 'police']),
 	PoliceController.findMany
 )
+	.put(
+		'/',
+		isAuthenticated,
+		isAuthorized(['police']),
+		validatePayload(PoliceRequest.updateProfile('server')),
+		PoliceController.updateProfile
+	)
 	.get<any, any, any, GetPoliceAccessesPayload>(
 		'/access',
 		validateQuery(AccessPayload.get),
@@ -33,7 +40,7 @@ PoliceRouter.get(
 		'/:nid',
 		validatePayload(PoliceRequest.update('server')),
 		isAuthenticated,
-		isAuthorized(['admin', 'police']),
+		isAuthorized(['admin']),
 		PoliceController.update
 	);
 
