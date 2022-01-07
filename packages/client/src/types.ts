@@ -13,8 +13,8 @@ export interface FormProps<Values> {
 }
 
 export interface FormElementProps<State> {
-  setState: Dispatch<SetStateAction<State>>
-  state: State
-  stateKey: keyof State
-  label: string
+	setState: Dispatch<SetStateAction<State>>;
+	state: State;
+	stateKey: keyof State;
+	label: string;
 }

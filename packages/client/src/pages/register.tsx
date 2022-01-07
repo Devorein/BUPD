@@ -6,43 +6,52 @@ import { PoliceForm } from '../components/PoliceForm';
 import { useIsAuthenticated, useIsAuthorized } from '../hooks';
 
 const registerInputInitialValue = (): RegisterPolicePayload => ({
-  email: '',
-  password: '',
-  address: "",
-  designation: "",
-  name: "",
-  nid: 10000,
-  phone: "",
-  rank: ""
+	email: '',
+	password: '',
+	address: '',
+	designation: '',
+	name: '',
+	nid: 10000,
+	phone: '',
+	rank: '',
 });
 
-const createPolicePayloadValidationSchema = PoliceRequest.create("client");
+const createPolicePayloadValidationSchema = PoliceRequest.create('client');
 
 export default function Register() {
-  useIsAuthenticated();
-  useIsAuthorized(["admin"])
+	useIsAuthenticated();
+	useIsAuthorized(['admin']);
 
-  const { enqueueSnackbar } = useSnackbar();
-  const registerMutation = useRegisterMutation();
+	const { enqueueSnackbar } = useSnackbar();
+	const registerMutation = useRegisterMutation();
 
-  return <div className="flex items-center justify-center w-full h-full">
-    <PoliceForm showNid showPassword className="max-w-[450px]" header="Register A police" submitButtonText="Register" initialValues={registerInputInitialValue()} isMutationLoading={registerMutation.isLoading} onSubmit={async (values, { resetForm }) => {
-      try {
-        registerMutation.mutate(
-          values,
-          {
-            onSuccess() {
-              enqueueSnackbar(`Successfully registered ${values.name}`, { variant: 'success' });
-              resetForm()
-            },
-            onError(response) {
-              enqueueSnackbar((response as any).message, { variant: 'error' });
-            }
-          }
-        );
-      } catch (err: any) {
-        enqueueSnackbar(err.message, { variant: 'error' });
-      }
-    }} validationSchema={createPolicePayloadValidationSchema} />
-  </div>
+	return (
+		<div className="flex items-center justify-center w-full h-full">
+			<PoliceForm
+				showNid
+				showPassword
+				className="max-w-[450px]"
+				header="Register A police"
+				submitButtonText="Register"
+				initialValues={registerInputInitialValue()}
+				isMutationLoading={registerMutation.isLoading}
+				onSubmit={async (values, { resetForm }) => {
+					try {
+						registerMutation.mutate(values, {
+							onSuccess() {
+								enqueueSnackbar(`Successfully registered ${values.name}`, { variant: 'success' });
+								resetForm();
+							},
+							onError(response) {
+								enqueueSnackbar((response as any).message, { variant: 'error' });
+							},
+						});
+					} catch (err: any) {
+						enqueueSnackbar(err.message, { variant: 'error' });
+					}
+				}}
+				validationSchema={createPolicePayloadValidationSchema}
+			/>
+		</div>
+	);
 }
