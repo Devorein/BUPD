@@ -2,6 +2,7 @@
 import {
 	ICasefile,
 	ICasefileIntermediate,
+	ICasefilePopulated,
 	TCasefileStatus,
 	UpdateCasefilePayload,
 } from '@bupd/types';
@@ -67,7 +68,7 @@ const CasefileModel = {
 			weapons: inflatedObject.crime_weapon.weapon?.split(',') ?? [],
 			criminals: [],
 			victims: [],
-		};
+		} as ICasefilePopulated;
 	},
 
 	async create(

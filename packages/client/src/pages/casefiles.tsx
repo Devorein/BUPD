@@ -4,24 +4,21 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { blue, green, grey, red } from '@mui/material/colors';
-import dayjs from "dayjs";
-import relativeTime from 'dayjs/plugin/relativeTime';
+import router from "next/router";
 import { useCreateAccessMutation, useCreateAccessMutationCache } from "../api/mutations/useCreateAccessMutation";
 import { useDeleteCasefileMutation, useDeleteCasefileMutationCache } from "../api/mutations/useDeleteCasefileMutation";
 import { useUpdateCasefileMutation, useUpdateCasefileMutationCache } from "../api/mutations/useUpdateCasefileMutation";
 import { useGetCasefilesQuery } from "../api/queries/useGetCasefilesQuery";
+import { CasefileCard } from "../components/CasefileCard";
 import { CasefileForm } from "../components/CasefileForm";
 import { DeleteModal } from "../components/DeleteModal";
-import { DetailsList } from "../components/DetailsList";
 import { TransitionedModal } from "../components/Modal";
 import { MutateIcons } from "../components/MutateIcons";
 import { Paginate } from "../components/Paginate";
-import { Tags } from "../components/Tags";
 import { casefileSortLabelRecord } from "../constants";
 import { useIsAuthenticated } from "../hooks/useIsAuthenticated";
 import { useModal } from "../hooks/useModal";
 
-dayjs.extend(relativeTime);
 
 const createInitialGetCasefilesQuery = (): GetCasefilesPayload => ({
   limit: 10,
@@ -116,11 +113,11 @@ export default function Casefiles() {
                   let permissionIcons: null | JSX.Element = null;
                   let mutateIcons: null | JSX.Element = null;
                   if (currentUser.type === "admin") {
-                    mutateIcons = <MutateIcons onDeleteIconClick={() => {
+                    mutateIcons = <MutateIcons onViewIconClick={() => router.push(`/case/${casefile.case_no}`)} showViewIcon={casefile.permissions?.read === 1} onDeleteIconClick={() => {
                       openModal(casefile)
                     }} onUpdateIconClick={() => { openUpdateModal(casefile) }} />
                   } else {
-                    mutateIcons = <MutateIcons showDeleteIcon={casefile.permissions?.delete === 1} showUpdateIcon={casefile.permissions?.update === 1} onDeleteIconClick={() => {
+                    mutateIcons = <MutateIcons onViewIconClick={() => router.push(`/case/${casefile.case_no}`)} showViewIcon={casefile.permissions?.read === 1} showDeleteIcon={casefile.permissions?.delete === 1} showUpdateIcon={casefile.permissions?.update === 1} onDeleteIconClick={() => {
                       openModal(casefile)
                     }} onUpdateIconClick={() => { openUpdateModal(casefile) }} />
                   }
@@ -151,15 +148,6 @@ export default function Casefiles() {
                     </div>
                   }
 
-                  let priority = 'Low';
-                  let backgroundColor = '#20da48d6';
-                  if (casefile.priority === 2) {
-                    backgroundColor = '#da2020d4';
-                    priority = 'High';
-                  } else if (casefile.priority === 1) {
-                    backgroundColor = '#ebd82add';
-                    priority = 'Medium';
-                  }
                   return (
                     <div
                       className="border-2 shadow-md rounded-md p-5 flex flex-col gap-3"
@@ -169,41 +157,7 @@ export default function Casefiles() {
                         {permissionIcons}
                         {mutateIcons}
                       </div>
-                      <div className="justify-center flex font-bold text-2xl">
-                        Case {casefile.case_no}
-                      </div>
-                      {casefile.categories && casefile.categories.length !== 0 && <div className="flex flex-col gap-2">
-                        <div className="text-center font-semibold text-lg">Categories</div>
-                        <Tags tags={casefile.categories} />
-                      </div>}
-                      {casefile.weapons && casefile.weapons.length !== 0 && <div className="flex flex-col gap-2 mb-2">
-                        <div className="text-center font-semibold text-lg">Weapons</div>
-                        <Tags tags={casefile.weapons} />
-                      </div>}
-                      <DetailsList
-                        items={[
-                          ['Location', casefile.location],
-                          ['Police NID', casefile.police_nid],
-                          ['Time', dayjs().to(dayjs(casefile.time))],
-                          [
-                            'Status',
-                            casefile.status
-                          ],
-                          [
-                            'Priority',
-                            <span
-                              className="px-2 py-1 font-semibold text-sm rounded-sm"
-                              key="priority"
-                              style={{
-                                backgroundColor,
-                                color: 'white',
-                              }}
-                            >
-                              {priority}
-                            </span>,
-                          ],
-                        ]}
-                      />
+                      <CasefileCard casefile={casefile} />
                     </div>
                   );
                 })}

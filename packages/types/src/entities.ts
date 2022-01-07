@@ -111,6 +111,10 @@ export interface ICasefilePopulated extends ICasefile {
 	permissions?: IPermissionsRecord;
 }
 
+export type ICasefileDetailed = ICasefilePopulated & {
+	polices: (IPolice & { permission: TAccessPermission })[];
+};
+
 export interface IAccessPopulated extends IAccess {
 	police: Omit<IPolice, 'password'>;
 	casefile: null | ICasefile;

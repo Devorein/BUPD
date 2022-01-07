@@ -9,8 +9,10 @@ import {
 	ICasefileIntermediate,
 	ICasefilePopulated,
 	ICriminal,
+	IPolice,
 	IVictim,
 	PoliceJwtPayload,
+	TAccessPermission,
 	UpdateCasefileResponse,
 } from '@bupd/types';
 import { Request, Response } from 'express';
@@ -26,9 +28,9 @@ import CasefileCriminalModel from '../models/CasefileCriminal';
 import CrimeWeaponModel from '../models/CrimeWeapon';
 import { paginate } from '../models/utils/paginate';
 import { SqlSelect } from '../types';
-import { handleError, logger, pool } from '../utils';
+import { handleError, logger, pool, query } from '../utils';
 import { convertCaseFilter } from '../utils/convertClientQuery';
-import { getCasefileAttributes } from '../utils/generateAttributes';
+import { getCasefileAttributes, getPoliceAttributes } from '../utils/generateAttributes';
 import { generatePermissionRecord } from '../utils/generatePermissionRecord';
 import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
@@ -257,9 +259,39 @@ const CasefileController = {
 		try {
 			const casefile = await CasefileModel.findByCaseNo(req.params.case_no);
 			if (casefile) {
+				// Get the criminals associated with the case
+				const [criminals] = (await query(
+					`SELECT Criminal.criminal_id as \`Criminal.criminal_id\`,Criminal.name as \`Criminal.name\`,Criminal.photo as \`Criminal.photo\` FROM Casefile as Casefile LEFT JOIN Casefile_Criminal as Casefile_Criminal on Casefile.case_no = Casefile_Criminal.case_no LEFT JOIN Criminal as Criminal on Casefile_Criminal.criminal_id = Criminal.criminal_id WHERE (Casefile.\`case_no\`=${req.params.case_no});`
+				)) as RowDataPacket[];
+				casefile.criminals = [];
+
+				(criminals as ICriminal[]).forEach((criminal) => {
+					if (criminal.criminal_id) {
+						casefile.criminals.push(inflateObject<ICriminal>(criminal, 'Criminal'));
+					}
+				});
+
+				// Get all the approved access request of this case
+				const [polices] = (await query(
+					`select ${getPoliceAttributes('Police', ['password']).join(
+						','
+					)}, Access.permission from Access as Access left join Police as Police on Police.nid = Access.police_nid where approved = 1 AND case_no = ${
+						req.params.case_no
+					};`
+				)) as RowDataPacket[];
+
+				// Get victims of the case
+				const [victims] = (await query(
+					`select name, address, age, phone_no, description, case_no from victim where case_no = ${req.params.case_no};`
+				)) as RowDataPacket[];
+				casefile.victims = victims as IVictim[];
+
 				res.json({
 					status: 'success',
-					data: casefile,
+					data: {
+						...casefile,
+						polices: polices as (IPolice & { permission: TAccessPermission })[],
+					},
 				});
 			} else {
 				handleError(res, 404, `Casefile doesn't exist`);

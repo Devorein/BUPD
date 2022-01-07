@@ -26,6 +26,7 @@ const hasAccess =
 				} else if (accessType === 'criminal') {
 					filter.criminal_id = req.params.criminal_id ?? req.body.criminal_id;
 				}
+
 				const [row] = await AccessModel.find({
 					filter: [filter],
 				});
