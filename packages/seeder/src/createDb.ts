@@ -39,6 +39,7 @@ export default async function createDb(dbName: string) {
             phone varchar(25),
             -- Need to use backtics around rank as its a reserved keyword in MySQL 8
             \`rank\` varchar(100) NOT NULL,
+            UNIQUE (email),
             PRIMARY KEY (nid)
             );`;
 		await connection.query(query);

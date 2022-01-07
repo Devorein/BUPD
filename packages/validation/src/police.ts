@@ -47,11 +47,17 @@ export const PoliceRequest = {
 		policeValidationSchema('update', domain).concat(
 			yup.object({
 				password: yup.string().required(domain === 'client' ? 'Required' : undefined),
-				new_password: yup.string().test((password) => {
+				new_password: yup.string().test(function validation(password) {
 					if (!password) {
 						return true;
 					}
-					return validatePassword(password);
+					if (!validatePassword(password)) {
+						return (this as any).createError({
+							message: 'Weak password',
+							path: 'new_password',
+						});
+					}
+					return true;
 				}),
 				nid: yup.number().required(),
 			})
