@@ -1,13 +1,14 @@
 import { Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
-interface DetailsListProps {
+export interface DetailsListProps {
   items: [string, (string | number | JSX.Element)][]
   header?: string
+  className?: string
 }
 
 export function DetailsList(props: DetailsListProps) {
-  return <div className="flex h-full flex-col gap-5 flex-grow">
+  return <div className={`flex h-full flex-col gap-5 flex-grow ${props.className ?? ""}`}>
     {props.header && <div className="flex justify-center px-5 py-2 rounded-sm uppercase text-center" style={{
       background: grey[100]
     }}>

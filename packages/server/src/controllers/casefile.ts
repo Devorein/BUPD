@@ -9,6 +9,7 @@ import {
 	ICasefileIntermediate,
 	ICasefilePopulated,
 	ICriminal,
+	IPolice,
 	IVictim,
 	PoliceJwtPayload,
 	TAccessPermission,
@@ -29,7 +30,7 @@ import { paginate } from '../models/utils/paginate';
 import { SqlSelect } from '../types';
 import { handleError, logger, pool, query } from '../utils';
 import { convertCaseFilter } from '../utils/convertClientQuery';
-import { getCasefileAttributes } from '../utils/generateAttributes';
+import { getCasefileAttributes, getPoliceAttributes } from '../utils/generateAttributes';
 import { generatePermissionRecord } from '../utils/generatePermissionRecord';
 import { inflateObject } from '../utils/inflateObject';
 import Logger from '../utils/logger';
@@ -268,13 +269,17 @@ const CasefileController = {
 				});
 
 				// Get all the approved access request of this case
-				const [accesses] = (await query(
-					`select police_nid, permission from access where approved = 1 AND case_no = ${req.params.case_no};`
+				const [polices] = (await query(
+					`select ${getPoliceAttributes('Police', ['password']).join(
+						','
+					)}, Access.permission from Access as Access left join Police as Police on Police.nid = Access.police_nid where approved = 1 AND case_no = ${
+						req.params.case_no
+					};`
 				)) as RowDataPacket[];
 
 				// Get victims of the case
 				const [victims] = (await query(
-					`select name, address, age, phone_no, description from victim where case_no = ${req.params.case_no};`
+					`select name, address, age, phone_no, description, case_no from victim where case_no = ${req.params.case_no};`
 				)) as RowDataPacket[];
 				casefile.victims = victims as IVictim[];
 
@@ -282,7 +287,7 @@ const CasefileController = {
 					status: 'success',
 					data: {
 						...casefile,
-						accesses: accesses as { police_nid: number; permission: TAccessPermission }[],
+						polices: polices as (IPolice & { permission: TAccessPermission })[],
 					},
 				});
 			} else {

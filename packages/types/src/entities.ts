@@ -112,7 +112,7 @@ export interface ICasefilePopulated extends ICasefile {
 }
 
 export type ICasefileDetailed = ICasefilePopulated & {
-	accesses: { police_nid: number; permission: TAccessPermission }[];
+	polices: (IPolice & { permission: TAccessPermission })[];
 };
 
 export interface IAccessPopulated extends IAccess {

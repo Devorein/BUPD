@@ -11,9 +11,9 @@ import {
 } from '../api/mutations/useDeleteCriminalMutation';
 import { useUpdateCriminalMutation, useUpdateCriminalMutationCache } from '../api/mutations/useUpdateCriminalMutation';
 import { useGetCriminalsQuery } from '../api/queries/useGetCriminalsQuery';
+import { CriminalCard } from '../components/CriminalCard';
 import { CriminalForm } from '../components/CriminalForm';
 import { DeleteModal } from '../components/DeleteModal';
-import { DetailsList } from '../components/DetailsList';
 import { TransitionedModal } from '../components/Modal';
 import { MutateIcons } from '../components/MutateIcons';
 import { Paginate } from '../components/Paginate';
@@ -122,22 +122,7 @@ export default function Criminals() {
                         {permissionIcons}
                         {mutateIcons}
                       </div>
-                      <div className="flex justify-center w-full mb-5">
-                        <img
-                          className="h-[50px] w-[50px] rounded-full shadow-md object-cover"
-                          alt="profile"
-                          src={
-                            criminal.photo ?? 'https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg'
-                          }
-                        />
-                      </div>
-                      <DetailsList
-                        items={[
-                          ['Name', criminal.name],
-                          ['ID', criminal.criminal_id],
-                          ['Total Cases', criminal.total_cases],
-                        ]}
-                      />
+                      <CriminalCard criminal={criminal} />
                     </div>
                   })}
                 </div>

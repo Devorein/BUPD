@@ -1,15 +1,14 @@
 import { POLICE_RANKS } from "@bupd/constants";
 import { GetPolicesPayload, IPolice, IPolicePopulated, IPoliceSort, UpdatePolicePayload } from "@bupd/types";
 import { PoliceRequest } from "@bupd/validation";
-import { grey } from "@mui/material/colors";
 import { useDeletePoliceMutation, useDeletePoliceMutationCache } from "../api/mutations/useDeletePoliceMutation";
 import { useUpdatePoliceMutation, useUpdatePoliceMutationCache } from "../api/mutations/useUpdatePoliceMutation";
 import { useGetPolicesQuery } from "../api/queries/useGetPolicesQuery";
 import { DeleteModal } from "../components/DeleteModal";
-import { DetailsList } from "../components/DetailsList";
 import { TransitionedModal } from "../components/Modal";
 import { MutateIcons } from "../components/MutateIcons";
 import { Paginate } from "../components/Paginate";
+import { PoliceCard } from "../components/PoliceCard";
 import { PoliceForm } from "../components/PoliceForm";
 import { SelectTags } from "../components/SelectTags";
 import { policeSortLabelRecord } from "../constants";
@@ -85,25 +84,7 @@ export default function Polices() {
               }} onUpdateIconClick={() => {
                 openUpdateModal(police)
               }} />}
-              <div className="flex justify-center w-full">
-                <img className="h-[50px] w-[50px] rounded-full shadow-md" alt="profile" src={"https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg"} />
-              </div>
-              <div className="justify-center flex font-bold text-2xl">{police.name}</div>
-              <div className="flex justify-center mb-3">
-                <span className="border-2 px-2 py-1 font-semibold text-sm rounded-md shadow-sm" style={{
-                  backgroundColor: grey[100]
-                }}>
-                  {police.rank}
-                </span>
-              </div>
-              <DetailsList items={[
-                ["Designation", police.designation],
-                ["Address", police.address],
-                ["Email", police.email],
-                ["NID", police.nid],
-                ["Phone", police.phone],
-                ["Reported Cases", police.reported_cases],
-              ]} />
+              <PoliceCard police={police} />
             </div>)}
           </div>} label="Polices" sortLabelRecord={policeSortLabelRecord} dataFetcher={useGetPolicesQuery} />
         </>}

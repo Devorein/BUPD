@@ -5,7 +5,7 @@ import { useApiQuery } from "../../hooks";
 
 export function useGetCasefileQuery(caseNo?: number) {
   const { currentUser } = useContext(RootContext);
-  return useApiQuery<GetCasefileResponse, { endpoint: string }>(
+  return useApiQuery<GetCasefileResponse>(
     ['casefile', caseNo ?? ""],
     `casefile/${caseNo}`,
     {

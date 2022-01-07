@@ -22,7 +22,7 @@ export function CasefileCard(props: CasefileCardProps) {
     priority = 'Medium';
   }
 
-  return <div>
+  return <div className="flex flex-col gap-3">
     <div className="justify-center flex font-bold text-2xl">
       Case {casefile.case_no}
     </div>
@@ -30,11 +30,12 @@ export function CasefileCard(props: CasefileCardProps) {
       <div className="text-center font-semibold text-lg">Categories</div>
       <Tags tags={casefile.categories} />
     </div>}
-    {casefile.weapons && casefile.weapons.length !== 0 && <div className="flex flex-col gap-2 mb-2">
+    {casefile.weapons && casefile.weapons.length !== 0 && <div className="flex flex-col gap-2">
       <div className="text-center font-semibold text-lg">Weapons</div>
       <Tags tags={casefile.weapons} />
     </div>}
     <DetailsList
+      className="mt-5"
       items={[
         ['Location', casefile.location],
         ['Police NID', casefile.police_nid],

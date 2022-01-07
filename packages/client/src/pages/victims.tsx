@@ -3,10 +3,10 @@ import { useDeleteVictimMutation, useDeleteVictimMutationCache } from '../api/mu
 import { useUpdateVictimMutation, useUpdateVictimMutationCache } from '../api/mutations/useUpdateVictimMutation';
 import { useGetVictimsQuery } from '../api/queries/useGetVictimsQuery';
 import { DeleteModal } from '../components/DeleteModal';
-import { DetailsList } from '../components/DetailsList';
 import { TransitionedModal } from '../components/Modal';
 import { MutateIcons } from '../components/MutateIcons';
 import { Paginate } from '../components/Paginate';
+import { VictimCard } from '../components/VictimCard';
 import { VictimForm } from '../components/VictimForm';
 import { victimsSortLabelRecord } from '../constants';
 import { useIsAuthenticated } from '../hooks';
@@ -86,17 +86,7 @@ export default function Criminals() {
                     }} onUpdateIconClick={() => {
                       openUpdateModal(victim)
                     }} />
-                    <div className="justify-center flex font-bold text-2xl my-2">
-                      {victim.name}
-                    </div>
-                    <DetailsList
-                      items={[
-                        ['Age', victim.age ?? "N/A"],
-                        ['Address', victim.address ?? "N/A"],
-                        ['Phone', victim.phone_no ?? "N/A"],
-                        ['Case', victim.case_no],
-                      ]}
-                    />
+                    <VictimCard victim={victim} />
                   </div>
                 ))}
               </div>
