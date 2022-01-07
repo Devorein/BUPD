@@ -1,12 +1,12 @@
 import { GetPoliceAccessesPayload, IAccess, IAccessSort } from "@bupd/types";
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import WorkIcon from '@mui/icons-material/Work';
-import { useGetPoliceAccessesQuery } from "../../api/queries/useGetPoliceAccessesQuery";
-import { ApprovalIcons } from "../../components/ApprovalIcons";
-import { Paginate } from "../../components/Paginate";
-import { AccessesFilterGroup, accessSortLabelRecord, createInitialGetAccessesQuery, PermissionIconRecord } from "../../constants";
+import { useGetPoliceAccessesQuery } from "../api/queries/useGetPoliceAccessesQuery";
+import { AccessesFilterGroup, accessSortLabelRecord, createInitialGetAccessesQuery, PermissionIconRecord } from "../constants";
+import { ApprovalIcons } from "./ApprovalIcons";
+import { Paginate } from "./Paginate";
 
-export default function Accesses() {
+export function PoliceAccessList() {
   return <div className="flex gap-5 h-full">
     <Paginate<GetPoliceAccessesPayload, IAccessSort, IAccess> filterGroups={AccessesFilterGroup()} dataListComponentFn={(accesses) => <div className="pr-5 grid grid-cols-2 gap-5">
       {accesses.map((access, accessIndex) => <div key={access.access_id} className="items-center flex gap-3 border-2 shadow-md p-5 rounded-sm justify-between" style={{ borderColor: '#dad8d85e' }}>

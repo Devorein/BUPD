@@ -1,9 +1,9 @@
 import { CreateCasefilePayload } from "@bupd/types";
 import { CasefilePayload } from "@bupd/validation";
 import { useSnackbar } from "notistack";
-import { useCreateCasefileMutation } from "../../api";
-import { CasefileForm } from "../../components/CasefileForm";
-import { useIsAuthenticated, useIsAuthorized } from "../../hooks";
+import { useCreateCasefileMutation } from "../api";
+import { CasefileForm } from "../components/CasefileForm";
+import { useIsAuthenticated, useIsAuthorized } from "../hooks";
 
 const createCasefileInitialPayload = (): CreateCasefilePayload => ({
   categories: [],
