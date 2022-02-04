@@ -1,15 +1,10 @@
 import cors from 'cors';
 import express from 'express';
-import { Sequelize } from 'sequelize';
-import { DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_USER, SERVER_PORT } from './config';
+import { SERVER_PORT } from './config';
 import logger from './middlewares/logger';
 import { parseQueryTypes } from './middlewares/parseQueryTypes';
 import RootRouter from './routes';
-
-const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, {
-  host: DATABASE_HOST,
-  dialect: "postgres"
-});
+import sequelize from "./sequelize";
 
 const app = express();
 app.use(
