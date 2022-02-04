@@ -2,12 +2,31 @@
 
 import { ICriminal, UpdateCriminalPayload } from '@bupd/types';
 import { PoolConnection } from 'mysql2/promise';
+import { DataTypes } from 'sequelize';
+import sequelize from '../sequelize';
 import { SqlClause, SqlFilter } from '../types';
 import { generateDeleteQuery, generateInsertQuery, generateUpdateQuery, query } from '../utils';
 import { find } from './utils';
 import { useQuery } from './utils/useQuery';
 
-const CriminalModel = {
+const CriminalModel = sequelize.define("Criminal", {
+  criminal_id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  photo: DataTypes.STRING,
+  name: {
+    type: DataTypes.STRING(50),
+    allowNull: false
+  }
+})
+
+export {
+  CriminalModel
+};
+
+const Criminal = {
 	find(sqlClause: SqlClause) {
 		return find<ICriminal>(sqlClause, 'Criminal');
 	},
@@ -49,4 +68,4 @@ const CriminalModel = {
 	},
 };
 
-export default CriminalModel;
+export default Criminal;
