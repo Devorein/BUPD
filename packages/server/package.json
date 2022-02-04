@@ -26,6 +26,8 @@
     "@bupd/types": "1.0.0"
   },
   "dependencies": {
+    "@bupd/constants": "1.0.0",
+    "@bupd/validation": "1.0.0",
     "argon2": "^0.28.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -33,9 +35,9 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
+    "pg": "^8.7.1",
+    "sequelize": "^6.15.0",
     "winston": "^3.3.3",
-    "yup": "^0.32.11",
-    "@bupd/validation": "1.0.0",
-    "@bupd/constants": "1.0.0"
+    "yup": "^0.32.11"
   }
 }
